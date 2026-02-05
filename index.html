@@ -145,6 +145,9 @@
         .stepper-arrows {
             display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2px; font-size: 10px; color: #9ca3af; margin-left: 8px; line-height: 1;
         }
+
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -160,14 +163,14 @@
             </p>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div id="nav-actions" class="flex items-center gap-4">
             <div class="hidden lg:block relative">
                 <span class="absolute left-3 top-2 text-xs emoji-render">&#128269;</span>
                 <input type="text" placeholder="Buscar mercados..." class="search-input focus:outline-none">
             </div>
             
-            <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
-            <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
+            <button id="nav-reg-btn" onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
+            <button id="nav-login-btn" onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
 
             <div class="dropdown-poly">
                 <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
@@ -248,15 +251,16 @@
             <h2 class="text-xl font-black text-gray-900 leading-tight">Crea tu cuenta ahora</h2>
             <p class="text-gray-500 text-sm mt-1">Reg&#237;strate para empezar a manifestar</p>
 
-            <button onclick="alert('Conectando con Google...')" class="social-btn">
+            <button onclick="handleSocialLogin('Google')" class="social-btn">
                 <img src="https://www.google.com/favicon.ico" class="w-4 h-4" alt="G"> Continuar con Google
             </button>
 
             <div class="auth-divider"><span>O con email</span></div>
 
-            <input type="email" placeholder="nombre@ejemplo.com" class="auth-input">
-            <button onclick="alert('Revisa tu bandeja de entrada')" class="w-full py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-all">
-                Crear Cuenta
+            <input type="email" id="reg-email" placeholder="nombre@ejemplo.com" class="auth-input">
+            <button id="btn-submit-reg" onclick="processRegistration()" class="w-full py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-all flex justify-center items-center">
+                <span id="text-reg">Crear Cuenta</span>
+                <span id="spinner-reg" class="hidden ml-2 animate-spin text-lg">&#8635;</span>
             </button>
 
             <p class="text-[10px] text-gray-400 mt-6 px-4 leading-relaxed">
@@ -274,7 +278,7 @@
             <h2 class="text-xl font-black text-gray-900 leading-tight">Accede a tu cuenta</h2>
             <p class="text-gray-500 text-sm mt-1">Ingresa tus credenciales registradas</p>
 
-            <button onclick="alert('Iniciando sesi�n con Google...')" class="social-btn">
+            <button onclick="handleSocialLogin('Google')" class="social-btn">
                 <img src="https://www.google.com/favicon.ico" class="w-4 h-4" alt="G"> Continuar con Google
             </button>
 
@@ -338,6 +342,84 @@
     </div>
 
     <script>
+        // --- LOGICA DE AUTENTICACION Y UI ---
+        
+        function updateUI() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userEmail = localStorage.getItem('userEmail');
+            const regBtn = document.getElementById('nav-reg-btn');
+            const loginBtn = document.getElementById('nav-login-btn');
+
+            if (isLoggedIn === 'true' && userEmail) {
+                // Ocultar Registrarse
+                if(regBtn) regBtn.classList.add('hidden');
+                
+                // Transformar botón Conectar en Perfil
+                if(loginBtn) {
+                    const userName = userEmail.split('@')[0];
+                    loginBtn.innerHTML = `<span class="emoji-render mr-1">&#x1F464;</span> ${userName}`;
+                    loginBtn.classList.remove('btn-connect-gold');
+                    loginBtn.classList.add('bg-white/10', 'text-white', 'border-white/20', 'px-4');
+                    loginBtn.onclick = () => {
+                        if(confirm("¿Deseas cerrar sesión en ConFaith?")) {
+                            localStorage.clear();
+                            location.reload();
+                        }
+                    };
+                }
+            }
+        }
+
+        function processRegistration() {
+            const emailInput = document.getElementById('reg-email');
+            const btnText = document.getElementById('text-reg');
+            const btnSpinner = document.getElementById('spinner-reg');
+            const email = emailInput.value;
+
+            if (!email || !email.includes('@')) {
+                emailInput.classList.add('border-red-500');
+                alert("Por favor, ingresa un correo válido.");
+                return;
+            }
+
+            emailInput.classList.remove('border-red-500');
+            btnText.innerText = "Creando...";
+            btnSpinner.classList.remove('hidden');
+
+            setTimeout(() => {
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                btnText.innerText = "Crear Cuenta";
+                btnSpinner.classList.add('hidden');
+                
+                alert("¡Cuenta creada con éxito! Bienvenido a la comunidad.");
+                closeReg();
+                updateUI();
+            }, 1500);
+        }
+
+        function handleConnect() {
+            const email = document.getElementById('db-email').value;
+            const pass = document.getElementById('db-pass').value;
+            if(!email || !pass) {
+                alert("Por favor, ingresa email y contraseña.");
+                return;
+            }
+            // Simulación de login exitoso
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('isLoggedIn', 'true');
+            alert("Acceso exitoso. ¡Bienvenido de nuevo!");
+            closeLogin();
+            updateUI();
+        }
+
+        function handleSocialLogin(provider) {
+            alert(`Conectando con ${provider}... Esta función requiere integración con Firebase/Auth.`);
+        }
+
+        // --- MODALES Y NAVEGACION ---
+
         function openReg() {
             document.getElementById('reg-modal').classList.remove('hidden');
             document.getElementById('reg-modal').classList.add('flex');
@@ -346,7 +428,6 @@
             document.getElementById('reg-modal').classList.add('hidden');
             document.getElementById('reg-modal').classList.remove('flex');
         }
-
         function openLogin() {
             document.getElementById('login-modal').classList.remove('hidden');
             document.getElementById('login-modal').classList.add('flex');
@@ -356,16 +437,7 @@
             document.getElementById('login-modal').classList.remove('flex');
         }
 
-        function handleConnect() {
-            const email = document.getElementById('db-email').value;
-            const pass = document.getElementById('db-pass').value;
-            if(!email || !pass) {
-                alert("Por favor, ingresa email y contrase\u00F1a.");
-                return;
-            }
-            alert("\u00A1Acceso exitoso\u0021 Conectando con la cuenta del usuario...");
-            closeLogin();
-        }
+        // --- MERCADOS Y SLIDER ---
 
         const cardsData = [
             {cat: "Econom&#237;a", q: "&#191;Subir&#225; el precio del pan en Lima antes de junio?"},
@@ -393,14 +465,17 @@
 
         function filterCards(category, btnElement) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
+            
             const grid = document.getElementById('cards-grid');
             grid.innerHTML = ""; 
             const filtered = category === "Todos" ? cardsData : cardsData.filter(card => card.cat === category);
+            
             if(filtered.length === 0) {
                 grid.innerHTML = `<div class="col-span-full py-24 opacity-40 text-center"><span class="emoji-render text-5xl mb-4">&#x1F4DC;</span><p class="text-[10px] font-black uppercase text-white">No hay mercados activos en ${category}</p></div>`;
                 return;
             }
+            
             filtered.forEach(card => {
                 grid.innerHTML += `
                     <div class="card-blush flex flex-col justify-between hover:shadow-lg transition-all">
@@ -416,18 +491,22 @@
             });
         }
 
+        // --- LOGICA DE APUESTAS ---
+
         function openBetModal(question, category, choice) {
             const modal = document.getElementById('bet-modal');
             document.getElementById('modal-question').innerHTML = question;
             document.getElementById('modal-cat').innerHTML = category;
             const chElem = document.getElementById('modal-choice');
             chElem.innerHTML = choice;
-            if (choice === 'S�' || choice === 'SI' || choice === 'S�') {
+            
+            if (choice === 'SÍ' || choice === 'SI' || choice === 'S&#205;') {
                 chElem.className = "px-4 py-1 rounded-full text-xs font-black bg-green-500 text-white";
             } else {
                 chElem.className = "px-4 py-1 rounded-full text-xs font-black text-white";
                 chElem.style.background = "var(--glossy-black)";
             }
+            
             document.getElementById('bet-amount').value = "";
             document.getElementById('potential-win').innerText = "0.00";
             modal.classList.remove('hidden');
@@ -460,27 +539,36 @@
         function confirmBet() {
             const amount = document.getElementById('bet-amount').value;
             if(!amount || amount <= 0) {
-                alert("\u00A1Ingresa un monto v\u00E1lido\u0021");
+                alert("¡Ingresa un monto válido!");
                 return;
             }
-            alert("\u00A1Manifestado\u0021 Tu apuesta ha sido procesada con faith.");
+            alert("¡Manifestado! Tu apuesta ha sido procesada con faith.");
             closeModal();
         }
+
+        // --- SLIDER ---
 
         let currentSlide = 0;
         const totalSlides = 6; 
         const mainW = document.getElementById('sliderWrapper');
         const mirrorW = document.getElementById('mirrorWrapper');
+
         function updateSlider() {
             const val = `translateX(-${currentSlide * 100}%)`;
-            mainW.style.transform = val;
-            mirrorW.style.transform = val;
+            if(mainW) mainW.style.transform = val;
+            if(mirrorW) mirrorW.style.transform = val;
         }
+
         function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; updateSlider(); }
         function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateSlider(); }
         setInterval(nextSlide, 5000);
 
-        filterCards('Todos', document.querySelector('.cat-btn'));
+        // --- INICIALIZACIÓN ---
+
+        window.onload = () => {
+            updateUI();
+            filterCards('Todos', document.querySelector('.cat-btn'));
+        };
     </script>
 </body>
 </html>
