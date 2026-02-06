@@ -357,30 +357,7 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        import { getAuth, onAuthStateChanged } from "firebase/auth";
-
-const auth = getAuth();
-
-// Este observador se activa automáticamente cuando el estado cambia
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    // El usuario está firmado
-    console.log("Usuario detectado:", user.displayName);
-    mostrarHome(user);
-  } else {
-    // El usuario no está firmado o cerró sesión
-    mostrarLogin();
-  }
-});
-
-function mostrarHome(user) {
-  // Aquí va tu lógica para ocultar el botón de login y mostrar la bienvenida
-  document.getElementById("login-section").style.display = "none";
-  document.getElementById("home-section").style.display = "block";
-  document.getElementById("username").innerText = `Hola, ${user.displayName}`;
-}
-        
-// 1. REGISTRO CON EMAIL
+        // 1. REGISTRO CON EMAIL
         window.handleRegister = async () => {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
@@ -553,5 +530,3 @@ function mostrarHome(user) {
     </script>
 </body>
 </html>
-
-
