@@ -248,14 +248,16 @@
             <h2 class="text-xl font-black text-gray-900 leading-tight">Crea tu cuenta ahora</h2>
             <p class="text-gray-500 text-sm mt-1">Reg&#237;strate para empezar a manifestar</p>
 
-            <button onclick="alert('Conectando con Google...')" class="social-btn">
+            <button onclick="signInWithGoogle()" class="social-btn">
                 <img src="https://www.google.com/favicon.ico" class="w-4 h-4" alt="G"> Continuar con Google
             </button>
 
             <div class="auth-divider"><span>O con email</span></div>
 
-            <input type="email" placeholder="nombre@ejemplo.com" class="auth-input">
-            <button onclick="alert('Revisa tu bandeja de entrada')" class="w-full py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-all">
+            <input type="email" id="reg-email" placeholder="nombre@ejemplo.com" class="auth-input">
+            <input type="password" id="reg-pass" placeholder="Crea una contraseña" class="auth-input">
+            
+            <button onclick="handleRegister()" class="w-full py-4 bg-black text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-gray-800 transition-all">
                 Crear Cuenta
             </button>
 
@@ -274,7 +276,7 @@
             <h2 class="text-xl font-black text-gray-900 leading-tight">Accede a tu cuenta</h2>
             <p class="text-gray-500 text-sm mt-1">Ingresa tus credenciales registradas</p>
 
-            <button onclick="alert('Iniciando sesión con Google...')" class="social-btn">
+            <button onclick="signInWithGoogle()" class="social-btn">
                 <img src="https://www.google.com/favicon.ico" class="w-4 h-4" alt="G"> Continuar con Google
             </button>
 
@@ -337,35 +339,83 @@
         </div>
     </div>
 
-    <script>
-        function openReg() {
-            document.getElementById('reg-modal').classList.remove('hidden');
-            document.getElementById('reg-modal').classList.add('flex');
-        }
-        function closeReg() {
-            document.getElementById('reg-modal').classList.add('hidden');
-            document.getElementById('reg-modal').classList.remove('flex');
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        function openLogin() {
-            document.getElementById('login-modal').classList.remove('hidden');
-            document.getElementById('login-modal').classList.add('flex');
-        }
-        function closeLogin() {
-            document.getElementById('login-modal').classList.add('hidden');
-            document.getElementById('login-modal').classList.remove('flex');
-        }
+        // CONFIGURACIÓN DE TU PROYECTO (RELLENA ESTO)
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_DOMINIO.firebaseapp.com",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
 
-        function handleConnect() {
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // 1. REGISTRO CON EMAIL
+        window.handleRegister = async () => {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+            if(!email || !pass) return alert("Completa todos los campos");
+            
+            try {
+                await createUserWithEmailAndPassword(auth, email, pass);
+                alert("¡Cuenta creada con Faith!");
+                closeReg();
+            } catch (error) {
+                alert("Error: " + error.message);
+            }
+        };
+
+        // 2. LOGIN CON EMAIL (CONECTAR)
+        window.handleConnect = async () => {
             const email = document.getElementById('db-email').value;
             const pass = document.getElementById('db-pass').value;
-            if(!email || !pass) {
-                alert("Por favor, ingresa email y contrase\u00F1a.");
-                return;
+            if(!email || !pass) return alert("Ingresa tus credenciales");
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                alert("¡Conectado exitosamente!");
+                closeLogin();
+            } catch (error) {
+                alert("Error: " + error.message);
             }
-            alert("\u00A1Acceso exitoso\u0021 Conectando con la cuenta del usuario...");
-            closeLogin();
-        }
+        };
+
+        // 3. GOOGLE SIGN IN
+        window.signInWithGoogle = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                alert("¡Conectado con Google!");
+                closeReg();
+                closeLogin();
+            } catch (error) {
+                alert("Error con Google: " + error.message);
+            }
+        };
+
+        // OBSERVAR ESTADO DEL USUARIO
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log("Usuario logueado:", user.email);
+                // Aquí podrías cambiar el texto de los botones a "Mi Perfil" o similar
+            } else {
+                console.log("No hay usuario activo");
+            }
+        });
+    </script>
+
+    <script>
+        // Mantenemos tus funciones UI intactas
+        function openReg() { document.getElementById('reg-modal').classList.replace('hidden', 'flex'); }
+        function closeReg() { document.getElementById('reg-modal').classList.replace('flex', 'hidden'); }
+        function openLogin() { document.getElementById('login-modal').classList.replace('hidden', 'flex'); }
+        function closeLogin() { document.getElementById('login-modal').classList.replace('flex', 'hidden'); }
 
         const cardsData = [
             {cat: "Econom&#237;a", q: "&#191;Subir&#225; el precio del pan en Lima antes de junio?"},
@@ -430,14 +480,10 @@
             }
             document.getElementById('bet-amount').value = "";
             document.getElementById('potential-win').innerText = "0.00";
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            modal.classList.replace('hidden', 'flex');
         }
 
-        function closeModal() {
-            document.getElementById('bet-modal').classList.add('hidden');
-            document.getElementById('bet-modal').classList.remove('flex');
-        }
+        function closeModal() { document.getElementById('bet-modal').classList.replace('flex', 'hidden'); }
 
         function stepAmount(dir) {
             const input = document.getElementById('bet-amount');
@@ -473,8 +519,8 @@
         const mirrorW = document.getElementById('mirrorWrapper');
         function updateSlider() {
             const val = `translateX(-${currentSlide * 100}%)`;
-            mainW.style.transform = val;
-            mirrorW.style.transform = val;
+            if(mainW) mainW.style.transform = val;
+            if(mirrorW) mirrorW.style.transform = val;
         }
         function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; updateSlider(); }
         function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateSlider(); }
