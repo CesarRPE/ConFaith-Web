@@ -172,7 +172,7 @@
             </div>
 
             <div id="auth-user" class="hidden flex items-center gap-3">
-                <span id="user-name" class="text-white text-[10px] font-bold uppercase border-r border-white/20 pr-3"></span>
+                <span id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide" style="background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 1px rgba(255,255,255,0.5));"></span>
                 <button onclick="handleLogout()" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase transition-colors">Salir</button>
             </div>
 
@@ -420,12 +420,18 @@
                 userDiv.classList.remove('hidden');
                 // Extrae el primer nombre y añade el saludo
                 const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-                nameSpan.innerText = `Qué onda, ${firstName}`;
-            } else {
-                console.log("No hay usuario activo");
+                nameSpan.innerText = 
+                // 1. Extraemos el primer nombre
+                const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+
+                // 2. Inyectamos el saludo con el nombre envuelto en un span dorado
+                nameSpan.innerHTML = `Hola, <span style="color: var(--gold-faith);">${firstName}</span>`;`Qué onda, ${firstName}`;
+        } else {
+                // Cuando no hay usuario, el span debe quedar vacío
+                nameSpan.innerHTML = ""; 
                 guestDiv.classList.remove('hidden');
                 userDiv.classList.add('hidden');
-            }
+        }
         });
     </script>
 
@@ -548,4 +554,5 @@
     </script>
 </body>
 </html>
+
 
