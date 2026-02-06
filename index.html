@@ -167,23 +167,24 @@
             </div>
             
             <div id="auth-guest" class="flex gap-2">
-                <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
-                <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
-            </div>
+    <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
+    <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
+</div>
 
-            <div id="auth-user" class="hidden flex items-center gap-3">
-                <div class="dropdown-poly relative">
-                <button id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide focus:outline-none"></button>
+<div id="auth-user" class="hidden flex items-center gap-3">
+    <div class="dropdown-poly relative">
+        <button id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide focus:outline-none"></button>
         
-                <div class="dropdown-poly-content" style="right: 0; top: 120%;">
-                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">⚙️</span> Configuración</a>
-                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">👤</span> Mi Perfil</a>
-                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">💰</span> Billetera</a>
-                <div class="dropdown-divider"></div>
-                <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400"><span class="emoji-render text-lg">🚪</span> Cerrar Sesión</a>
-            </div>
+        <div class="dropdown-poly-content" style="right: 0; top: 100%;">
+            <a href="#" class="dropdown-item"><span class="emoji-render text-lg">⚙️</span> Configuración</a>
+            <a href="#" class="dropdown-item"><span class="emoji-render text-lg">💰</span> Mi Billetera</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400 font-bold">
+                <span class="emoji-render text-lg">🚪</span> Salir
+            </a>
         </div>
     </div>
+</div>
 
             <div class="dropdown-poly">
                 <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
@@ -567,6 +568,7 @@
     </script>
 </body>
 </html>
+
 
 
 
