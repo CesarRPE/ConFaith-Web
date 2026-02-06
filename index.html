@@ -420,14 +420,30 @@
         };
 
         onAuthStateChanged(auth, (user) => {
-            const guestDiv = document.getElementById('auth-guest');
-            const userDiv = document.getElementById('auth-user');
-            const nameSpan = document.getElementById('user-name');
+    const guestDiv = document.getElementById('auth-guest');
+    const userDiv = document.getElementById('auth-user');
+    const nameSpan = document.getElementById('user-name');
 
-            if (user) {
-                console.log("Usuario logueado:", user.email);
-                guestDiv.classList.add('hidden');
-                userDiv.classList.remove('hidden');
+    if (user) {
+        guestDiv.classList.add('hidden');
+        userDiv.classList.remove('hidden');
+
+        const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+        
+        // Estilos para que se vea Pro
+        const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
+        const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
+
+        // Inyectamos el saludo y el nombre con la flechita del dropdown
+        if(nameSpan) {
+            nameSpan.innerHTML = `<span style="${glossyStyle}">Habla, </span><span style="${goldStyle}">${firstName} ▾</span>`;
+        }
+    } else {
+        guestDiv.classList.remove('hidden');
+        userDiv.classList.add('hidden');
+        if(nameSpan) nameSpan.innerHTML = "";
+    }
+});
 
                 // Extraemos el primer nombre
             const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
@@ -568,6 +584,7 @@
     </script>
 </body>
 </html>
+
 
 
 
