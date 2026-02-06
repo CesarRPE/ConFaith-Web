@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -437,14 +436,11 @@
             const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
             const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
 
-        nameSpan.innerHTML = // ... dentro del if (user) ...
-            const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-
-            const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
-            const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith); cursor: pointer;";
-
-                // El saludo se mantiene Glossy y el nombre Gold actúa como link
-        nameSpan.innerHTML = `<span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName} ▾</span>`;
+        nameSpan.innerHTML = `<span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>`;
+        } else {
+                guestDiv.classList.remove('hidden');
+                userDiv.classList.add('hidden');
+            if(nameSpan) nameSpan.innerHTML = "";
     }
     });
     </script>
@@ -568,8 +564,6 @@
     </script>
 </body>
 </html>
-
-
 
 
 
