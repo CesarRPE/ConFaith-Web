@@ -166,8 +166,15 @@
                 <input type="text" placeholder="Buscar mercados..." class="search-input focus:outline-none">
             </div>
             
-            <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
-            <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
+            <div id="auth-guest" class="flex gap-2">
+                <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
+                <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
+            </div>
+
+            <div id="auth-user" class="hidden flex items-center gap-3">
+                <span id="user-name" class="text-white text-[10px] font-bold uppercase border-r border-white/20 pr-3"></span>
+                <button onclick="handleLogout()" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase transition-colors">Salir</button>
+            </div>
 
             <div class="dropdown-poly">
                 <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
@@ -341,9 +348,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-        // CONFIGURACIÓN DE TU PROYECTO (RELLENA ESTO)
         const firebaseConfig = {
             apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
             authDomain: "confaith-web.firebaseapp.com",
@@ -357,12 +363,10 @@
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // 1. REGISTRO CON EMAIL
         window.handleRegister = async () => {
             const email = document.getElementById('reg-email').value;
             const pass = document.getElementById('reg-pass').value;
             if(!email || !pass) return alert("Completa todos los campos");
-            
             try {
                 await createUserWithEmailAndPassword(auth, email, pass);
                 alert("¡Cuenta creada con Faith!");
@@ -372,12 +376,10 @@
             }
         };
 
-        // 2. LOGIN CON EMAIL (CONECTAR)
         window.handleConnect = async () => {
             const email = document.getElementById('db-email').value;
             const pass = document.getElementById('db-pass').value;
             if(!email || !pass) return alert("Ingresa tus credenciales");
-
             try {
                 await signInWithEmailAndPassword(auth, email, pass);
                 alert("¡Conectado exitosamente!");
@@ -387,7 +389,6 @@
             }
         };
 
-        // 3. GOOGLE SIGN IN
         window.signInWithGoogle = async () => {
             try {
                 await signInWithPopup(auth, provider);
@@ -399,19 +400,34 @@
             }
         };
 
-        // OBSERVAR ESTADO DEL USUARIO
+        window.handleLogout = async () => {
+            try {
+                await signOut(auth);
+                alert("Sesión cerrada.");
+            } catch (error) {
+                console.error("Error al salir:", error);
+            }
+        };
+
         onAuthStateChanged(auth, (user) => {
+            const guestDiv = document.getElementById('auth-guest');
+            const userDiv = document.getElementById('auth-user');
+            const nameSpan = document.getElementById('user-name');
+
             if (user) {
                 console.log("Usuario logueado:", user.email);
-                // Aquí podrías cambiar el texto de los botones a "Mi Perfil" o similar
+                guestDiv.classList.add('hidden');
+                userDiv.classList.remove('hidden');
+                nameSpan.innerText = user.displayName || user.email.split('@')[0];
             } else {
                 console.log("No hay usuario activo");
+                guestDiv.classList.remove('hidden');
+                userDiv.classList.add('hidden');
             }
         });
     </script>
 
     <script>
-        // Mantenemos tus funciones UI intactas
         function openReg() { document.getElementById('reg-modal').classList.replace('hidden', 'flex'); }
         function closeReg() { document.getElementById('reg-modal').classList.replace('flex', 'hidden'); }
         function openLogin() { document.getElementById('login-modal').classList.replace('hidden', 'flex'); }
@@ -443,7 +459,7 @@
 
         function filterCards(category, btnElement) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
             const grid = document.getElementById('cards-grid');
             grid.innerHTML = ""; 
             const filtered = category === "Todos" ? cardsData : cardsData.filter(card => card.cat === category);
