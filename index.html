@@ -418,7 +418,9 @@
                 console.log("Usuario logueado:", user.email);
                 guestDiv.classList.add('hidden');
                 userDiv.classList.remove('hidden');
-                nameSpan.innerText = user.displayName || user.email.split('@')[0];
+                // Extrae el primer nombre y añade el saludo
+                const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                nameSpan.innerText = `Qué onda, ${firstName}`;
             } else {
                 console.log("No hay usuario activo");
                 guestDiv.classList.remove('hidden');
@@ -546,3 +548,4 @@
     </script>
 </body>
 </html>
+
