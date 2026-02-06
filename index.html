@@ -172,9 +172,18 @@
             </div>
 
             <div id="auth-user" class="hidden flex items-center gap-3">
-                <span id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide"></span>
-                <button onclick="handleLogout()" class="text-gray-400 hover:text-white text-[10px] font-bold uppercase transition-colors">Salir</button>
+                <div class="dropdown-poly relative">
+                <button id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide focus:outline-none"></button>
+        
+                <div class="dropdown-poly-content" style="right: 0; top: 120%;">
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">⚙️</span> Configuración</a>
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">👤</span> Mi Perfil</a>
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">💰</span> Billetera</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400"><span class="emoji-render text-lg">🚪</span> Cerrar Sesión</a>
             </div>
+        </div>
+    </div>
 
             <div class="dropdown-poly">
                 <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
@@ -555,6 +564,7 @@
     </script>
 </body>
 </html>
+
 
 
 
