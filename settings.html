@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -48,6 +47,27 @@
 
         .brand-faith { font-family: 'UnifrakturMaguntia', serif; color: var(--gold-faith); font-weight: 400; line-height: 1; letter-spacing: -1.5px; }
 
+        /* Estilos del Dropdown idénticos al Index */
+        .dropdown-poly { position: relative; display: inline-block; }
+        .dropdown-poly-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #121212;
+            min-width: 200px;
+            box-shadow: 0px 10px 40px rgba(0,0,0,0.9);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 8px;
+            z-index: 100;
+            top: 110%;
+        }
+        .dropdown-poly:hover .dropdown-poly-content { display: block; }
+        .dropdown-item {
+            color: #9ca3af; padding: 10px 12px; text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s;
+        }
+        .dropdown-item:hover { background-color: #1f2937; color: white !important; }
+
         .toggle-bg { transition: all 0.2s ease; }
         .toggle-dot { transition: all 0.2s ease; left: 2px; top: 2px; }
         input:checked ~ .toggle-bg { background-color: var(--gold-faith); }
@@ -71,26 +91,45 @@
 <body>
 
     <nav class="navbar-custom flex justify-between items-center shadow-lg">
-    <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
-        <div class="flex items-center">
-            <span class="brand-con">Con</span>
-            <span class="brand-faith text-3xl">Faith</span>
-        </div>
-        <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
-            Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
-        </p>
-    </a>
+        <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
+            <div class="flex items-center">
+                <span class="brand-con">Con</span>
+                <span class="brand-faith text-3xl">Faith</span>
+            </div>
+            <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
+                Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
+            </p>
+        </a>
 
-    <div class="flex items-center gap-4">
-        <button onclick="showSection('perfil')" class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:bg-gray-200 transition-all tracking-tighter">Mi Perfil</button>
-        <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">Desconectar</button>
-    </div>
-</nav>
+        <div class="flex items-center gap-4">
+            <div class="dropdown-poly">
+                <button class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-black rounded-full hover:bg-gray-200 transition-all tracking-tighter flex items-center gap-2">
+                    ¿Qué onda, <span id="display-name">Manifestador</span>? <span class="text-[12px]">▼</span>
+                </button>
+                <div class="dropdown-poly-content">
+                    <a href="#" onclick="showSection('perfil')" class="dropdown-item">
+                        <span class="emoji-render text-lg">👤</span> Mi Perfil
+                    </a>
+                    <a href="#" onclick="showSection('billetera')" class="dropdown-item">
+                        <span class="emoji-render text-lg">💳</span> Billetera
+                    </a>
+                    <div style="height: 1px; background: #333; margin: 8px 0;"></div>
+                    <a href="index.html" class="dropdown-item">
+                        <span class="emoji-render text-lg">🏠</span> Volver al Inicio
+                    </a>
+                </div>
+            </div>
+            
+            <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">
+                Desconectar
+            </button>
+        </div>
+    </nav>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row gap-8">
             <aside class="w-full md:w-64 space-y-2">
-                <h3 class="text-white text-xl font-black mb-6 px-4 tracking-tighter" style="color: var(--gold-faith);">MEN&#xDA;</h3>
+                <h3 class="text-white text-xl font-black mb-6 px-4 tracking-tighter" style="color: var(--gold-faith);">MENÚ</h3>
                 <nav class="flex flex-col gap-1">
                     <button onclick="showSection('perfil')" id="btn-perfil" class="nav-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active">
                         <span class="emoji-render">&#x1F464;</span> Perfil
@@ -116,11 +155,11 @@
                     <div class="space-y-6 max-w-xl">
                         <div class="flex flex-col gap-2">
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Nombre de Manifestador</label>
-                            <input type="text" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
+                            <input type="text" id="input-name" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
                         </div>
                         <div class="flex flex-col gap-2">
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Bio / Frase de Faith</label>
-                            <textarea placeholder="&#xBF;Cu&#xE1;l es tu mantra?" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
+                            <textarea placeholder="¿Cuál es tu mantra?" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
                         </div>
                         <button class="text-black font-black text-xs uppercase px-8 py-3 rounded-lg hover:scale-105 transition-all" style="background-color: var(--gold-faith);">Actualizar Perfil</button>
                     </div>
@@ -140,17 +179,17 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-1">
                         <script>
                             const categorias = [
-                                {n: "Pol&#xED;tica", e: "&#x1F531;"}, {n: "Deportes", e: "&#x26BD;"},
-                                {n: "Chollywood", e: "&#x1F4FA;"}, {n: "Ampays", e: "&#x1F440;"},
-                                {n: "Streamers", e: "&#x1F4BB;"}, {n: "Realitys", e: "&#x1F3AD;"},
-                                {n: "TikTok", e: "&#x231B;"}, {n: "M&#xFA;sica", e: "&#x1F3B5;"},
-                                {n: "Redes Sociales", e: "&#x1F4AC;"}, {n: "Cine", e: "&#x1F3AC;"},
-                                {n: "Internacional", e: "&#x1F30E;"}, {n: "Econom&#xED;a", e: "&#x1F4C8;"},
-                                {n: "Criptomonedas", e: "&#x1F310;"}, {n: "Gaming", e: "&#x1F3AE;"},
-                                {n: "Conciertos", e: "&#x1F3B8;"}, {n: "Tecnolog&#xED;a", e: "&#x1F4BB;"},
-                                {n: "IA", e: "&#x1F31F;"}, {n: "Juicios VIP", e: "&#x2696;"},
-                                {n: "Viral", e: "&#x1F31F;"}, {n: "Moda", e: "&#x1F457;"},
-                                {n: "Lima", e: "&#x1F4CD;"}
+                                {n: "Política", e: "🏛️"}, {n: "Deportes", e: "⚽"},
+                                {n: "Chollywood", e: "📺"}, {n: "Ampays", e: "👀"},
+                                {n: "Streamers", e: "💻"}, {n: "Realitys", e: "🎭"},
+                                {n: "TikTok", e: "⌛"}, {n: "Música", e: "🎵"},
+                                {n: "Redes Sociales", e: "💬"}, {n: "Cine", e: "🎬"},
+                                {n: "Internacional", e: "🌎"}, {n: "Economía", e: "📈"},
+                                {n: "Criptomonedas", e: "🌐"}, {n: "Gaming", e: "🎮"},
+                                {n: "Conciertos", e: "🎸"}, {n: "Tecnología", e: "💻"},
+                                {n: "IA", e: "🌟"}, {n: "Juicios VIP", e: "⚖️"},
+                                {n: "Viral", e: "🌟"}, {n: "Moda", e: "👗"},
+                                {n: "Lima", e: "📍"}
                             ];
                             categorias.forEach(cat => {
                                 document.write(`
@@ -172,22 +211,22 @@
                 </div>
 
                 <div id="billetera" class="content-section bg-[#1e293b] rounded-2xl p-12 border border-white/10 text-center">
-                    <span class="emoji-render text-6xl block mb-4">&#x1F4B3;</span>
+                    <span class="emoji-render text-6xl block mb-4">💳</span>
                     <h2 class="text-2xl font-black mb-2 tracking-tighter">Mi Billetera Faith</h2>
-                    <p class="text-gray-400">M&#xF3;dulo de gesti&#xF3;n de fondos en construcci&#xF3;n...</p>
+                    <p class="text-gray-400">Módulo de gestión de fondos en construcción...</p>
                 </div>
 
                 <div id="seguridad" class="content-section bg-[#1e293b] rounded-2xl p-12 border border-white/10 text-center">
-                    <span class="emoji-render text-6xl block mb-4">&#x1F512;</span>
+                    <span class="emoji-render text-6xl block mb-4">🔐</span>
                     <h2 class="text-2xl font-black mb-2 tracking-tighter">Seguridad</h2>
-                    <p class="text-gray-400">M&#xF3;dulo de contrase&#xF1;as y 2FA en construcci&#xF3;n...</p>
+                    <p class="text-gray-400">Módulo de contraseñas y 2FA en construcción...</p>
                 </div>
             </div>
         </div>
     </main>
 
     <footer class="text-center py-10 text-gray-500 text-[11px] font-bold uppercase tracking-widest">
-        ConFaith &copy; 2026 - Lima, Per&#xFA;
+        ConFaith &copy; 2026 - Lima, Perú
     </footer>
 
     <script>
@@ -201,7 +240,14 @@
             const targetBtn = document.getElementById('btn-' + id);
             if(targetBtn) targetBtn.classList.add('active');
         }
+
+        // Script para que el nombre cambie en vivo en el botón
+        const inputName = document.getElementById('input-name');
+        const displayName = document.getElementById('display-name');
+
+        inputName.addEventListener('input', (e) => {
+            displayName.innerText = e.target.value || "Manifestador";
+        });
     </script>
 </body>
-
 </html>
