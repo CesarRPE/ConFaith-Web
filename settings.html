@@ -65,6 +65,9 @@
             border-left: 4px solid var(--gold-faith);
             color: white;
         }
+
+        .dropdown-poly:hover .dropdown-poly-content { display: block; }
+.dropdown-item:hover { background-color: #1f2937; color: white !important; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -81,9 +84,29 @@
     </a>
 
     <div class="flex items-center gap-4">
-        <button onclick="showSection('perfil')" class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:bg-gray-200 transition-all tracking-tighter">Mi Perfil</button>
-        <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">Desconectar</button>
+    <div class="dropdown-poly relative">
+        <button class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-black rounded-full hover:bg-gray-200 transition-all tracking-tighter flex items-center gap-2">
+            ¿Qué onda, <span id="display-name">Manifestador</span>? <span class="text-[14px]">▾</span>
+        </button>
+        
+        <div class="dropdown-poly-content" style="right: 0; top: 110%; background-color: #121212; min-width: 180px; border-radius: 12px; padding: 8px; border: 1px solid #333;">
+            <a href="#" onclick="showSection('perfil')" class="dropdown-item" style="color: #9ca3af; padding: 10px; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700;">
+                <span class="emoji-render">👤</span> Mi Perfil
+            </a>
+            <a href="#" onclick="showSection('billetera')" class="dropdown-item" style="color: #9ca3af; padding: 10px; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700;">
+                <span class="emoji-render">💳</span> Billetera
+            </a>
+            <div style="height: 1px; background: #333; margin: 5px 0;"></div>
+            <a href="index.html" class="dropdown-item" style="color: #9ca3af; padding: 10px; display: flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 700;">
+                <span class="emoji-render">🏠</span> Volver al Inicio
+            </a>
+        </div>
     </div>
+
+    <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">
+        Desconectar
+    </button>
+</div>
 </nav>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
@@ -201,6 +224,17 @@
             if(targetBtn) targetBtn.classList.add('active');
         }
     </script>
+
+    // Actualiza el nombre en el saludo en tiempo real
+const nameInput = document.querySelector('input[placeholder="Tu nombre..."]');
+const displayName = document.getElementById('display-name');
+
+if(nameInput && displayName) {
+    nameInput.addEventListener('input', (e) => {
+        displayName.innerText = e.target.value || "Manifestador";
+    });
+}
 </body>
 
 </html>
+
