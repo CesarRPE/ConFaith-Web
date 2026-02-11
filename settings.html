@@ -47,7 +47,7 @@
 
         .brand-faith { font-family: 'UnifrakturMaguntia', serif; color: var(--gold-faith); font-weight: 400; line-height: 1; letter-spacing: -1.5px; }
 
-        /* Estilos del Dropdown idénticos al Index */
+        /* Estilos del Dropdown del Index */
         .dropdown-poly { position: relative; display: inline-block; }
         .dropdown-poly-content {
             display: none;
@@ -90,41 +90,39 @@
 </head>
 <body>
 
-    <nav class="navbar-custom flex justify-between items-center shadow-lg">
-        <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
-            <div class="flex items-center">
-                <span class="brand-con">Con</span>
-                <span class="brand-faith text-3xl">Faith</span>
-            </div>
-            <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
-                Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
-            </p>
-        </a>
-
-        <div class="flex items-center gap-4">
-            <div class="dropdown-poly">
-                <button class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-black rounded-full hover:bg-gray-200 transition-all tracking-tighter flex items-center gap-2">
-                    ¿Qué onda, <span id="display-name">Manifestador</span>? <span class="text-[12px]">▼</span>
-                </button>
-                <div class="dropdown-poly-content">
-                    <a href="#" onclick="showSection('perfil')" class="dropdown-item">
-                        <span class="emoji-render text-lg">👤</span> Mi Perfil
-                    </a>
-                    <a href="#" onclick="showSection('billetera')" class="dropdown-item">
-                        <span class="emoji-render text-lg">💳</span> Billetera
-                    </a>
-                    <div style="height: 1px; background: #333; margin: 8px 0;"></div>
-                    <a href="index.html" class="dropdown-item">
-                        <span class="emoji-render text-lg">🏠</span> Volver al Inicio
-                    </a>
-                </div>
-            </div>
-            
-            <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">
-                Desconectar
-            </button>
+<nav class="navbar-custom flex justify-between items-center shadow-lg">
+    <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
+        <div class="flex items-center">
+            <span class="brand-con">Con</span>
+            <span class="brand-faith text-3xl">Faith</span>
         </div>
-    </nav>
+        <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
+            Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
+        </p>
+    </a>
+
+    <div class="flex items-center gap-4">
+        <div class="dropdown-poly">
+            <button class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-black rounded-full hover:bg-gray-200 transition-all tracking-tighter flex items-center gap-2">
+                ¿Qué onda, <span id="display-name">Manifestador</span>? <span class="text-[12px]">▼</span>
+            </button>
+            <div class="dropdown-poly-content">
+                <a href="#" onclick="showSection('perfil')" class="dropdown-item">
+                    <span class="emoji-render text-lg">👤</span> Mi Perfil
+                </a>
+                <a href="#" onclick="showSection('billetera')" class="dropdown-item">
+                    <span class="emoji-render text-lg">💳</span> Billetera
+                </a>
+                <div style="height: 1px; background: #333; margin: 8px 0;"></div>
+                <a href="index.html" class="dropdown-item">
+                    <span class="emoji-render text-lg">🏠</span> Volver al Inicio
+                </a>
+            </div>
+        </div>
+        
+        <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">Desconectar</button>
+    </div>
+</nav>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row gap-8">
@@ -155,7 +153,7 @@
                     <div class="space-y-6 max-w-xl">
                         <div class="flex flex-col gap-2">
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Nombre de Manifestador</label>
-                            <input type="text" id="input-name" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
+                            <input type="text" id="name-input" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
                         </div>
                         <div class="flex flex-col gap-2">
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Bio / Frase de Faith</label>
@@ -241,12 +239,11 @@
             if(targetBtn) targetBtn.classList.add('active');
         }
 
-        // Script para que el nombre cambie en vivo en el botón
-        const inputName = document.getElementById('input-name');
-        const displayName = document.getElementById('display-name');
-
-        inputName.addEventListener('input', (e) => {
-            displayName.innerText = e.target.value || "Manifestador";
+        // Lógica para sincronizar el nombre en tiempo real
+        const input = document.getElementById('name-input');
+        const display = document.getElementById('display-name');
+        input.addEventListener('input', (e) => {
+            display.innerText = e.target.value || "Manifestador";
         });
     </script>
 </body>
