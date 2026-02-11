@@ -20,6 +20,7 @@
             --bg-main: #374151; 
             --gold-faith: #b8860b;
             --settings-card: #1e293b;
+            --poly-dark: #121212;
         }
 
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); margin: 0; color: white; overflow-x: hidden; }
@@ -47,27 +48,29 @@
 
         .brand-faith { font-family: 'UnifrakturMaguntia', serif; color: var(--gold-faith); font-weight: 400; line-height: 1; letter-spacing: -1.5px; }
 
-        /* Estilos del Dropdown del Index */
-        .dropdown-poly { position: relative; display: inline-block; }
+        /* Estilos del Dropdown idénticos al Index */
+        .dropdown-poly { position: relative; display: inline-block; padding-bottom: 4px; }
         .dropdown-poly-content {
             display: none;
             position: absolute;
             right: 0;
-            background-color: #121212;
-            min-width: 200px;
+            background-color: var(--poly-dark);
+            min-width: 210px;
             box-shadow: 0px 10px 40px rgba(0,0,0,0.9);
             border: 1px solid #333;
             border-radius: 12px;
             padding: 8px;
             z-index: 100;
-            top: 110%;
+            top: 100%;
         }
         .dropdown-poly:hover .dropdown-poly-content { display: block; }
         .dropdown-item {
             color: #9ca3af; padding: 10px 12px; text-decoration: none; display: flex; align-items: center; gap: 12px; font-size: 12px; font-weight: 600; border-radius: 8px; transition: all 0.2s;
         }
         .dropdown-item:hover { background-color: #1f2937; color: white !important; }
+        .dropdown-divider { height: 1px; background-color: #333; margin: 8px 0; }
 
+        /* Estilos del Switch de Alertas */
         .toggle-bg { transition: all 0.2s ease; }
         .toggle-dot { transition: all 0.2s ease; left: 2px; top: 2px; }
         input:checked ~ .toggle-bg { background-color: var(--gold-faith); }
@@ -90,39 +93,48 @@
 </head>
 <body>
 
-<nav class="navbar-custom flex justify-between items-center shadow-lg">
-    <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
-        <div class="flex items-center">
-            <span class="brand-con">Con</span>
-            <span class="brand-faith text-3xl">Faith</span>
-        </div>
-        <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
-            Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
-        </p>
-    </a>
+    <nav class="navbar-custom flex justify-between items-center shadow-lg">
+        <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity">
+            <div class="flex items-center">
+                <span class="brand-con">Con</span>
+                <span class="brand-faith text-3xl">Faith</span>
+            </div>
+            <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
+                Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
+            </p>
+        </a>
 
-    <div class="flex items-center gap-4">
-        <div class="dropdown-poly">
-            <button class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-black rounded-full hover:bg-gray-200 transition-all tracking-tighter flex items-center gap-2">
-                ¿Qué onda, <span id="display-name">Manifestador</span>? <span class="text-[12px]">▼</span>
-            </button>
-            <div class="dropdown-poly-content">
-                <a href="#" onclick="showSection('perfil')" class="dropdown-item">
-                    <span class="emoji-render text-lg">👤</span> Mi Perfil
-                </a>
-                <a href="#" onclick="showSection('billetera')" class="dropdown-item">
-                    <span class="emoji-render text-lg">💳</span> Billetera
-                </a>
-                <div style="height: 1px; background: #333; margin: 8px 0;"></div>
-                <a href="index.html" class="dropdown-item">
-                    <span class="emoji-render text-lg">🏠</span> Volver al Inicio
-                </a>
+        <div class="flex items-center gap-4">
+            <div id="auth-user" class="flex items-center gap-3">
+                <div class="dropdown-poly">
+                    <button id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide focus:outline-none flex items-center gap-1">
+                        <span style="background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Qué onda, </span>
+                        <span style="color: var(--gold-faith);">Manifestador</span>
+                    </button>
+            
+                    <div class="dropdown-poly-content">
+                        <a href="index.html" class="dropdown-item"><span class="emoji-render text-lg">🏠</span> Volver al Inicio</a>
+                        <a href="#" onclick="showSection('perfil')" class="dropdown-item"><span class="emoji-render text-lg">👤</span> Mi Perfil</a>
+                        <a href="#" onclick="showSection('billetera')" class="dropdown-item"><span class="emoji-render text-lg">💳</span> Billetera</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400"><span class="emoji-render text-lg">🚪</span> Cerrar Sesión</a>
+                    </div>
+                </div>
+                
+                <div class="dropdown-poly">
+                    <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
+                        <span class="text-[14px]">&#9776;</span>
+                    </button>
+                    <div class="dropdown-poly-content">
+                        <a href="#" class="dropdown-item"><span class="emoji-render text-lg">📈</span> Mercados Populares</a>
+                        <a href="#" class="dropdown-item"><span class="emoji-render text-lg">🔥</span> Tendencias</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">Desconectar</a>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">Desconectar</button>
-    </div>
-</nav>
+    </nav>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row gap-8">
@@ -227,6 +239,45 @@
         ConFaith &copy; 2026 - Lima, Perú
     </footer>
 
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
+            authDomain: "confaith-web.firebaseapp.com",
+            projectId: "confaith-web",
+            storageBucket: "confaith-web.firebasestorage.app",
+            messagingSenderId: "736470337348",
+            appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.handleLogout = async () => {
+            try {
+                await signOut(auth);
+                window.location.href = "index.html";
+            } catch (error) {
+                console.error("Error al salir:", error);
+            }
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            const nameSpan = document.getElementById('user-name');
+            if (user) {
+                const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
+                const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
+                nameSpan.innerHTML = `<span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>`;
+            } else {
+                // Si no hay usuario, redirigir al index (protección de ruta)
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+
     <script>
         function showSection(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
@@ -238,13 +289,6 @@
             const targetBtn = document.getElementById('btn-' + id);
             if(targetBtn) targetBtn.classList.add('active');
         }
-
-        // Lógica para sincronizar el nombre en tiempo real
-        const input = document.getElementById('name-input');
-        const display = document.getElementById('display-name');
-        input.addEventListener('input', (e) => {
-            display.innerText = e.target.value || "Manifestador";
-        });
     </script>
 </body>
 </html>
