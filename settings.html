@@ -32,7 +32,7 @@
         .navbar-custom {
             background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%);
             border-bottom: 4px solid var(--gold-faith);
-            padding: 0.75rem 1.25rem; /* Este padding define la alineación del logo */
+            padding: 0.75rem 1.25rem;
             position: sticky; top: 0; z-index: 50;
         }
 
@@ -115,6 +115,7 @@
                         <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400"><span class="emoji-render text-lg">🚪</span> Cerrar Sesión</a>
                     </div>
                 </div>
+                
                 <div class="dropdown-poly">
                     <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
                         <span class="text-[14px]">&#9776;</span>
@@ -122,8 +123,10 @@
                     <div class="dropdown-poly-content">
                         <a href="#" class="dropdown-item"><span class="emoji-render text-lg">📈</span> Mercados Populares</a>
                         <a href="#" class="dropdown-item"><span class="emoji-render text-lg">🔥</span> Tendencias</a>
+                        <a href="#" class="dropdown-item"><span class="emoji-render text-lg">🏆</span> Leaderboard</a>
                         <div class="dropdown-divider"></div>
-                        <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">Desconectar</a>
+                        <a href="#" class="dropdown-item"><span class="emoji-render text-lg">📜</span> Reglas de Resolución</a>
+                        <a href="#" class="dropdown-item"><span class="emoji-render text-lg">💬</span> Soporte</a>
                     </div>
                 </div>
             </div>
@@ -150,7 +153,8 @@
                 </nav>
             </aside>
 
-            <div class="flex-1 max-w-4xl"> <div id="perfil" class="content-section active bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+            <div class="flex-1 max-w-4xl">
+                <div id="perfil" class="content-section active bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
                     <h4 class="text-[10px] font-black uppercase tracking-widest mb-2" style="color: var(--gold-faith);">Ajustes de Usuario</h4>
                     <h2 class="text-2xl font-black text-white mb-6 tracking-tighter flex items-center gap-3">
                         <span class="emoji-render">&#x1F464;</span> Mi Perfil
@@ -227,7 +231,7 @@
         </div>
     </main>
 
-    <footer class="text-left py-10 px-[1.25rem] text-gray-500 text-[11px] font-bold uppercase tracking-widest">
+    <footer class="text-center py-10 px-[1.25rem] text-gray-500 text-[11px] font-bold uppercase tracking-widest">
         ConFaith &copy; 2026 - Lima, Perú
     </footer>
 
@@ -248,12 +252,8 @@
         const auth = getAuth(app);
 
         window.handleLogout = async () => {
-            try {
-                await signOut(auth);
-                window.location.href = "index.html";
-            } catch (error) {
-                console.error("Error al salir:", error);
-            }
+            try { await signOut(auth); window.location.href = "index.html"; } 
+            catch (error) { console.error("Error al salir:", error); }
         };
 
         onAuthStateChanged(auth, (user) => {
