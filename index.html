@@ -31,7 +31,14 @@
         }
         /* ------------------------ */
 
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); margin: 0; color: var(--charcoal); }
+        body { 
+    font-family: 'Inter', sans-serif; 
+    background-color: var(--bg-main); 
+    margin: 0; 
+    color: var(--charcoal);
+    overflow-x: hidden; /* Evita que la barra aparezca y desaparezca */
+    width: 100%;
+}
         
         .emoji-render {
             font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols", sans-serif !important;
@@ -119,19 +126,35 @@
         .dropdown-item:hover { background-color: #1f2937; color: white; }
         .dropdown-divider { height: 1px; background-color: #333; margin: 8px 0; }
 
-        .slider-container { position: relative; width: 100%; max-width: 700px; height: 200px; margin-bottom: 70px; }
+        .slider-container { 
+    position: relative; 
+    width: 100%; 
+    max-width: 700px; 
+    height: 200px; 
+    margin-bottom: 70px; 
+    overflow: hidden; /* Recorta cualquier destello que se salga del cuadro */
+}
         .slider-box { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 4px; box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.2); background: #000; z-index: 10; }
         .slider-wrapper { display: flex; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1); height: 100%; }
         .slide { min-width: 100%; height: 100%; overflow: hidden; background: linear-gradient(145deg, #1a1a1a 0%, #000000 100%); }
-        .slide img { width: 100%; height: 100%; object-fit: contain; animation: kenBurns 20s ease-in-out infinite; }
+        .slide img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
+    animation: kenBurns 20s ease-in-out infinite;
+    /* Estas dos líneas de abajo eliminan el parpadeo visual */
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
 
         .ic-reflection {
-            position: absolute;
-            top: 100%; left: 0; width: 100%; height: 60px; transform: scaleY(-1); opacity: 0.2; filter: blur(2px);
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
-            pointer-events: none; z-index: 5;
-        }
+    position: absolute;
+    top: 100%; left: 0; width: 100%; height: 60px; transform: scaleY(-1); opacity: 0.2; filter: blur(2px);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+    pointer-events: none; z-index: 5;
+    overflow: hidden; /* Importante para evitar que el reflejo genere scroll */
+}
 
         @keyframes kenBurns { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
@@ -574,6 +597,7 @@
     </script>
 </body>
 </html>
+
 
 
 
