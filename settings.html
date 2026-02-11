@@ -48,7 +48,6 @@
 
         .brand-faith { font-family: 'UnifrakturMaguntia', serif; color: var(--gold-faith); font-weight: 400; line-height: 1; letter-spacing: -1.5px; }
 
-        /* Estilos del Dropdown idénticos al Index */
         .dropdown-poly { position: relative; display: inline-block; padding-bottom: 4px; }
         .dropdown-poly-content {
             display: none;
@@ -70,7 +69,6 @@
         .dropdown-item:hover { background-color: #1f2937; color: white !important; }
         .dropdown-divider { height: 1px; background-color: #333; margin: 8px 0; }
 
-        /* Estilos del Switch de Alertas */
         .toggle-bg { transition: all 0.2s ease; }
         .toggle-dot { transition: all 0.2s ease; left: 2px; top: 2px; }
         input:checked ~ .toggle-bg { background-color: var(--gold-faith); }
@@ -114,8 +112,6 @@
             
                     <div class="dropdown-poly-content">
                         <a href="index.html" class="dropdown-item"><span class="emoji-render text-lg">🏠</span> Volver al Inicio</a>
-                        <a href="#" onclick="showSection('perfil')" class="dropdown-item"><span class="emoji-render text-lg">👤</span> Mi Perfil</a>
-                        <a href="#" onclick="showSection('billetera')" class="dropdown-item"><span class="emoji-render text-lg">💳</span> Billetera</a>
                         <div class="dropdown-divider"></div>
                         <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400"><span class="emoji-render text-lg">🚪</span> Cerrar Sesión</a>
                     </div>
@@ -272,7 +268,6 @@
                 const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
                 nameSpan.innerHTML = `<span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>`;
             } else {
-                // Si no hay usuario, redirigir al index (protección de ruta)
                 window.location.href = "index.html";
             }
         });
