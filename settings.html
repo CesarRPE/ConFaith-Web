@@ -70,21 +70,21 @@
 <body>
 
     <nav class="navbar-custom flex justify-between items-center shadow-lg">
-        <div class="brand-container flex flex-col">
-            <div class="flex items-center">
-                <span class="brand-con">Con</span>
-                <span class="brand-faith text-3xl">Faith</span>
-            </div>
-            <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
-                Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
-            </p>
+    <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
+        <div class="flex items-center">
+            <span class="brand-con">Con</span>
+            <span class="brand-faith text-3xl">Faith</span>
         </div>
+        <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
+            Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
+        </p>
+    </a>
 
-        <div class="flex items-center gap-4">
-            <button onclick="showSection('perfil')" class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:bg-gray-200 transition-all tracking-tighter">Mi Perfil</button>
-            <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">Desconectar</button>
-        </div>
-    </nav>
+    <div class="flex items-center gap-4">
+        <button onclick="showSection('perfil')" class="bg-white text-gray-800 px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:bg-gray-200 transition-all tracking-tighter">Mi Perfil</button>
+        <button class="bg-[#b8860b] text-black px-5 py-1.5 text-[10px] uppercase font-bold rounded-full hover:scale-105 transition-transform tracking-tighter">Desconectar</button>
+    </div>
+</nav>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
         <div class="flex flex-col md:flex-row gap-8">
@@ -202,4 +202,5 @@
         }
     </script>
 </body>
+
 </html>
