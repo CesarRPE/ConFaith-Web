@@ -481,6 +481,12 @@ function closeManualCardModal() {
     document.getElementById('card-modal').classList.remove('flex');
 }
 
+document.getElementById('card-num').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+    e.target.value = formattedValue;
+});
+
 // Manejar el envío del formulario
 document.getElementById('payment-form')?.addEventListener('submit', function(e) {
     e.preventDefault();
@@ -502,32 +508,32 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     <div class="bg-[#1e293b] w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-2xl">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-xl font-black text-white uppercase tracking-tighter">Añadir Tarjeta</h3>
-            <button onclick="closeManualCardModal()" class="text-gray-400 hover:text-white text-xl">✕</button>
+            <button onclick="closeManualCardModal()" class="text-gray-400 hover:text-white text-xl transition-colors">✕</button>
         </div>
         
         <form id="payment-form" class="space-y-5">
             <div class="flex flex-col gap-1.5">
-                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre en la Tarjeta</label>
-                <input type="text" id="card-name" placeholder="NOMBRE TAL CUAL APARECE" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] uppercase">
-            </div>
-
-            <div class="flex flex-col gap-1.5">
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Número de Tarjeta</label>
-                <input type="text" id="card-num" placeholder="0000 0000 0000 0000" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                <input type="text" id="card-num" maxlength="19" placeholder="0000 0000 0000 0000" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] tracking-widest">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5">
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Expira (MM/AA)</label>
-                    <input type="text" placeholder="12/28" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                    <input type="text" maxlength="5" placeholder="12/28" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
                 </div>
                 <div class="flex flex-col gap-1.5">
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">CVV</label>
-                    <input type="password" placeholder="***" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                    <input type="password" maxlength="4" placeholder="***" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-colors uppercase text-sm tracking-widest">
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre del Titular</label>
+                <input type="text" id="card-name" placeholder="TAL CUAL APARECE EN LA TARJETA" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] uppercase">
+            </div>
+
+            <button type="submit" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-all active:scale-95 uppercase text-sm tracking-widest shadow-lg shadow-[#b8860b]/10">
                 Vincular Tarjeta
             </button>
         </form>
@@ -535,6 +541,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
 </div>
 </body>
 </html>
+
 
 
 
