@@ -216,10 +216,45 @@
                     </div>
                 </div>
 
-                <div id="billetera" class="content-section bg-[#1e293b] rounded-2xl p-12 border border-white/10 text-center">
-                    <span class="emoji-render text-6xl block mb-4">💳</span>
-                    <h2 class="text-2xl font-black mb-2 tracking-tighter">Mi Billetera Faith</h2>
-                    <p class="text-gray-400">Módulo de gestión de fondos en construcción...</p>
+                <div id="billetera" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+                    <h4 class="text-[10px] font-black uppercase tracking-widest mb-2" style="color: var(--gold-faith);">Gestión de Fondos</h4>
+                    <h2 class="text-2xl font-black text-white mb-8 tracking-tighter flex items-center gap-3">
+                        <span class="emoji-render">&#x1F4B3;</span> Mi Billetera Faith
+                    </h2>
+
+                    <div class="bg-[#0f172a] rounded-xl p-6 border border-white/5 mb-8">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Disponible</p>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-3xl font-black text-white">S/ 0.00</span>
+                            <span class="text-xs font-bold text-gray-500 uppercase">PEN</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="text-sm font-black text-white mb-4 flex items-center gap-2">
+                            <span class="emoji-render text-base">💳</span> Mis Tarjetas
+                        </h5>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <button onclick="alert('Funcionalidad de pasarela en desarrollo')" class="border-2 border-dashed border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 hover:border-white/30 hover:bg-white/5 transition-all group">
+                                <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    <span class="text-xl text-gray-400">+</span>
+                                </div>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-tight">Agregar Tarjeta Crédito/Débito</span>
+                            </button>
+
+                            <div class="bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] rounded-2xl p-6 border border-white/5 opacity-40">
+                                <div class="flex justify-between items-start mb-8">
+                                    <div class="w-10 h-6 bg-white/10 rounded-md"></div>
+                                    <div class="w-8 h-8 bg-white/10 rounded-full"></div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="h-2 w-full bg-white/10 rounded"></div>
+                                    <div class="h-2 w-1/2 bg-white/10 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="seguridad" class="content-section bg-[#1e293b] rounded-2xl p-12 border border-white/10 text-center">
@@ -281,4 +316,3 @@
     </script>
 </body>
 </html>
-
