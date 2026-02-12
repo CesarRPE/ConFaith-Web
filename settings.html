@@ -267,31 +267,25 @@
         </div>
     </button>
 
-    <button onclick="payWithMercadoPago()" class="border-2 border-[#009EE3]/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 bg-[#009EE3]/5 hover:border-[#009EE3]/40 hover:bg-[#009EE3]/10 transition-all group min-h-[160px] relative overflow-hidden">
+    <button onclick="payWithMercadoPago()" class="border-2 border-[#009EE3]/20 rounded-2xl p-6 flex flex-col items-center justify-center gap-4 bg-[#009EE3]/5 hover:border-[#009EE3]/40 hover:bg-[#009EE3]/10 transition-all group min-h-[160px] shadow-[0_0_15px_rgba(0,158,227,0.05)]">
     
-    <div class="flex items-center gap-2 mb-1">
-        <div class="w-9 h-9 rounded-xl bg-[#7422ff] flex items-center justify-center shadow-lg shadow-[#7422ff]/30 border border-white/10">
-            <span class="text-[10px] font-black text-[#00ff85] italic">yape</span>
-        </div>
+    <div class="flex items-center justify-center gap-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/Logo_yape_official.png" alt="Yape" class="h-8 w-auto object-contain filter drop-shadow-md group-hover:scale-110 transition-transform">
         
-        <div class="w-9 h-9 rounded-xl bg-[#00ff85] flex items-center justify-center shadow-lg shadow-[#00ff85]/30 border border-white/10">
-            <span class="text-[10px] font-black text-[#012d26]">plin</span>
-        </div>
-
-        <div class="w-[1px] h-6 bg-white/10 mx-1"></div>
-
-        <div class="w-9 h-9 flex items-center justify-center">
-            <svg class="w-7 h-7 text-[#009EE3]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" opacity=".3"/>
-                <path d="M7 10h10v4H7z"/>
-            </svg>
-        </div>
+        <img src="https://vignette.wikia.nocookie.net/logopedia/images/2/2b/Plin_logo.png" alt="Plin" class="h-6 w-auto object-contain filter drop-shadow-md group-hover:scale-110 transition-transform delay-75">
+        
+        <div class="w-[1px] h-8 bg-white/10 mx-1"></div>
+        
+        <img src="https://vignette.wikia.nocookie.net/logopedia/images/c/c9/Mercado_Pago_logo.png" alt="Mercado Pago" class="h-5 w-auto object-contain group-hover:scale-110 transition-transform delay-100">
     </div>
-    
+
     <div class="text-center">
-        <span class="text-[10px] font-black text-white uppercase tracking-tighter block mb-1">Pagar con Yape / Plin</span>
-        <div class="flex items-center justify-center">
-            <span class="text-[8px] font-bold text-[#009EE3] bg-[#009EE3]/10 px-2 py-0.5 rounded-full border border-[#009EE3]/20">MERCADO PAGO</span>
+        <span class="text-[10px] font-black text-white uppercase tracking-tighter block mb-2">Recargar con Yape / Plin</span>
+        
+        <div class="flex items-center justify-center gap-2">
+            <span class="text-[8px] font-black text-[#009EE3] border border-[#009EE3]/30 px-2 py-0.5 rounded-full bg-[#009EE3]/5 tracking-widest uppercase">
+                Pasarela Segura
+            </span>
         </div>
     </div>
 </button>
@@ -576,6 +570,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
 </div>
 </body>
 </html>
+
 
 
 
