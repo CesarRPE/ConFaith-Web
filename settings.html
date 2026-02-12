@@ -88,6 +88,41 @@
             border-left: 4px solid var(--gold-faith);
             color: white;
         }
+
+        /* Clase maestra para el efecto Glossy White en textos */
+.text-glossy {
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3), 
+                 0 0 20px rgba(255, 255, 255, 0.1);
+    letter-spacing: -0.02em; /* Para un look más moderno */
+}
+
+/* Aplicación automática a los encabezados de Settings */
+.settings-container h1, 
+.settings-container h2, 
+.settings-container .title-faith {
+    @apply text-glossy; /* Si usas Tailwind */
+    font-weight: 800;
+}
+
+        /* 1. Ataca a los títulos y textos principales */
+h1, h2, h3, h4, h5, h6, b, strong {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.25), 
+                 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* 2. Ataca específicamente las clases de color de Tailwind */
+.text-white, .text-gray-100, .text-slate-100 {
+    color: rgba(255, 255, 255, 0.95) !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+/* 3. Asegura que el saldo (que suele ser grande) brille más */
+.text-5xl, .text-4xl {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.4), 
+                 0 0 30px rgba(255, 255, 255, 0.1);
+}
     </style>
 </head>
 <body>
@@ -572,6 +607,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
 </div>
 </body>
 </html>
+
 
 
 
