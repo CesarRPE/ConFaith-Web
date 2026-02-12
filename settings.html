@@ -239,7 +239,7 @@
                         </h5>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <button onclick="alert('Funcionalidad de pasarela en desarrollo')" class="border-2 border-dashed border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-2 hover:border-white/30 hover:bg-white/5 transition-all group">
+                            <button onclick="openManualCardModal()" class="border-2 border-dashed ...">
                                 <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <span class="text-xl text-gray-400">+</span>
                                 </div>
@@ -458,9 +458,64 @@
             const targetBtn = document.getElementById('btn-' + id);
             if(targetBtn) targetBtn.classList.add('active');
         }
+        function openManualCardModal() {
+    document.getElementById('card-modal').classList.remove('hidden');
+    document.getElementById('card-modal').classList.add('flex');
+}
+
+function closeManualCardModal() {
+    document.getElementById('card-modal').classList.add('hidden');
+    document.getElementById('card-modal').classList.remove('flex');
+}
+
+// Manejar el envío del formulario
+document.getElementById('payment-form')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    btn.innerText = "PROCESANDO...";
+    btn.disabled = true;
+
+    // Simulación de respuesta de pasarela
+    setTimeout(() => {
+        alert("¡Tarjeta vinculada con éxito en ConFaith!");
+        closeManualCardModal();
+        btn.innerText = "VINCULAR TARJETA";
+        btn.disabled = false;
+        // Aquí podrías disparar una función para actualizar el saldo en Firebase
+    }, 2000);
+});
     </script>
+            <div id="card-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+    <div class="bg-[#1e293b] w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-black text-white italic">Añadir Tarjeta</h3>
+            <button onclick="closeManualCardModal()" class="text-gray-400 hover:text-white">✕</button>
+        </div>
+        
+        <form id="payment-form" class="space-y-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-[10px] font-bold text-gray-400 uppercase">Número de Tarjeta</label>
+                <input type="text" id="card-num" placeholder="0000 0000 0000 0000" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Expira (MM/AA)</label>
+                    <input type="text" placeholder="12/28" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">CVV</label>
+                    <input type="password" placeholder="***" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                </div>
+            </div>
+            <button type="submit" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:scale-[1.02] transition-transform">
+                VINCULAR TARJETA
+            </button>
+        </form>
+    </div>
+</div>
 </body>
 </html>
+
 
 
 
