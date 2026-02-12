@@ -312,45 +312,69 @@
 
         let paymentsClient = null;
 
-        function onGooglePayLoaded() {
-            paymentsClient = new google.payments.api.PaymentsClient({environment: 'PRODUCTION'});
-            const isReadyToPayRequest = Object.assign({}, baseRequest);
-            isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
-            paymentsClient.isReadyToPay(isReadyToPayRequest).then(res => { if(res.result) addGooglePayButton(); });
-        }
-
-        function onGooglePayClicked() {
+        // Función para cargar la configuración de pago
+        function getGooglePaymentDataRequest() {
             const paymentDataRequest = Object.assign({}, baseRequest);
             paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
                 tokenizationSpecification: {
                     type: 'PAYMENT_GATEWAY',
-                    parameters: { 'gateway': 'example', 'gatewayMerchantId': 'exampleId' }
+                    parameters: { 
+                        'gateway': 'example', 
+                        'gatewayMerchantId': 'exampleId' 
+                    }
                 }
             })];
             paymentDataRequest.transactionInfo = { 
                 totalPriceStatus: 'FINAL', 
                 totalPrice: '0.00',
                 currencyCode: 'PEN',
-                countryCode: 'PE' // Requerido para habilitar el pop-up en la región
+                countryCode: 'PE' 
             };
             paymentDataRequest.merchantInfo = {
-    merchantId: '1234-5678-9012', // Sustituye por tu ID real
-    merchantName: 'ConFaith'
-};
+                merchantId: 'BCR2DN5TR23MVK2E', // <-- REEMPLAZA ESTE ID con el de tu consola cuando lo aprueben
+                merchantName: 'ConFaith'
+            };
+            return paymentDataRequest;
+        }
+
+        function onGooglePayLoaded() {
+            // Configurado en PRODUCTION
+            paymentsClient = new google.payments.api.PaymentsClient({environment: 'PRODUCTION'});
             
-            paymentsClient.loadPaymentData(paymentDataRequest)
-                .then(data => alert("¡Wallet de Google vinculado!"))
-                .catch(err => console.error("Error al abrir pop-up:", err));
+            const isReadyToPayRequest = Object.assign({}, baseRequest);
+            isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
+            
+            paymentsClient.isReadyToPay(isReadyToPayRequest)
+                .then(res => { 
+                    if(res.result) {
+                        addGooglePayButton(); 
+                    } 
+                })
+                .catch(err => console.error("GPay Error:", err));
         }
 
         function addGooglePayButton() {
+            const container = document.getElementById('gpay-container');
+            if (!container) return;
+
             const button = paymentsClient.createButton({
                 buttonColor: 'white',
                 buttonType: 'plain',
                 buttonSizeMode: 'fill',
-                onClick: onGooglePayClicked
+                onClick: () => {
+                    paymentsClient.loadPaymentData(getGooglePaymentDataRequest())
+                        .then(data => alert("¡Google Wallet vinculado con éxito!"))
+                        .catch(err => {
+                            if (err.statusCode === 'CANCELED') return;
+                            console.error("Error en el pago:", err);
+                            alert("Para usar Google Pay en vivo, tu perfil de negocio debe estar aprobado por Google.");
+                        });
+                }
             });
-            document.getElementById('gpay-container').appendChild(button);
+            
+            // Limpiamos el texto previo y añadimos el botón oficial
+            container.innerHTML = '<p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">Usar Google Wallet</p>';
+            container.appendChild(button);
         }
 
         function showSection(id) {
@@ -364,4 +388,5 @@
     </script>
 </body>
 </html>
+
 
