@@ -264,7 +264,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <div class="bg-[#0f172a] rounded-xl p-6 border border-white/5 mb-8">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Disponible</p>
                         <div class="flex items-baseline gap-2">
-                            <span id="main-balance" class="text-3xl font-black text-white">S/ 0.00</span>
+                            <span class="text-3xl font-black text-white">S/ 0.00</span>
                             <span class="text-xs font-bold text-gray-500 uppercase">PEN</span>
                         </div>
                     </div>
@@ -442,16 +442,11 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
                 const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
                 const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
-                nameSpan.innerHTML = `
-    <div class="flex items-center gap-3 px-4 py-1.5 bg-white/5 rounded-full border border-white/10 backdrop-blur-sm mr-6 inline-flex vertical-middle">
-        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Saldo</span>
-        <span id="nav-balance" class="text-sm font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
-            S/ 0.00
-        </span>
-        <div class="w-2 h-2 bg-[#00ff85] rounded-full shadow-[0_0_8px_#00ff85]"></div>
-    </div>
-    <span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>
-`;
+                nameSpan.innerHTML = `<span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>`;
+            } else {
+                window.location.href = "index.html";
+            }
+        });
     </script>
 
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
@@ -610,39 +605,8 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
         </form>
     </div>
 </div>
-<script>
-    // Función Maestra para actualizar el saldo en toda la interfaz
-    function actualizarSaldo(nuevoMonto) {
-        const textoSaldo = `S/ ${nuevoMonto}`;
-        
-        // 1. Actualiza el Saldo en el Nav (el que acabamos de crear)
-        const navBal = document.getElementById('nav-balance');
-        if (navBal) {
-            navBal.innerText = textoSaldo;
-            // Efecto visual de parpadeo al actualizar
-            navBal.classList.add('balance-update');
-            setTimeout(() => navBal.classList.remove('balance-update'), 1000);
-        }
-        
-        // 2. Actualiza el Saldo Grande en la sección "Mi Billetera Faith"
-        const mainBal = document.getElementById('main-balance');
-        if (mainBal) {
-            mainBal.innerText = textoSaldo;
-        }
-        
-        // 3. Guarda el saldo para que no se pierda al recargar (Opcional)
-        localStorage.setItem('confaith_balance', nuevoMonto);
-    }
-
-    // Al cargar la página, recuperamos el saldo guardado o ponemos 0.00
-    window.addEventListener('load', () => {
-        const saldoGuardado = localStorage.getItem('confaith_balance') || '0.00';
-        actualizarSaldo(saldoGuardado);
-    });
-</script>
 </body>
 </html>
-
 
 
 
