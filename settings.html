@@ -248,7 +248,7 @@
         <span class="text-[10px] font-black text-gray-400 uppercase tracking-tighter block mb-2">Agregar Tarjeta</span>
         
         <div class="flex items-center justify-center gap-3 opacity-50 group-hover:opacity-100 transition-opacity">
-            <span class="text-[9px] font-black text-blue-500 italic tracking-tighter">VISA</span>
+            <span class="text-[9px] font-black text-blue-500 tracking-tighter">VISA</span>
             <div class="flex -space-x-1">
                 <div class="w-3 h-3 rounded-full bg-red-500"></div>
                 <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -498,36 +498,44 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     }, 2000);
 });
     </script>
-            <div id="card-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+           <div id="card-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
     <div class="bg-[#1e293b] w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-2xl">
         <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-black text-white italic">Añadir Tarjeta</h3>
-            <button onclick="closeManualCardModal()" class="text-gray-400 hover:text-white">✕</button>
+            <h3 class="text-xl font-black text-white uppercase tracking-tighter">Añadir Tarjeta</h3>
+            <button onclick="closeManualCardModal()" class="text-gray-400 hover:text-white text-xl">✕</button>
         </div>
         
-        <form id="payment-form" class="space-y-4">
-            <div class="flex flex-col gap-1">
-                <label class="text-[10px] font-bold text-gray-400 uppercase">Número de Tarjeta</label>
-                <input type="text" id="card-num" placeholder="0000 0000 0000 0000" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+        <form id="payment-form" class="space-y-5">
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre en la Tarjeta</label>
+                <input type="text" id="card-name" placeholder="NOMBRE TAL CUAL APARECE" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] uppercase">
             </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Número de Tarjeta</label>
+                <input type="text" id="card-num" placeholder="0000 0000 0000 0000" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+            </div>
+
             <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">Expira (MM/AA)</label>
-                    <input type="text" placeholder="12/28" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Expira (MM/AA)</label>
+                    <input type="text" placeholder="12/28" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
                 </div>
-                <div class="flex flex-col gap-1">
-                    <label class="text-[10px] font-bold text-gray-400 uppercase">CVV</label>
-                    <input type="password" placeholder="***" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+                <div class="flex flex-col gap-1.5">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">CVV</label>
+                    <input type="password" placeholder="***" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
                 </div>
             </div>
-            <button type="submit" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:scale-[1.02] transition-transform">
-                VINCULAR TARJETA
+
+            <button type="submit" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-colors uppercase text-sm tracking-widest">
+                Vincular Tarjeta
             </button>
         </form>
     </div>
 </div>
 </body>
 </html>
+
 
 
 
