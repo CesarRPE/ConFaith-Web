@@ -313,7 +313,7 @@
         let paymentsClient = null;
 
         function onGooglePayLoaded() {
-            paymentsClient = new google.payments.api.PaymentsClient({environment: 'TEST'});
+            paymentsClient = new google.payments.api.PaymentsClient({environment: 'PRODUCTION'});
             const isReadyToPayRequest = Object.assign({}, baseRequest);
             isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
             paymentsClient.isReadyToPay(isReadyToPayRequest).then(res => { if(res.result) addGooglePayButton(); });
@@ -333,7 +333,10 @@
                 currencyCode: 'PEN',
                 countryCode: 'PE' // Requerido para habilitar el pop-up en la región
             };
-            paymentDataRequest.merchantInfo = { merchantName: 'ConFaith' };
+            paymentDataRequest.merchantInfo = {
+    merchantId: '1234-5678-9012', // Sustituye por tu ID real
+    merchantName: 'ConFaith'
+};
             
             paymentsClient.loadPaymentData(paymentDataRequest)
                 .then(data => alert("¡Wallet de Google vinculado!"))
@@ -361,3 +364,4 @@
     </script>
 </body>
 </html>
+
