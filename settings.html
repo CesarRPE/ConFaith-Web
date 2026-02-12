@@ -243,9 +243,9 @@
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-tight text-center">Agregar Tarjeta Manualmente</span>
                             </button>
 
-                            <div id="gpay-container" class="border-2 border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 bg-white/5 hover:border-white/30 transition-all">
+                            <div id="gpay-container" class="border-2 border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 bg-white/5 hover:border-white/30 transition-all overflow-hidden">
                                 <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Usar Google Wallet</p>
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -319,23 +319,32 @@
             paymentsClient.isReadyToPay(isReadyToPayRequest).then(res => { if(res.result) addGooglePayButton(); });
         }
 
+        function onGooglePayClicked() {
+            const paymentDataRequest = Object.assign({}, baseRequest);
+            paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
+                tokenizationSpecification: {
+                    type: 'PAYMENT_GATEWAY',
+                    parameters: { 'gateway': 'example', 'gatewayMerchantId': 'exampleId' }
+                }
+            })];
+            paymentDataRequest.transactionInfo = { 
+                totalPriceStatus: 'FINAL', 
+                totalPrice: '0.00',
+                currencyCode: 'PEN' 
+            };
+            paymentDataRequest.merchantInfo = { merchantName: 'ConFaith' };
+            
+            paymentsClient.loadPaymentData(paymentDataRequest)
+                .then(data => alert("¡Wallet de Google vinculado!"))
+                .catch(err => console.error(err));
+        }
+
         function addGooglePayButton() {
             const button = paymentsClient.createButton({
                 buttonColor: 'white',
                 buttonType: 'plain',
                 buttonSizeMode: 'fill',
-                onClick: () => {
-                    const paymentDataRequest = Object.assign({}, baseRequest);
-                    paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
-                        tokenizationSpecification: {
-                            type: 'PAYMENT_GATEWAY',
-                            parameters: { 'gateway': 'example', 'gatewayMerchantId': 'exampleId' }
-                        }
-                    })];
-                    paymentDataRequest.transactionInfo = { totalPriceStatus: 'NOT_CURRENTLY_KNOWN', currencyCode: 'PEN' };
-                    paymentDataRequest.merchantInfo = { merchantName: 'ConFaith' };
-                    paymentsClient.loadPaymentData(paymentDataRequest).then(data => alert("¡Wallet de Google vinculado!")).catch(err => console.error(err));
-                }
+                onClick: onGooglePayClicked // Vinculación corregida
             });
             document.getElementById('gpay-container').appendChild(button);
         }
