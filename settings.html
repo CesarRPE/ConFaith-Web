@@ -330,13 +330,14 @@
             paymentDataRequest.transactionInfo = { 
                 totalPriceStatus: 'FINAL', 
                 totalPrice: '0.00',
-                currencyCode: 'PEN' 
+                currencyCode: 'PEN',
+                countryCode: 'PE' // Requerido para habilitar el pop-up en la región
             };
             paymentDataRequest.merchantInfo = { merchantName: 'ConFaith' };
             
             paymentsClient.loadPaymentData(paymentDataRequest)
                 .then(data => alert("¡Wallet de Google vinculado!"))
-                .catch(err => console.error(err));
+                .catch(err => console.error("Error al abrir pop-up:", err));
         }
 
         function addGooglePayButton() {
@@ -344,7 +345,7 @@
                 buttonColor: 'white',
                 buttonType: 'plain',
                 buttonSizeMode: 'fill',
-                onClick: onGooglePayClicked // Vinculación corregida
+                onClick: onGooglePayClicked
             });
             document.getElementById('gpay-container').appendChild(button);
         }
