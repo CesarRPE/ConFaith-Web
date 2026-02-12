@@ -232,7 +232,7 @@
 
                     <div>
                         <h5 class="text-sm font-black text-white mb-4 flex items-center gap-2">
-                            <span class="emoji-render text-base">💳</span> Mis Tarjetas
+                            <span class="emoji-render text-base">💳</span> Métodos de Pago
                         </h5>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -240,19 +240,12 @@
                                 <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                                     <span class="text-xl text-gray-400">+</span>
                                 </div>
-                                <span class="text-xs font-bold text-gray-400 uppercase tracking-tight">Agregar Tarjeta Crédito/Débito</span>
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-tight text-center">Agregar Tarjeta Manualmente</span>
                             </button>
 
-                            <div class="bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] rounded-2xl p-6 border border-white/5 opacity-40">
-                                <div class="flex justify-between items-start mb-8">
-                                    <div class="w-10 h-6 bg-white/10 rounded-md"></div>
-                                    <div class="w-8 h-8 bg-white/10 rounded-full"></div>
+                            <div id="gpay-container" class="border-2 border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-3 bg-white/5 hover:border-white/30 transition-all">
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Usar Google Wallet</p>
                                 </div>
-                                <div class="space-y-2">
-                                    <div class="h-2 w-full bg-white/10 rounded"></div>
-                                    <div class="h-2 w-1/2 bg-white/10 rounded"></div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -304,7 +297,49 @@
         });
     </script>
 
+    <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
     <script>
+        const baseRequest = { apiVersion: 2, apiVersionMinor: 0 };
+        const allowedCardNetworks = ["VISA", "MASTERCARD"];
+        const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
+        const baseCardPaymentMethod = {
+            type: 'CARD',
+            parameters: {
+                allowedAuthMethods: allowedCardAuthMethods,
+                allowedCardNetworks: allowedCardNetworks
+            }
+        };
+
+        let paymentsClient = null;
+
+        function onGooglePayLoaded() {
+            paymentsClient = new google.payments.api.PaymentsClient({environment: 'TEST'});
+            const isReadyToPayRequest = Object.assign({}, baseRequest);
+            isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
+            paymentsClient.isReadyToPay(isReadyToPayRequest).then(res => { if(res.result) addGooglePayButton(); });
+        }
+
+        function addGooglePayButton() {
+            const button = paymentsClient.createButton({
+                buttonColor: 'white',
+                buttonType: 'plain',
+                buttonSizeMode: 'fill',
+                onClick: () => {
+                    const paymentDataRequest = Object.assign({}, baseRequest);
+                    paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
+                        tokenizationSpecification: {
+                            type: 'PAYMENT_GATEWAY',
+                            parameters: { 'gateway': 'example', 'gatewayMerchantId': 'exampleId' }
+                        }
+                    })];
+                    paymentDataRequest.transactionInfo = { totalPriceStatus: 'NOT_CURRENTLY_KNOWN', currencyCode: 'PEN' };
+                    paymentDataRequest.merchantInfo = { merchantName: 'ConFaith' };
+                    paymentsClient.loadPaymentData(paymentDataRequest).then(data => alert("¡Wallet de Google vinculado!")).catch(err => console.error(err));
+                }
+            });
+            document.getElementById('gpay-container').appendChild(button);
+        }
+
         function showSection(id) {
             document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
