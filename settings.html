@@ -267,30 +267,33 @@
         </div>
     </button>
 
-    <button onclick="payWithMercadoPago()" class="border-2 border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-5 hover:border-[#009EE3]/40 hover:bg-[#009EE3]/5 transition-all group min-h-[160px]">
+    <button onclick="payWithMercadoPago()" class="border-2 border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center gap-6 hover:border-[#009EE3]/40 hover:bg-[#009EE3]/5 transition-all group min-h-[160px]">
     
-    <div class="flex items-center justify-center gap-4 opacity-70 group-hover:opacity-100 transition-opacity">
-        <svg class="h-6 w-auto" viewBox="0 0 100 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M15 10c-5 0-9 4-9 9s4 9 9 9 9-4 9-9-4-9-9-9z" fill="#7422ff"/>
-            <path d="M12 18l2 2 4-4" stroke="#00ff85" stroke-width="2" stroke-linecap="round"/>
-            <text x="32" y="27" fill="white" font-family="sans-serif" font-weight="900" font-size="20">yape</text>
-        </svg>
+    <div class="flex items-center justify-center gap-4">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#7422ff] to-[#5b19cc] flex items-center justify-center shadow-lg shadow-[#7422ff]/20 relative overflow-hidden border border-white/5 group-hover:scale-105 transition-transform">
+            <span class="text-[10px] font-black text-[#00ff85] italic tracking-tighter">yape</span>
+            <div class="absolute -bottom-1 -right-1 w-3 h-3 bg-[#00ff85] rounded-full border-2 border-[#7422ff]"></div>
+        </div>
 
-        <div class="w-[1px] h-6 bg-white/10"></div>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00ff85] to-[#00d66f] flex items-center justify-center shadow-lg shadow-[#00ff85]/20 border border-white/5 group-hover:scale-105 transition-transform delay-75">
+            <span class="text-[10px] font-black text-[#012d26] tracking-tighter">plin</span>
+        </div>
 
-        <svg class="h-6 w-auto" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="80" height="40" rx="8" fill="#00ff85"/>
-            <text x="12" y="27" fill="#012d26" font-family="sans-serif" font-weight="900" font-size="20">plin</text>
-        </svg>
+        <div class="w-[1px] h-8 bg-white/10 mx-1"></div>
 
-        <svg class="h-6 w-auto" viewBox="0 0 140 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 10l-8 8 8 8M35 10l8 8-8 8" stroke="#009EE3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <text x="50" y="27" fill="#009EE3" font-family="sans-serif" font-weight="800" font-size="16">MERCADO PAGO</text>
-        </svg>
+        <div class="flex flex-col items-center group-hover:scale-105 transition-transform delay-100">
+            <svg class="w-8 h-8 text-[#009EE3]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4z"/>
+            </svg>
+            <span class="text-[7px] font-black text-[#009EE3] mt-1 tracking-tighter">MERCADO PAGO</span>
+        </div>
     </div>
 
     <div class="text-center">
-        <span class="text-[10px] font-black text-gray-400 group-hover:text-white uppercase tracking-[0.2em] block">Billeteras Digitales</span>
+        <span class="text-[10px] font-black text-gray-400 group-hover:text-white uppercase tracking-[0.25em] block transition-colors">
+            Billeteras Digitales
+        </span>
     </div>
 </button>
 
@@ -574,6 +577,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
 </div>
 </body>
 </html>
+
 
 
 
