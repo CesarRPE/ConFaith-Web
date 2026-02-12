@@ -442,19 +442,16 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
                 const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
                 const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
-        nameSpan.innerHTML = `
-            <div style="display: inline-flex; align-items: center; vertical-align: middle;">
-                <div class="flex items-center gap-3 px-3 py-1 bg-white/10 rounded-full border border-white/10 mr-4">
-                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest" style="color: #9ca3af;">Saldo</span>
-                    <span id="nav-balance" class="text-sm font-black text-white">S/ 0.00</span>
-                    <div class="w-1.5 h-1.5 bg-[#00ff85] rounded-full shadow-[0_0_5px_#00ff85]"></div>
-                </div>
-                <span style="${glossyStyle}">Qué onda, </span>
-                <span style="${goldStyle}">${firstName}</span>
-            </div>`;
-    } else {
-        window.location.href = "index.html";
-    }
+                nameSpan.innerHTML = `
+    <div class="flex items-center gap-3 px-4 py-1.5 bg-white/5 rounded-full border border-white/10 backdrop-blur-sm mr-6 inline-flex vertical-middle">
+        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Saldo</span>
+        <span id="nav-balance" class="text-sm font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]">
+            S/ 0.00
+        </span>
+        <div class="w-2 h-2 bg-[#00ff85] rounded-full shadow-[0_0_8px_#00ff85]"></div>
+    </div>
+    <span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>
+`;
     </script>
 
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
@@ -645,12 +642,6 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
 </script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 
