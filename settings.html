@@ -139,29 +139,26 @@ h1, h2, h3, h4, h5, h6, b, strong {
     </p>
 </a>
 
-        <div class="hidden md:flex items-center justify-end w-full gap-4">
-    <div class="relative hidden lg:block">
+        <div class="hidden md:flex items-center justify-end w-full gap-4 px-4">
+    <div class="relative hidden lg:block mr-2">
         <input type="text" 
                placeholder="Buscar mercados..." 
-               class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-1.5 px-4 pl-9 w-64 focus:outline-none focus:bg-white/20 transition-all placeholder:text-gray-500 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+               class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-1.5 px-4 pl-9 w-64 focus:outline-none focus:bg-white/20 transition-all placeholder:text-gray-500 shadow-sm">
         <div class="absolute left-3 top-1/2 -translate-y-1/2">
-            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+            <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
     </div>
 
-    <div id="nav-balance-container"></div>
+    <div id="nav-balance-container" class="flex items-center"></div>
 
-    <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer group">
+    <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer border-l border-white/10 pl-4 ml-2">
         <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400"></div>
         
-        <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
-            <span id="user-name-text">C</span>
-        </div>
-
-        <div class="flex items-center text-gray-400 group-hover:text-white transition-colors">
-            <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div id="user-profile-wrapper" class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20 overflow-hidden">
+                <span id="user-name-text">C</span>
+            </div>
+            <svg class="w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
         </div>
@@ -694,6 +691,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
