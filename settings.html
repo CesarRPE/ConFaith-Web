@@ -128,15 +128,22 @@ h1, h2, h3, h4, h5, h6, b, strong {
 <body>
 
     <nav class="navbar-custom flex justify-between items-center shadow-lg">
-        <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity">
-            <div class="flex items-center">
-                <span class="brand-con">Con</span>
-                <span class="brand-faith text-3xl">Faith</span>
-            </div>
-            <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
-                Porque manifestando con faith la haces <span class="emoji-render">&#x1F64C;</span>
-            </p>
-        </a>
+        <a href="index.html" class="brand-container flex items-center gap-3 hover:opacity-90 transition-opacity">
+    <div class="w-8 h-8 bg-gradient-to-tr from-[#b8860b] to-[#ffd700] rounded-lg flex items-center justify-center shadow-lg shadow-[#b8860b]/20">
+        <span class="text-white font-black text-xl italic">C</span>
+    </div>
+
+    <div class="flex items-baseline gap-3">
+        <div class="flex items-center">
+            <span class="brand-con text-2xl">Con</span>
+            <span class="brand-faith text-3xl">Faith</span>
+        </div>
+        
+        <span class="hidden md:inline-block text-[12px] font-medium text-gray-400 whitespace-nowrap" style="font-family: 'Gelapitto', cursive;">
+            Porque manifestando con faith la haces 🙆🏻‍♂️
+        </span>
+    </div>
+</a>
 
         <div class="hidden md:flex items-center justify-end w-full max-w-[1200px] mx-auto px-4 gap-3">
     <div class="flex items-center gap-3"> 
@@ -651,6 +658,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
