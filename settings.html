@@ -178,14 +178,33 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </svg>
     </button>
     
+    <div class="dropdown-poly relative flex items-center pr-4">
+    <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+    </button>
+
     <div class="dropdown-poly-content right-0 left-auto w-52">
-        <div class="px-4 py-2 border-b border-white/5 text-[10px] text-gray-500 font-bold uppercase tracking-widest">Navegación</div>
-        <a href="index.html" class="dropdown-item">🏠 Inicio</a>
-        <a href="#" class="dropdown-item">🔥 Tendencias</a>
-        <a href="#" class="dropdown-item">🏆 Leaderboard</a>
-        <a href="#" class="dropdown-item">📊 Mis Apuestas</a>
+        <div class="px-4 py-2 border-b border-white/5">
+            <span class="text-[10px] text-[#b8860b] font-black uppercase tracking-widest">Navegación</span>
+        </div>
+        <a href="index.html" class="dropdown-item">
+            <span class="emoji-render">🏠</span> Inicio
+        </a>
+        <a href="#" class="dropdown-item">
+            <span class="emoji-render">📈</span> Mercados
+        </a>
+        <a href="#" class="dropdown-item">
+            <span class="emoji-render">🔥</span> Tendencias
+        </a>
+        <a href="#" class="dropdown-item">
+            <span class="emoji-render">🏆</span> Leaderboard
+        </a>
         <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item text-gray-400">🆘 Soporte</a>
+        <a href="#" class="dropdown-item text-gray-400">
+            <span class="emoji-render">🆘</span> Soporte
+        </a>
     </div>
 </div>
     </nav>
@@ -670,6 +689,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
