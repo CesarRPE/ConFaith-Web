@@ -138,11 +138,13 @@ h1, h2, h3, h4, h5, h6, b, strong {
             </p>
         </a>
 
-        <div class="hidden md:flex items-center gap-8">
-    <a href="index.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Inicio</a>
-    <a href="#" class="text-white border-b-2 border-[#b8860b] pb-1 text-sm font-medium">Configuración</a>
+        <div class="hidden md:flex items-center justify-between w-full max-w-[1200px] mx-auto px-4">
+    <div class="flex items-center gap-8">
+        <a href="index.html" class="text-gray-400 hover:text-white transition-colors text-sm font-medium">Inicio</a>
+        <a href="#" class="text-white border-b-2 border-[#b8860b] pb-1 text-sm font-medium">Configuración</a>
+    </div>
     
-    <div class="flex items-center gap-2 ml-auto"> 
+    <div class="flex items-center gap-3"> 
         <div id="nav-balance-container"></div>
         
         <div id="user-menu-trigger" class="cursor-pointer flex items-center gap-2">
@@ -442,41 +444,39 @@ h1, h2, h3, h4, h5, h6, b, strong {
         };
 
         onAuthStateChanged(auth, (user) => {
-    const nameText = document.getElementById('user-name-text');
-    const welcomeMsg = document.getElementById('welcome-message');
-    const balanceContainer = document.getElementById('nav-balance-container');
-    
-    if (user) {
-        const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-        const initial = firstName.charAt(0).toUpperCase();
+            const nameText = document.getElementById('user-name-text');
+            const welcomeMsg = document.getElementById('welcome-message');
+            const balanceContainer = document.getElementById('nav-balance-container');
+            
+            if (user) {
+                const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+                const initial = firstName.charAt(0).toUpperCase();
 
-        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+                const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+                const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-        if(nameText) nameText.innerText = initial;
-
-        if(welcomeMsg) {
-            welcomeMsg.innerHTML = `
-                <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                <span style="${goldFaith} font-size: 11px;">${firstName}</span>
-            `;
-        }
-
-        if(balanceContainer) {
-            balanceContainer.innerHTML = `
-                <div class="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/10 shadow-inner">
-                    <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
-                </div>
-            `;
-        }
-        
-        const saldoGuardado = localStorage.getItem('user_balance') || '0.00';
-        setTimeout(() => window.actualizarSaldo(saldoGuardado), 100);
-    } else {
-        window.location.href = "index.html";
-    }
-});
+                if(nameText) nameText.innerText = initial;
+                if(welcomeMsg) {
+                    welcomeMsg.innerHTML = `
+                        <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
+                        <span style="${goldFaith} font-size: 11px;">${firstName}</span>
+                    `;
+                }
+                if(balanceContainer) {
+                    balanceContainer.innerHTML = `
+                        <div class="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 rounded-full border border-white/10 shadow-inner">
+                            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
+                        </div>
+                    `;
+                }
+                
+                const saldoGuardado = localStorage.getItem('user_balance') || '0.00';
+                setTimeout(() => window.actualizarSaldo(saldoGuardado), 100);
+            } else {
+                window.location.href = "index.html";
+            }
+        });
     </script>
 
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
@@ -654,6 +654,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
