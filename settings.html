@@ -139,17 +139,19 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </a>
 
         <div class="flex items-center gap-3">
-        <div id="nav-balance-container"></div> 
+    <div id="nav-balance-container"></div>
+    
+    <div id="user-menu-trigger" class="cursor-pointer flex items-center gap-2">
+        <div id="welcome-message" class="hidden lg:block mr-1"></div>
 
-        <div id="user-menu-trigger" class="cursor-pointer flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
-                <span id="user-name-text">M</span>
-            </div>
-            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
+            <span id="user-name-text">M</span>
         </div>
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
     </div>
+</div>
                 
                 <div class="dropdown-poly">
                     <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
@@ -436,36 +438,46 @@ h1, h2, h3, h4, h5, h6, b, strong {
         };
 
         onAuthStateChanged(auth, (user) => {
-            const nameText = document.getElementById('user-name-text');
-            const balanceContainer = document.getElementById('nav-balance-container');
-            
-            if (user) {
-                const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-                const initial = firstName.charAt(0).toUpperCase();
-                
-                // Estilos para el efecto Glossy y Gold
-                const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-                const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+    const nameText = document.getElementById('user-name-text');
+    const welcomeMsg = document.getElementById('welcome-message');
+    const balanceContainer = document.getElementById('nav-balance-container');
+    
+    if (user) {
+        const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+        const initial = firstName.charAt(0).toUpperCase();
 
-                if(nameText) nameText.innerText = initial;
+        // Estilos Prototipo 6
+        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-                // Inyectamos el Saldo con los nuevos colores
-                if(balanceContainer) {
-                    balanceContainer.innerHTML = `
-                        <div class="flex items-center gap-2 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 mr-1 shadow-inner">
-                            <span class="text-[8px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                            <span id="nav-balance" class="text-[11px]" style="${goldFaith}">S/ 0.00</span>
-                            <div class="w-1 h-1 bg-[#00ff85] rounded-full shadow-[0_0_5px_#00ff85]"></div>
-                        </div>
-                    `;
-                }
-                
-                const saldoGuardado = localStorage.getItem('user_balance') || '0.00';
-                setTimeout(() => window.actualizarSaldo(saldoGuardado), 100);
-            } else {
-                window.location.href = "index.html";
-            }
-        });
+        // 1. Restaurar Inicial
+        if(nameText) nameText.innerText = initial;
+
+        // 2. Restaurar Saludo (Qué onda, Nombre)
+        if(welcomeMsg) {
+            welcomeMsg.innerHTML = `
+                <span style="${glossyWhite} font-size: 12px;">Qué onda, </span>
+                <span style="${goldFaith} font-size: 12px;">${firstName}</span>
+            `;
+        }
+
+        // 3. Inyectar Saldo Glossy & Gold
+        if(balanceContainer) {
+            balanceContainer.innerHTML = `
+                <div class="flex items-center gap-2 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 mr-1 shadow-inner">
+                    <span class="text-[8px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                    <span id="nav-balance" class="text-[11px]" style="${goldFaith}">S/ 0.00</span>
+                    <div class="w-1 h-1 bg-[#00ff85] rounded-full shadow-[0_0_5px_#00ff85]"></div>
+                </div>
+            `;
+        }
+        
+        const saldoGuardado = localStorage.getItem('user_balance') || '0.00';
+        setTimeout(() => window.actualizarSaldo(saldoGuardado), 100);
+    } else {
+        window.location.href = "index.html";
+    }
+});
     </script>
 
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
@@ -643,6 +655,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
