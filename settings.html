@@ -139,8 +139,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
     </p>
 </a>
 
-        <div class="flex items-center justify-end flex-1 gap-2 md:gap-4 px-2 md:px-4">
-    
+        <div class="hidden md:flex items-center justify-end flex-1 gap-4 px-4">
     <div class="relative hidden lg:block">
         <input type="text" placeholder="Buscar mercados..." class="bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-1.5 px-4 pl-9 w-40 focus:w-56 transition-all placeholder:text-gray-500 shadow-sm focus:outline-none focus:bg-white/20">
         <div class="absolute left-3 top-1/2 -translate-y-1/2">
@@ -150,9 +149,8 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     <div id="nav-balance-container" class="flex items-center"></div>
 
-    <div class="hidden md:flex items-center gap-3">
+    <div class="flex items-center gap-3">
         <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
-        
         <div class="dropdown-poly relative">
             <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
                 <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
@@ -163,20 +161,22 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 </svg>
             </div>
             <div class="dropdown-poly-content">
-                <a href="settings.html" class="dropdown-item"><span class="emoji-render">⚙️</span> Ajustes</a>
+                <a href="settings.html" class="dropdown-item">⚙️ Ajustes</a>
                 <div class="dropdown-divider"></div>
-                <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400"><span class="emoji-render">🚪</span> Cerrar Sesión</a>
+                <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">🚪 Cerrar Sesión</a>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="md:hidden">
-        <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-white focus:outline-none">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-            </svg>
-        </button>
-    </div>
+<div class="flex md:hidden items-center gap-4 px-4">
+    <div id="nav-balance-container-mobile"></div> 
+    
+    <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-white" onclick="toggleMobileMenu()">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+        </svg>
+    </button>
 </div>
 
             <div class="dropdown-poly-content">
@@ -671,6 +671,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
