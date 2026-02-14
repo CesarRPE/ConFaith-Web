@@ -156,15 +156,17 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
         <div id="nav-balance-container"></div>
         
-        <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer border-l border-white/10 pl-4 ml-2 group">
+        <div id="user-menu-trigger" class="relative flex items-center gap-2 cursor-pointer border-l border-white/10 pl-4 ml-2 group">
+        <div class="absolute inset-0 z-10"></div>
+        
         <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400"></div>
         
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 relative z-0">
             <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
                 <span id="user-name-text">C</span>
             </div>
             
-            <svg class="w-4 h-4 text-gray-400 pointer-events-none group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
         </div>
@@ -668,6 +670,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
