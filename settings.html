@@ -185,7 +185,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <a href="#" class="dropdown-item">🔥 Tendencias</a>
                     <a href="#" class="dropdown-item">🏆 Leaderboard</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" onclick="abrirSoporte()" class="dropdown-item text-gray-400">🆘 Soporte</a>
+                    <a href="#" onclick="document.getElementById('btn-soporte-principal').click();" class="dropdown-item text-gray-400">🆘 Soporte</a>
                 </div>
             </div>
         </div>
@@ -208,8 +208,8 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <button onclick="showSection('seguridad')" id="btn-seguridad" class="nav-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
                         <span class="emoji-render">&#x1F512;</span> Seguridad
                     </button>
-                    <button onclick="showSection('soporte')" id="btn-soporte" class="nav-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
-    <span class="emoji-render">&#x1F4AC;</span> Soporte
+                    <button onclick="showSection('soporte')" id="btn-soporte-principal" class="nav-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left w-full">
+    <span class="emoji-render">🆘</span> Soporte
 </button>
                 </nav>
             </aside>
@@ -671,6 +671,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
