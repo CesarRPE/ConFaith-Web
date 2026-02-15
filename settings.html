@@ -240,7 +240,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-2"><label class="text-[10px] font-bold text-gray-400 uppercase">Nombre de Usuario</label>
                 </div>
-                <input type="text" id="input-username" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all">
+                <input type="text" id="input-username" placeholder="Tu nombre" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all">
                         </div>
 
             <div class="flex flex-col gap-3">
@@ -265,7 +265,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 <div class="flex items-center gap-2">
                     <label class="text-[10px] font-bold text-gray-400 uppercase">Bio / Descripción</label>
                 </div>
-                <textarea placeholder="Escribe sobre ti" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
+                <textarea id="input-bio" placeholder="Escribe sobre ti" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
                         </div>
 
             <div class="pt-4">
@@ -733,37 +733,40 @@ document.getElementById('avatar-upload-input').addEventListener('change', functi
 
 // 2. Función vinculada al botón GUARDAR CAMBIOS
 function guardarPerfil() {
-    // 1. Capturar los valores de los inputs
-    const username = document.getElementById('input-username').value;
-    const realName = document.querySelector('input[placeholder="Nombre Apellido"]').value;
-    const bio = document.querySelector('textarea').value;
-
-    // 2. Guardar en localStorage
-    localStorage.setItem('custom_username', username);
-    localStorage.setItem('custom_realname', realName);
-    localStorage.setItem('custom_bio', bio);
-
-    // 3. Actualizar el mensaje de bienvenida (Navbar)
+    // 1. Obtener los elementos
+    const inputUser = document.getElementById('input-username');
+    const inputBio = document.getElementById('input-bio');
     const welcomeMsg = document.getElementById('welcome-message');
-    if (username.trim() !== "" && welcomeMsg) {
+
+    // 2. Guardar valores en LocalStorage
+    if (inputUser) localStorage.setItem('custom_username', inputUser.value);
+    if (inputBio) localStorage.setItem('custom_bio', inputBio.value);
+
+    // 3. Actualizar el saludo (Qué onda...)
+    if (inputUser && inputUser.value.trim() !== "" && welcomeMsg) {
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
         const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
         welcomeMsg.innerHTML = `
             <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-            <span style="${goldFaith} font-size: 11px;">${username}</span>
+            <span style="${goldFaith} font-size: 11px;">${inputUser.value}</span>
         `;
     }
 
-    // 4. Lógica de imagen (si existe nueva)
+    // 4. Lógica de imagen (Avatar)
     if (tempImageData) {
         localStorage.setItem('userAvatarCustom', tempImageData);
         const navImg = document.getElementById('user-avatar-img');
-        if(navImg) navImg.src = tempImageData;
+        const navText = document.getElementById('user-name-text');
+        if(navImg) {
+            navImg.src = tempImageData;
+            navImg.classList.remove('hidden');
+            if(navText) navText.classList.add('hidden');
+        }
         tempImageData = null;
     }
 
-    // 5. Mostrar tu pop-up Glossy
+    // 5. Lanzar el Pop-up de éxito
     mostrarPopupExito();
 }
 
@@ -808,21 +811,30 @@ function mostrarPopupExito() {
 // Lógica para mantener la foto al recargar
 window.addEventListener('load', () => {
     // Cargar Nombre de Usuario
-    if(localStorage.getItem('custom_username')) {
-        document.getElementById('input-username').value = localStorage.getItem('custom_username');
-    }
-    
-    // Cargar Nombre Real
-    if(localStorage.getItem('custom_realname')) {
-        document.querySelector('input[placeholder="Nombre Apellido"]').value = localStorage.getItem('custom_realname');
-    }
-    
-    // Cargar Biografía
-    if(localStorage.getItem('custom_bio')) {
-        document.querySelector('textarea').value = localStorage.getItem('custom_bio');
+    const savedName = localStorage.getItem('custom_username');
+    if (savedName) {
+        const inputUser = document.getElementById('input-username');
+        if (inputUser) inputUser.value = savedName;
     }
 
-    // (La lógica de la foto que ya tenías se mantiene igual)
+    // Cargar Bio
+    const savedBio = localStorage.getItem('custom_bio');
+    if (savedBio) {
+        const inputBio = document.getElementById('input-bio');
+        if (inputBio) inputBio.value = savedBio;
+    }
+
+    // Cargar Foto (Tu lógica existente)
+    const savedPhoto = localStorage.getItem('userAvatarCustom');
+    if (savedPhoto) {
+        const navImg = document.getElementById('user-avatar-img');
+        const navText = document.getElementById('user-name-text');
+        if(navImg) {
+            navImg.src = savedPhoto;
+            navImg.classList.remove('hidden');
+            if(navText) navText.classList.add('hidden');
+        }
+    }
 });
     function showTab(tabId) {
     // Oculta todos los contenidos
@@ -835,6 +847,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
