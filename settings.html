@@ -217,29 +217,37 @@ h1, h2, h3, h4, h5, h6, b, strong {
             </aside>
 
             <div class="flex-1 max-w-4xl">
-                <div id="perfil" class="content-section active bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
-                    <h4 class="text-[10px] font-black uppercase tracking-widest mb-2" style="color: var(--gold-faith);">Ajustes de Usuario</h4>
-                    <h2 class="text-2xl font-black text-white mb-6 tracking-tighter flex items-center gap-3">
-                        <span class="emoji-render">&#x1F464;</span> Mi Perfil
-                    </h2>
-                    <div class="space-y-6 max-w-xl">
-                        <div class="flex flex-col gap-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase">Nombre de Manifestador</label>
-                            <input type="text" id="name-input" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
-                        </div>
-                    <button onclick="document.getElementById('avatar-upload-input').click();" 
-        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-white/5 hover:text-[#b8860b] group">
-    <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
-    <span class="text-sm font-medium">Cambiar Foto</span>
-    <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
-</button>
-                        <div class="flex flex-col gap-2">
-                            <label class="text-[10px] font-bold text-gray-400 uppercase">Bio / Frase de Faith</label>
-                            <textarea placeholder="¿Cuál es tu mantra?" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
-                        </div>
-                        <button class="text-black font-black text-xs uppercase px-8 py-3 rounded-lg hover:scale-105 transition-all" style="background-color: var(--gold-faith);">Actualizar Perfil</button>
-                    </div>
-                </div>
+                <div id="perfil-content" class="space-y-6">
+    <div class="flex flex-col gap-2">
+        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre de Manifestador</label>
+        <input type="text" id="display-name-input" placeholder="Tu nombre artístico..." 
+            class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cambiar Foto</label>
+        <div class="flex gap-3">
+            <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-gray-400 text-sm flex items-center overflow-hidden">
+                <span id="file-name-display" class="truncate">No se ha seleccionado archivo</span>
+            </div>
+            <button onclick="document.getElementById('avatar-upload-input').click();" 
+                class="bg-white/5 hover:bg-white/10 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all border border-white/10 uppercase tracking-widest">
+                Examinar
+            </button>
+            <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
+        </div>
+    </div>
+
+    <div class="flex flex-col gap-2">
+        <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Bio</label>
+        <textarea id="user-bio-input" rows="3" placeholder="Cuéntale al mundo cómo manifiestas..." 
+            class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] resize-none"></textarea>
+    </div>
+
+    <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-all active:scale-95 uppercase text-sm tracking-widest shadow-lg shadow-[#b8860b]/10">
+        Guardar Cambios
+    </button>
+</div>
 
                 <div id="alertas" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
                     <div class="flex justify-between items-start mb-6">
@@ -679,29 +687,23 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     document.getElementById('avatar-upload-input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
+        // Mostrar nombre del archivo en el recuadro
+        document.getElementById('file-name-display').innerText = file.name;
+        document.getElementById('file-name-display').classList.remove('text-gray-400');
+        document.getElementById('file-name-display').classList.add('text-white');
+
+        // Procesar imagen para el Nav (el círculo amarillo)
         const reader = new FileReader();
         reader.onload = function(event) {
             const imageUrl = event.target.result;
-            
-            // Actualiza el círculo pequeño del Nav (junto al saludo)
             const navImg = document.getElementById('user-avatar-img');
             const navText = document.getElementById('user-name-text');
             
-            if(navImg && navText) {
+            if(navImg) {
                 navImg.src = imageUrl;
                 navImg.classList.remove('hidden');
                 navText.classList.add('hidden');
             }
-            
-            // Opcional: Si tienes un círculo grande en la sección Perfil, actualízalo también
-            const profileImg = document.getElementById('settings-avatar-img');
-            if(profileImg) {
-                profileImg.src = imageUrl;
-                profileImg.classList.remove('hidden');
-                document.getElementById('settings-name-text')?.classList.add('hidden');
-            }
-
-            // Guardar para que no se pierda al recargar la página
             localStorage.setItem('userAvatarCustom', imageUrl);
         };
         reader.readAsDataURL(file);
@@ -724,6 +726,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
