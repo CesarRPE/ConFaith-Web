@@ -212,10 +212,11 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <div id="nav-balance-container" class="hidden items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
-                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Balance</span>
-                <span id="nav-balance-amount" class="text-sm font-black text-white">$0.00</span>
-            </div>
+    
+    <div id="nav-balance-container" class="hidden flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner self-center">
+         <span class="text-[7px] uppercase tracking-tighter" style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Saldo</span>
+         <span id="nav-balance" class="text-[10px]" style="color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);">S/ 0.00</span>
+    </div>
 
             <div id="auth-guest" class="flex gap-2">
                 <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
@@ -657,6 +658,7 @@ function syncIndexNavbar() {
         navImg.classList.remove('hidden');
         if (navText) navText.classList.add('hidden');
     }
+document.getElementById('nav-balance-container').classList.remove('hidden');
 }
 
 // Ejecutar al cargar
@@ -693,6 +695,7 @@ window.addEventListener('load', syncWithSettings);
     </script>
 </body>
 </html>
+
 
 
 
