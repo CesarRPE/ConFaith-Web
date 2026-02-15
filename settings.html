@@ -158,11 +158,17 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div id="nav-balance-container"></div>
 
             <div class="dropdown-poly relative">
-                <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
-                    <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
-                    <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
-                        <span id="user-name-text">C</span>
-                    </div>
+                <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group relative">
+    <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
+    
+    <label for="avatar-upload" class="cursor-pointer relative group">
+        <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs overflow-hidden border-2 border-transparent group-hover:border-white/50 transition-all">
+            <span id="user-name-text">C</span>
+            <img id="user-avatar-img" class="hidden w-full h-full object-cover">
+        </div>
+        <input type="file" id="avatar-upload" class="hidden" accept="image/*">
+    </label>
+</div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
@@ -670,9 +676,43 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
             // Guarda para que no se borre al refrescar
             localStorage.setItem('user_balance', formatted);
         };
+        document.getElementById('avatar-upload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imageUrl = event.target.result;
+            
+            // Aplicar la imagen al círculo
+            const imgElement = document.getElementById('user-avatar-img');
+            const textElement = document.getElementById('user-name-text');
+            
+            imgElement.src = imageUrl;
+            imgElement.classList.remove('hidden');
+            textElement.classList.add('hidden');
+            
+            // Guardar en localStorage para persistencia
+            localStorage.setItem('userAvatar', imageUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Cargar la foto guardada al iniciar la página
+window.addEventListener('DOMContentLoaded', () => {
+    const savedAvatar = localStorage.getItem('userAvatar');
+    if (savedAvatar) {
+        const imgElement = document.getElementById('user-avatar-img');
+        const textElement = document.getElementById('user-name-text');
+        imgElement.src = savedAvatar;
+        imgElement.classList.remove('hidden');
+        textElement.classList.add('hidden');
+    }
+});
     </script>
 </body>
 </html>
+
 
 
 
