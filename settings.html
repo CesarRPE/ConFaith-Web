@@ -225,7 +225,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
         
         <div>
             <p class="text-gray-500 text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Configuración De Cuenta</p>
-            <h2 class="text-3xl font-black text-white tracking-tighter capitalize-words">Ajustes De Perfil</h2>
+            <h2 class="text-3xl font-black text-white tracking-tighter">Ajustes De Perfil</h2>
         </div>
 
         <div class="grid grid-cols-1 gap-8">
@@ -233,20 +233,20 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-2">
                     <span class="text-[#b8860b] text-lg">👤</span>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre de Manifestador</label>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre de Usuario</label>
                 </div>
-                <input type="text" id="display-name-input" placeholder="Tu nombre artístico..." 
+                <input type="text" id="display-name-input" placeholder="Ingresa tu nombre de usuario" 
                     class="bg-[#0f172a] border border-white/5 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#b8860b]/30 transition-all placeholder:text-gray-700 font-medium">
             </div>
 
             <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-2">
-                    <span class="text-[#b8860b] text-lg">📸</span>
+                    <span class="text-[#b8860b] text-lg">🖼️</span>
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Avatar del Sistema</label>
                 </div>
                 <div class="flex gap-4">
                     <div class="flex-1 bg-[#0f172a] border border-white/5 rounded-2xl px-6 py-4 text-gray-600 text-sm flex items-center overflow-hidden">
-                        <span id="file-name-display" class="truncate font-medium italic">Seleccionar imagen...</span>
+                        <span id="file-name-display" class="truncate font-medium">Selecciona una imagen de perfil</span>
                     </div>
                     <button type="button" onclick="document.getElementById('avatar-upload-input').click();" 
                         class="bg-white/5 hover:bg-white/10 text-white text-[10px] font-black px-8 py-4 rounded-2xl transition-all border border-white/10 uppercase tracking-[0.2em]">
@@ -261,13 +261,13 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <span class="text-[#b8860b] text-lg">✨</span>
                     <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Biografía de Poder</label>
                 </div>
-                <textarea id="user-bio-input" rows="4" placeholder="Cuéntale al mundo cómo manifiestas..." 
+                <textarea id="user-bio-input" rows="4" placeholder="Escribe una breve descripción sobre ti" 
                     class="bg-[#0f172a] border border-white/5 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#b8860b]/30 transition-all resize-none placeholder:text-gray-700 font-medium"></textarea>
             </div>
 
             <div class="pt-4">
                 <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-5 rounded-2xl hover:bg-[#d4a017] transition-all active:scale-[0.98] uppercase text-xs tracking-[0.3em] shadow-2xl shadow-[#b8860b]/20">
-                    Sincronizar Perfil
+                    Guardar Cambios
                 </button>
             </div>
         </div>
@@ -759,6 +759,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
