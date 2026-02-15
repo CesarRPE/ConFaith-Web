@@ -405,45 +405,38 @@ h1, h2, h3, h4, h5, h6, b, strong {
                             <div id="seguridad" class="content-section ...">
         </div>
 
-    <div id="soporte" class="content-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
-    <div class="flex justify-between items-start mb-6">
+    <div id="soporte" class="content-section hidden bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 shadow-2xl">
+    <div class="flex justify-between items-start mb-10">
         <div>
-            <p class="text-[10px] font-black uppercase tracking-widest text-[#b8860b]">Centro de Ayuda</p>
-            <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
-                <span>💬</span> Soporte ConFaith
+            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-[#b8860b] mb-2">Centro de Ayuda</p>
+            <h2 class="text-3xl font-black text-white tracking-tighter flex items-center gap-4">
+                <span class="text-2xl">💬</span> Soporte ConFaith
             </h2>
         </div>
-        </div>
-</div>
         <div class="text-right">
-            <span class="text-[9px] font-bold text-gray-500 uppercase block">Horario de Atención</span>
-            <span class="text-[11px] font-black text-white">8:00 AM - 5:00 PM</span>
+            <p class="text-[10px] text-gray-500 uppercase font-bold">Horario de atención</p>
+            <p class="text-white font-bold text-sm">8:00 AM - 5:00 PM</p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <a href="https://wa.me/51980755310?text=Hola%20ConFaith,%20necesito%20ayuda%20con%20mi%20billetera" target="_blank" 
-           class="bg-[#0f172a] border border-white/10 rounded-2xl p-6 flex items-center gap-5 hover:border-[#25D366]/50 transition-all group">
-            <div class="w-14 h-14 rounded-full bg-[#25D366]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span class="emoji-render text-2xl">🟢</span>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <a href="https://wa.me/tu_numero" target="_blank" class="group bg-white/5 hover:bg-[#25D366]/10 border border-white/10 hover:border-[#25D366]/50 p-6 rounded-2xl transition-all flex items-center gap-5">
+            <div class="w-12 h-12 bg-[#25D366]/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">📱</div>
             <div>
-                <h5 class="text-white font-black text-sm uppercase">WhatsApp Directo</h5>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Chat en vivo ahora</p>
+                <h4 class="text-white font-bold">WhatsApp Directo</h4>
+                <p class="text-gray-400 text-xs">Chat en vivo ahora</p>
             </div>
         </a>
 
-        <a href="mailto:cesarrpe1991@gmail.com" 
-           class="bg-[#0f172a] border border-white/10 rounded-2xl p-6 flex items-center gap-5 hover:border-white/30 transition-all group">
-            <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span class="emoji-render text-2xl">📧</span>
-            </div>
+        <a href="mailto:cesarrpe1991@gmail.com" class="group bg-white/5 hover:bg-[#b8860b]/10 border border-white/10 hover:border-[#b8860b]/50 p-6 rounded-2xl transition-all flex items-center gap-5">
+            <div class="w-12 h-12 bg-[#b8860b]/20 rounded-xl flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">✉️</div>
             <div>
-                <h5 class="text-white font-black text-sm uppercase">Enviar Correo</h5>
-                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">cesarrpe1991@gmail.com</p>
+                <h4 class="text-white font-bold">Enviar Correo</h4>
+                <p class="text-gray-400 text-xs text-lowercase">cesarrpe1991@gmail.com</p>
             </div>
         </a>
     </div>
+</div>
 
     <div class="space-y-4">
         <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2 mb-4">Preguntas Frecuentes</h5>
@@ -621,30 +614,26 @@ h1, h2, h3, h4, h5, h6, b, strong {
         }
 
         function showSection(sectionId) {
-    // 1. Ocultar ABSOLUTAMENTE todas las secciones
+    // 1. Selecciona TODAS las capas de contenido
     const sections = document.querySelectorAll('.content-section');
-    sections.forEach(s => {
-        s.classList.add('hidden');
-        s.style.display = 'none'; // Refuerzo para evitar que se encimen
+    
+    // 2. Las oculta todas sin excepción
+    sections.forEach(section => {
+        section.classList.add('hidden');
+        section.style.display = 'none'; // Refuerzo para que no ocupen espacio
     });
 
-    // 2. Mostrar solo la sección que queremos
-    const target = document.getElementById(sectionId);
-    if (target) {
-        target.classList.remove('hidden');
-        target.style.display = 'block';
+    // 3. Muestra la que pediste
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) {
+        activeSection.classList.remove('hidden');
+        activeSection.style.display = 'block';
     }
 
-    // 3. Gestionar los botones del menú lateral
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    // 4. Iluminar el botón correcto (buscando por el ID que creamos)
+    // 4. Actualiza visualmente el menú lateral (la línea dorada)
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     const activeBtn = document.getElementById('btn-' + sectionId);
-    if (activeBtn) {
-        activeBtn.classList.add('active');
-    }
+    if (activeBtn) activeBtn.classList.add('active');
 }
         function openManualCardModal() {
     document.getElementById('card-modal').classList.remove('hidden');
@@ -830,6 +819,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
