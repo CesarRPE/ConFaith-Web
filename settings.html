@@ -217,41 +217,42 @@ h1, h2, h3, h4, h5, h6, b, strong {
             </aside>
 
             <div class="flex-1 max-w-4xl">
-                <div id="main-content-area" class="lg:col-span-9 space-y-6">
+    <div id="main-content-area" class="space-y-6">
 
-    <div id="perfil-content" class="tab-content bg-[#1e293b]/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl">
-        <h2 class="text-2xl font-black text-white mb-8 uppercase tracking-tighter">Ajustes de Perfil</h2>
-        
-        <div class="space-y-6">
-            <div class="flex flex-col gap-2">
-                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre de Manifestador</label>
-                <input type="text" id="display-name-input" placeholder="Tu nombre artístico..." 
-                    class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cambiar Foto</label>
-                <div class="flex gap-3">
-                    <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-gray-400 text-sm flex items-center overflow-hidden">
-                        <span id="file-name-display" class="truncate">No se ha seleccionado archivo</span>
-                    </div>
-                    <button type="button" onclick="document.getElementById('avatar-upload-input').click();" 
-                        class="bg-white/5 hover:bg-white/10 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all border border-white/10 uppercase tracking-widest">
-                        Examinar
-                    </button>
-                    <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
+        <div id="perfil" class="content-section active bg-[#1e293b]/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl">
+            <h2 class="text-2xl font-black text-white mb-8 uppercase tracking-tighter">Ajustes de Perfil</h2>
+            
+            <div class="space-y-6">
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre de Manifestador</label>
+                    <input type="text" id="display-name-input" placeholder="Tu nombre artístico..." 
+                        class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
                 </div>
-            </div>
 
-            <div class="flex flex-col gap-2">
-                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Bio</label>
-                <textarea id="user-bio-input" rows="3" placeholder="Cuéntale al mundo cómo manifiestas..." 
-                    class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] resize-none"></textarea>
-            </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cambiar Foto</label>
+                    <div class="flex gap-3">
+                        <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-gray-400 text-sm flex items-center overflow-hidden">
+                            <span id="file-name-display" class="truncate">No se ha seleccionado archivo</span>
+                        </div>
+                        <button type="button" onclick="document.getElementById('avatar-upload-input').click();" 
+                            class="bg-white/5 hover:bg-white/10 text-white text-xs font-bold px-6 py-3 rounded-xl transition-all border border-white/10 uppercase tracking-widest">
+                            Examinar
+                        </button>
+                        <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
+                    </div>
+                </div>
 
-            <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-all active:scale-95 uppercase text-sm tracking-widest">
-                Guardar Cambios
-            </button>
+                <div class="flex flex-col gap-2">
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Bio</label>
+                    <textarea id="user-bio-input" rows="3" placeholder="Cuéntale al mundo cómo manifiestas..." 
+                        class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] resize-none"></textarea>
+                </div>
+
+                <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-all active:scale-95 uppercase text-sm tracking-widest">
+                    Guardar Cambios
+                </button>
+            </div>
         </div>
 
                 <div id="alertas" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
@@ -739,6 +740,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
