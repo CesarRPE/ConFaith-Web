@@ -175,15 +175,24 @@
         .stepper-arrows {
             display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2px; font-size: 10px; color: #9ca3af; margin-left: 8px; line-height: 1;
         }
+    .text-glossy-white {
+    background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
     </style>
 </head>
 <body>
 
     <nav class="navbar-custom flex justify-between items-center shadow-lg">
     <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
-        <div class="flex items-center">
-            <span class="brand-con">Con</span>
-            <span class="brand-faith text-3xl">Faith</span>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center">
+                <span class="brand-con">Con</span>
+                <span class="brand-faith text-3xl">Faith</span>
+            </div>
+            <div id="welcome-message" class="flex flex-col ml-2 border-l border-white/10 pl-3">
+                </div>
         </div>
         <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
             Porque manifestando con faith la haces <span class="emoji-render">&#128588;</span>
@@ -196,28 +205,38 @@
             <input type="text" placeholder="Buscar mercados..." class="search-input focus:outline-none">
         </div>
         
+        <div id="nav-balance-container" class="hidden items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Balance</span>
+            <span id="nav-balance-amount" class="text-sm font-black text-white">$0.00</span>
+        </div>
+        
         <div id="auth-guest" class="flex gap-2">
             <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
             <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
         </div>
 
         <div id="auth-user" class="hidden flex items-center gap-3">
-    <div class="dropdown-poly relative">
-        <button id="user-name" class="text-[11px] font-black border-r border-white/20 pr-3 tracking-wide focus:outline-none text-white"></button>
-        
-        <div class="dropdown-poly-content" style="right: 0; top: 120%;">
-            <a href="settings.html" class="dropdown-item">
-                <span class="emoji-render text-lg">&#x2699;</span> Ajustes
-            </a>
-            
-            <div class="dropdown-divider"></div>
-            
-            <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">
-                <span class="emoji-render text-lg">🚪</span> Cerrar Sesión
-            </a>
+            <div class="dropdown-poly relative">
+                <button class="flex items-center gap-2 focus:outline-none group">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-b from-[#b8860b] to-[#8a6508] p-[1px] flex items-center justify-center overflow-hidden shadow-[0_0_10px_rgba(184,134,11,0.3)]">
+                        <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
+                            <span id="user-name-text" class="text-white font-black text-xs">?</span>
+                            <img id="user-avatar-img" class="w-full h-full object-cover hidden" src="" alt="Avatar">
+                        </div>
+                    </div>
+                </button>
+                
+                <div class="dropdown-poly-content" style="right: 0; top: 120%;">
+                    <a href="settings.html" class="dropdown-item">
+                        <span class="emoji-render text-lg">&#x2699;</span> Ajustes
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">
+                        <span class="emoji-render text-lg">🚪</span> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
         <div class="dropdown-poly">
             <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
@@ -228,7 +247,7 @@
                 <a href="#" class="dropdown-item"><span class="emoji-render text-lg">&#x1F525;</span> Tendencias</a>
                 <a href="#" class="dropdown-item"><span class="emoji-render text-lg">&#x1F3C6;</span> Leaderboard</a>
                 <div class="dropdown-divider"></div>
-                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">&#x1F4DC;</span> Reglas de Resoluci&#243;n</a>
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">&#x1F4DC;</span> Reglas de Resolución</a>
                 <a href="#" class="dropdown-item"><span class="emoji-render text-lg">&#x1F4AC;</span> Soporte</a>
             </div>
         </div>
@@ -595,9 +614,38 @@
         setInterval(nextSlide, 5000);
 
         filterCards('Todos', document.querySelector('.cat-btn'));
+    // Función para actualizar el nav con los datos de LocalStorage
+function syncNavbar() {
+    const savedName = localStorage.getItem('custom_username');
+    const welcomeMsg = document.getElementById('welcome-message');
+    const navImg = document.getElementById('user-avatar-img');
+    const navText = document.getElementById('user-name-text');
+    const savedPhoto = localStorage.getItem('userAvatarCustom');
+
+    const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+    const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+
+    if (welcomeMsg && savedName) {
+        welcomeMsg.innerHTML = `
+            <span style="${glossyWhite} font-size: 11px; line-height: 1;">Qué onda,</span>
+            <span style="${goldFaith} font-size: 11px; line-height: 1;">${savedName}</span>
+        `;
+        if(navText) navText.innerText = savedName.charAt(0).toUpperCase();
+    }
+
+    if (savedPhoto && navImg) {
+        navImg.src = savedPhoto;
+        navImg.classList.remove('hidden');
+        if(navText) navText.classList.add('hidden');
+    }
+}
+
+// Ejecutar al cargar
+window.addEventListener('load', syncNavbar);
     </script>
 </body>
 </html>
+
 
 
 
