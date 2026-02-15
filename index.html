@@ -184,73 +184,73 @@
 </head>
 <body>
 
-    <nav class="navbar-custom relative shadow-lg">
-    <div class="w-full px-4 h-16 flex items-center justify-between">
-        
-        <div class="flex flex-col justify-center">
-            <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity w-fit">
-                <div class="flex items-baseline">
-                    <span class="brand-con text-2xl">Con</span>
-                    <span class="brand-faith text-3xl">Faith</span>
-                </div>
-                <p class="text-[10px] font-medium text-gray-400 mt-0.5 pl-1 hidden sm:block" style="font-family: 'Gelapitto', cursive;">
-                    Manifestando con faith la haces 🙌
-                </p>
-            </a>
-        </div>
-
-    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block w-full max-w-xl z-10">
-            <div class="relative">
-                <input type="text" placeholder="Buscar mercados..." class="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-2 px-4 pl-10 focus:outline-none focus:bg-white/20 transition-all placeholder:text-gray-500 shadow-sm">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
-                </div>
+    <nav class="navbar-custom flex justify-between items-center shadow-lg">
+    <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity focus:outline-none">
+        <div class="flex items-center gap-3">
+            <div class="flex items-center">
+                <span class="brand-con">Con</span>
+                <span class="brand-faith text-3xl">Faith</span>
             </div>
+            <div id="welcome-message" class="flex flex-col ml-2 border-l border-white/10 pl-3">
+                </div>
+        </div>
+        <p class="text-[12px] font-medium text-gray-300" style="font-family: 'Gelapitto', cursive;">
+            Porque manifestando con faith la haces <span class="emoji-render">&#128588;</span>
+        </p>
+    </a>
+
+    <div class="flex items-center gap-4">
+        <div class="hidden lg:block relative">
+            <span class="absolute left-3 top-2 text-xs emoji-render">&#128269;</span>
+            <input type="text" placeholder="Buscar mercados..." class="search-input focus:outline-none">
+        </div>
+        
+        <div id="nav-balance-container" class="hidden items-center gap-2 bg-white/5 px-3 py-1.5 rounded-full border border-white/10">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Balance</span>
+            <span id="nav-balance-amount" class="text-sm font-black text-white">$0.00</span>
         </div>
 
-    <div id="auth-guest" class="flex gap-2">
+        <div id="auth-guest" class="flex gap-2">
             <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
             <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
         </div>
 
         <div id="auth-user" class="hidden flex items-center gap-3">
-    <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
-                    <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
-                    <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
-    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-    <span id="user-name-text" class="text-black font-black text-lg">C</span>
-</div>
-                    <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="dropdown-poly-content">
-                    <a href="settings.html" class="dropdown-item">⚙️ Ajustes</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">🚪 Cerrar Sesión</a>
-                </div>
-            </div>
-
-        <div class="dropdown-poly relative">
-                <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-[#b8860b] transition-colors flex items-center justify-center">
-                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M8 9H16M8 12H16M8 15H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
+            <div class="dropdown-poly relative">
+                <button class="flex items-center gap-2 focus:outline-none group">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-b from-[#b8860b] to-[#8a6508] p-[1px] flex items-center justify-center overflow-hidden shadow-[0_0_10px_rgba(184,134,11,0.3)]">
+                        <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
+                            <span id="user-name-text" class="text-white font-black text-xs">?</span>
+                            <img id="user-avatar-img" class="w-full h-full object-cover hidden" src="" alt="Avatar">
+                        </div>
+                    </div>
                 </button>
                 
-                <div class="dropdown-poly-content right-0 left-auto w-52">
-                    <a href="index.html" class="dropdown-item">🏠 Inicio</a>
-                    <a href="#" class="dropdown-item">🔥 Tendencias</a>
-                    <a href="#" class="dropdown-item">🏆 Leaderboard</a>
+                <div class="dropdown-poly-content" style="right: 0; top: 120%;">
+                    <a href="settings.html" class="dropdown-item">
+                        <span class="emoji-render text-lg">&#x2699;</span> Ajustes
+                    </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" onclick="showSection('soporte')" class="dropdown-item text-gray-400">🆘 Soporte</a>
+                    <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">
+                        <span class="emoji-render text-lg">🚪</span> Cerrar Sesión
+                    </a>
                 </div>
             </div>
         </div>
-    </nav>
+
+        <div class="dropdown-poly">
+            <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white border border-white/20 hover:border-white/50 transition-all">
+                <span class="text-[14px]">&#9776;</span>
+            </button>
+            <div class="dropdown-poly-content">
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">📈</span> Mercados Populares</a>
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">🔥</span> Tendencias</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item"><span class="emoji-render text-lg">💬</span> Soporte</a>
+            </div>
+        </div>
+    </div>
+</nav>
 
     <header class="max-w-7xl mx-auto py-8 px-6 flex flex-col md:flex-row items-center gap-10">
         <div class="slider-container">
@@ -640,9 +640,39 @@ function syncNavbar() {
 
 // Ejecutar al cargar
 window.addEventListener('load', syncNavbar);
+    function syncWithSettings() {
+    const savedName = localStorage.getItem('custom_username');
+    const savedPhoto = localStorage.getItem('userAvatarCustom');
+    
+    const welcomeMsg = document.getElementById('welcome-message');
+    const navImg = document.getElementById('user-avatar-img');
+    const navText = document.getElementById('user-name-text');
+
+    // Estilos de Settings (Glossy y Gold)
+    const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+    const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+
+    if (savedName && welcomeMsg) {
+        welcomeMsg.innerHTML = `
+            <span style="${glossyWhite} font-size: 10px; line-height: 1;">Qué onda,</span>
+            <span style="${goldFaith} font-size: 12px; line-height: 1;">${savedName}</span>
+        `;
+        if (navText) navText.innerText = savedName.charAt(0).toUpperCase();
+    }
+
+    if (savedPhoto && navImg) {
+        navImg.src = savedPhoto;
+        navImg.classList.remove('hidden');
+        if (navText) navText.classList.add('hidden');
+    }
+}
+
+// Llamar a la sincronización al cargar la página
+window.addEventListener('load', syncWithSettings);
     </script>
 </body>
 </html>
+
 
 
 
