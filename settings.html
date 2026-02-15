@@ -267,9 +267,9 @@ h1, h2, h3, h4, h5, h6, b, strong {
                         </div>
 
             <div class="pt-4">
-                <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black text-xs uppercase px-8 py-3 rounded-lg hover:scale-105 transition-all" style="background-color: var(--gold-faith);">
-                    Guardar Cambios
-                </button>
+                <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-5 rounded-2xl hover:bg-[#d4a017] transition-all active:scale-[0.98] uppercase text-xs tracking-[0.3em] shadow-2xl shadow-[#b8860b]/20">
+    Guardar Cambios
+</button>
             </div>
         </div>
     </div>
@@ -710,32 +710,60 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
             // Guarda para que no se borre al refrescar
             localStorage.setItem('user_balance', formatted);
         };
-    document.getElementById('avatar-upload-input').addEventListener('change', function(e) {
+    let tempImageData = null; // Variable para guardar la imagen antes de confirmar
+
+// 1. Solo detecta el archivo y cambia el texto del input
+document.getElementById('avatar-upload-input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
-        // 1. Actualizar el texto del campo "Examinar"
         document.getElementById('file-name-display').innerText = file.name;
-
+        
         const reader = new FileReader();
         reader.onload = function(event) {
-            const imageUrl = event.target.result;
-            
-            // 2. Actualizar el avatar del NAV (el círculo amarillo arriba a la derecha)
-            const navImg = document.getElementById('user-avatar-img');
-            const navText = document.getElementById('user-name-text'); // La "C" o inicial
-            
-            if(navImg) {
-                navImg.src = imageUrl;
-                navImg.classList.remove('hidden'); // Mostramos la foto
-                if(navText) navText.classList.add('hidden'); // Ocultamos la inicial
-            }
-
-            // 3. Guardar en memoria del navegador para que no se borre al refrescar
-            localStorage.setItem('userAvatarCustom', imageUrl);
+            tempImageData = event.target.result; // Guardamos los datos pero NO los aplicamos aún
         };
         reader.readAsDataURL(file);
     }
 });
+
+// 2. Función vinculada al botón GUARDAR CAMBIOS
+function guardarPerfil() {
+    // Si hay una nueva imagen cargada, la aplicamos
+    if (tempImageData) {
+        const navImg = document.getElementById('user-avatar-img');
+        const navText = document.getElementById('user-name-text');
+        
+        if(navImg) {
+            navImg.src = tempImageData;
+            navImg.classList.remove('hidden');
+            if(navText) navText.classList.add('hidden');
+        }
+        
+        // Guardar en persistencia (LocalStorage)
+        localStorage.setItem('userAvatarCustom', tempImageData);
+        tempImageData = null; // Limpiamos la temporal
+    }
+
+    // MOSTRAR POP-UP DE ÉXITO
+    mostrarPopupExito();
+}
+
+function mostrarPopupExito() {
+    // Crear el elemento del popup dinámicamente
+    const popup = document.createElement('div');
+    popup.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#b8860b] text-black font-black px-8 py-4 rounded-2xl shadow-2xl animate-bounce z-[100] uppercase text-xs tracking-widest';
+    popup.innerHTML = '✨ Perfil Sincronizado Exitosamente';
+    
+    document.body.appendChild(popup);
+
+    // Quitar el popup después de 3 segundos
+    setTimeout(() => {
+        popup.classList.remove('animate-bounce');
+        popup.style.opacity = '0';
+        popup.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => popup.remove(), 500);
+    }, 3000);
+}
 
 // Lógica para mantener la foto al recargar
 window.addEventListener('load', () => {
@@ -761,6 +789,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
