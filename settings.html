@@ -219,14 +219,15 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="flex-1 max-w-4xl">
     <div id="main-content-area" class="space-y-6">
 
-        <div id="perfil" class="content-section active space-y-6 animate-fade-in">
+        <div id="perfil" class="content-section active animate-fade-in">
     
-    <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl">
-        <p class="text-[#b8860b] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Configuración de cuenta</p>
-        <h2 class="text-3xl font-black text-white uppercase tracking-tighter">Ajustes de Perfil</h2>
-    </div>
+    <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl space-y-8">
+        
+        <div>
+            <p class="text-[#b8860b] text-[10px] font-bold uppercase tracking-[0.3em] mb-2">Configuración de cuenta</p>
+            <h2 class="text-3xl font-black text-white uppercase tracking-tighter">Ajustes de Perfil</h2>
+            <div class="h-px bg-white/5 w-full mt-6"></div> </div>
 
-    <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl">
         <div class="grid grid-cols-1 gap-8">
             
             <div class="flex flex-col gap-3">
@@ -264,7 +265,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     class="bg-[#0f172a] border border-white/5 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:ring-2 focus:ring-[#b8860b]/30 transition-all resize-none placeholder:text-gray-700 font-medium"></textarea>
             </div>
 
-            <div class="pt-6 border-t border-white/5">
+            <div class="pt-4">
                 <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-5 rounded-2xl hover:bg-[#d4a017] transition-all active:scale-[0.98] uppercase text-xs tracking-[0.3em] shadow-2xl shadow-[#b8860b]/20">
                     Sincronizar Perfil
                 </button>
@@ -758,6 +759,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
