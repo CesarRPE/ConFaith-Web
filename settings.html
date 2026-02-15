@@ -749,18 +749,29 @@ function guardarPerfil() {
 }
 
 function mostrarPopupExito() {
-    // Crear el elemento del popup dinámicamente
+    // 1. Crear el elemento
     const popup = document.createElement('div');
-    popup.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#b8860b] text-black font-black px-8 py-4 rounded-2xl shadow-2xl animate-bounce z-[100] uppercase text-xs tracking-widest';
-    popup.innerHTML = '✨ Perfil Sincronizado Exitosamente';
+    
+    // 2. Estilo: Inferior medio, dorado, sin animaciones de salto, solo fade
+    popup.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#b8860b] text-black font-black px-8 py-4 rounded-2xl shadow-2xl z-[100] uppercase text-[11px] tracking-[0.2em] transition-all duration-500 ease-in-out opacity-0';
+    
+    // 3. Contenido con el emoji de sparkles
+    popup.innerHTML = '✨ Perfil Guardado Exitosamente';
     
     document.body.appendChild(popup);
 
-    // Quitar el popup después de 3 segundos
+    // 4. Trigger del Fade In (un pequeño delay para que el navegador detecte el cambio)
     setTimeout(() => {
-        popup.classList.remove('animate-bounce');
-        popup.style.opacity = '0';
-        popup.style.transition = 'opacity 0.5s ease';
+        popup.classList.remove('opacity-0');
+        popup.classList.add('opacity-100');
+    }, 10);
+
+    // 5. Fade Out y remover después de 3 segundos
+    setTimeout(() => {
+        popup.classList.remove('opacity-100');
+        popup.classList.add('opacity-0');
+        
+        // Esperar a que termine la transición de desvanecimiento para borrar el elemento
         setTimeout(() => popup.remove(), 500);
     }, 3000);
 }
@@ -789,6 +800,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
