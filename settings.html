@@ -227,6 +227,12 @@ h1, h2, h3, h4, h5, h6, b, strong {
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Nombre de Manifestador</label>
                             <input type="text" id="name-input" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
                         </div>
+                    <button onclick="document.getElementById('avatar-upload-input').click();" 
+        class="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-white/5 hover:text-[#b8860b] group">
+    <span class="text-xl group-hover:scale-110 transition-transform">📸</span>
+    <span class="text-sm font-medium">Cambiar Foto</span>
+    <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
+</button>
                         <div class="flex flex-col gap-2">
                             <label class="text-[10px] font-bold text-gray-400 uppercase">Bio / Frase de Faith</label>
                             <textarea placeholder="¿Cuál es tu mantra?" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
@@ -670,9 +676,55 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
             // Guarda para que no se borre al refrescar
             localStorage.setItem('user_balance', formatted);
         };
+    document.getElementById('avatar-upload-input').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const imageUrl = event.target.result;
+            
+            // Actualiza el círculo pequeño del Nav (junto al saludo)
+            const navImg = document.getElementById('user-avatar-img');
+            const navText = document.getElementById('user-name-text');
+            
+            if(navImg && navText) {
+                navImg.src = imageUrl;
+                navImg.classList.remove('hidden');
+                navText.classList.add('hidden');
+            }
+            
+            // Opcional: Si tienes un círculo grande en la sección Perfil, actualízalo también
+            const profileImg = document.getElementById('settings-avatar-img');
+            if(profileImg) {
+                profileImg.src = imageUrl;
+                profileImg.classList.remove('hidden');
+                document.getElementById('settings-name-text')?.classList.add('hidden');
+            }
+
+            // Guardar para que no se pierda al recargar la página
+            localStorage.setItem('userAvatarCustom', imageUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Lógica para mantener la foto al recargar
+window.addEventListener('load', () => {
+    const saved = localStorage.getItem('userAvatarCustom');
+    if (saved) {
+        const navImg = document.getElementById('user-avatar-img');
+        const navText = document.getElementById('user-name-text');
+        if(navImg) {
+            navImg.src = saved;
+            navImg.classList.remove('hidden');
+            navText.classList.add('hidden');
+        }
+    }
+});
     </script>
 </body>
 </html>
+
 
 
 
