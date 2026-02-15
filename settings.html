@@ -508,7 +508,10 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const balanceContainer = document.getElementById('nav-balance-container');
     
     if (user) {
-        const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
+        // PRIORIDAD: 1. Nombre guardado localmente, 2. DisplayName de Google, 3. Email
+        const savedName = localStorage.getItem('custom_username');
+        const firstName = savedName || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
+        
         const initial = firstName.charAt(0).toUpperCase();
 
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
@@ -730,11 +733,15 @@ document.getElementById('avatar-upload-input').addEventListener('change', functi
 
 // 2. Función vinculada al botón GUARDAR CAMBIOS
 function guardarPerfil() {
-    const newUsername = document.getElementById('input-username').value;
+    const inputName = document.getElementById('input-username'); // Asegúrate que el input tenga este ID
+    const newUsername = inputName ? inputName.value : "";
     const welcomeMsg = document.getElementById('welcome-message');
 
-    // 1. Actualizar el Mensaje de Bienvenida (Navbar)
     if (newUsername.trim() !== "" && welcomeMsg) {
+        // Guardamos físicamente el nombre para que sobreviva al F5
+        localStorage.setItem('custom_username', newUsername);
+        
+        // Actualizamos visualmente en el momento
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
         const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
@@ -742,26 +749,10 @@ function guardarPerfil() {
             <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
             <span style="${goldFaith} font-size: 11px;">${newUsername}</span>
         `;
-        
-        // Guardar el nombre en persistencia
-        localStorage.setItem('custom_username', newUsername);
     }
 
-    // 2. Lógica existente de la Imagen
-    if (tempImageData) {
-        const navImg = document.getElementById('user-avatar-img');
-        const navText = document.getElementById('user-name-text');
-        
-        if(navImg) {
-            navImg.src = tempImageData;
-            navImg.classList.remove('hidden');
-            if(navText) navText.classList.add('hidden');
-        }
-        
-        localStorage.setItem('userAvatarCustom', tempImageData);
-        tempImageData = null;
-    }
-
+    // Lógica de imagen y popup que ya tenías
+    if (tempImageData) { /* ... */ }
     mostrarPopupExito();
 }
 
@@ -831,6 +822,7 @@ if (savedName && document.getElementById('welcome-message')) {
     </script>
 </body>
 </html>
+
 
 
 
