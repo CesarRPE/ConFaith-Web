@@ -222,24 +222,30 @@
                 <button onclick="openLogin()" class="btn-connect-gold px-5 py-1.5 text-[10px] uppercase font-bold">Conectar</button>
             </div>
 
-            <div id="auth-user" class="hidden flex items-center gap-3">
-                <div id="user-menu-trigger" class="flex items-center gap-3 cursor-pointer py-1 group dropdown-poly">
-                    <div id="welcome-message" class="hidden xl:flex flex-row items-baseline gap-1">
-    </div>
-                    
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-b from-[#b8860b] to-[#8a6508] p-[1.5px] shadow-lg shadow-[#b8860b]/20">
-                        <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
-                            <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-                            <span id="user-name-text" class="text-white font-black text-lg"></span>
-                        </div>
-                    </div>
+            <div id="auth-user" class="hidden flex items-center gap-3 h-full">
+    <div id="user-menu-trigger" class="flex items-center gap-3 cursor-pointer h-full group dropdown-poly">
+        
+        <div id="welcome-message" class="hidden xl:flex items-center gap-1.5 whitespace-nowrap">
+            </div>
+        
+        <div class="w-10 h-10 rounded-full bg-gradient-to-b from-[#b8860b] to-[#8a6508] p-[1.5px] shadow-lg shadow-[#b8860b]/20 flex items-center justify-center self-center">
+            <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
+                <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
+                <span id="user-name-text" class="text-white font-black text-lg leading-none"></span>
+            </div>
+        </div>
 
-                    <div class="dropdown-poly-content" style="right: 0; top: 110%;">
-                        <a href="settings.html" class="dropdown-item">⚙️ Ajustes</a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">🚪 Cerrar Sesión</a>
-                    </div>
-                </div>
+        <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+
+        <div class="dropdown-poly-content" style="right: 0; top: 100%;">
+            <a href="settings.html" class="dropdown-item">⚙️ Ajustes</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">🚪 Cerrar Sesión</a>
+        </div>
+    </div>
+</div>
 
                 <div class="dropdown-poly relative">
                     <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-[#b8860b] transition-colors flex items-center justify-center">
@@ -635,12 +641,15 @@ function syncIndexNavbar() {
     const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
     if (savedName && welcomeMsg) {
-        // Mantenemos todo en la misma línea con un espacio natural
+        // Usamos una sola línea con alineación central
         welcomeMsg.innerHTML = `
-            <span style="${glossyWhite} font-size: 11px;">Qué onda,</span>
-            <span style="${goldFaith} font-size: 11px; margin-left: 2px;">${savedName}</span>
+            <span style="${glossyWhite} font-size: 11px; line-height: 1; display: inline-block;">Qué onda,</span>
+            <span style="${goldFaith} font-size: 11px; line-height: 1; display: inline-block; margin-left: 4px;">${savedName}</span>
         `;
-        if (navText) navText.innerText = savedName.charAt(0).toUpperCase();
+        if (navText) {
+            navText.innerText = savedName.charAt(0).toUpperCase();
+            navText.style.lineHeight = "1"; // Centra la inicial en el círculo
+        }
     }
 
     if (savedPhoto && navImg) {
@@ -684,6 +693,7 @@ window.addEventListener('load', syncWithSettings);
     </script>
 </body>
 </html>
+
 
 
 
