@@ -224,8 +224,8 @@
 
             <div id="auth-user" class="hidden flex items-center gap-3">
                 <div id="user-menu-trigger" class="flex items-center gap-3 cursor-pointer py-1 group dropdown-poly">
-                    <div id="welcome-message" class="hidden xl:flex flex-col items-end leading-none">
-                        </div>
+                    <div id="welcome-message" class="hidden xl:flex flex-row items-baseline gap-1">
+    </div>
                     
                     <div class="w-10 h-10 rounded-full bg-gradient-to-b from-[#b8860b] to-[#8a6508] p-[1.5px] shadow-lg shadow-[#b8860b]/20">
                         <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
@@ -631,14 +631,14 @@ function syncIndexNavbar() {
     const navImg = document.getElementById('user-avatar-img');
     const navText = document.getElementById('user-name-text');
 
-    // Estilos Glossy White y Gold Faith de Settings
     const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
     const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
     if (savedName && welcomeMsg) {
+        // Mantenemos todo en la misma línea con un espacio natural
         welcomeMsg.innerHTML = `
-            <span style="${glossyWhite} font-size: 10px; margin-bottom: 2px;">Qué onda,</span>
-            <span style="${goldFaith} font-size: 13px;">${savedName}</span>
+            <span style="${glossyWhite} font-size: 11px;">Qué onda,</span>
+            <span style="${goldFaith} font-size: 11px; margin-left: 2px;">${savedName}</span>
         `;
         if (navText) navText.innerText = savedName.charAt(0).toUpperCase();
     }
@@ -684,6 +684,7 @@ window.addEventListener('load', syncWithSettings);
     </script>
 </body>
 </html>
+
 
 
 
