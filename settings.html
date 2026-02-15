@@ -224,28 +224,25 @@ h1, h2, h3, h4, h5, h6, b, strong {
     <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl space-y-8">
         
         <div>
-            <p class="text-gray-400 text-xs font-medium mb-1">Configuración De Cuenta</p>
-            <h2 class="text-3xl font-black text-white tracking-tighter">⚙️ Ajustes De Perfil</h2>
+            <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Ajustes de Usuario</p>
+            <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">&#x1F464;</span> Mi Perfil</h2>
         </div>
 
         <div class="grid grid-cols-1 gap-8">
             
             <div class="flex flex-col gap-3">
-                <div class="flex items-center gap-2">
-                    <span class="text-[#b8860b] text-lg">👤</span>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre de Usuario</label>
+                <div class="flex items-center gap-2"><label class="text-[10px] font-bold text-gray-400 uppercase">Nombre de Usuario</label>
                 </div>
-                <input type="text" id="display-name-input" placeholder="Ingresa tu nombre de usuario" 
-                    class="bg-[#0f172a] border border-white/10 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] placeholder:text-gray-600 font-medium">
-            </div>
+                <input type="text" placeholder="Tu nombre..." class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
+                        </div>
 
             <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-2">
-                    <span class="text-[#b8860b] text-lg">&#128444;&#65039;</span> <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Avatar del Sistema</label>
+                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Avatar del Perfil</label>
                 </div>
                 <div class="flex gap-4">
-                    <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-2xl px-6 py-4 text-gray-400 text-sm flex items-center overflow-hidden">
-                        <span id="file-name-display" class="truncate font-medium">Selecciona una imagen de perfil</span>
+                    <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
+                        <span id="file-name-display" class="truncate font-medium">Selecciona una imagen</span>
                     </div>
                     <button type="button" onclick="document.getElementById('avatar-upload-input').click();" 
                         class="bg-white/5 hover:bg-white/10 text-white text-[10px] font-black px-8 py-4 rounded-2xl transition-all border border-white/10 uppercase tracking-[0.2em]">
@@ -258,14 +255,14 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-2">
                     <span class="text-[#b8860b] text-lg">✨</span>
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Biografía de Poder</label>
+                    <label class="text-[10px] font-bold text-gray-400 uppercase">Bio / Descripción</label>
                 </div>
-                <textarea id="user-bio-input" rows="4" placeholder="Escribe una breve descripción sobre ti" 
-                    class="bg-[#0f172a] border border-white/10 rounded-2xl px-6 py-4 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] resize-none placeholder:text-gray-600 font-medium"></textarea>
-            </div>
+                <textarea id="user-bio-input" rows="4" placeholder="Escribe sobre ti" 
+                    class=""bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white h-24 resize-none focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);"></textarea>
+                        </div>
 
             <div class="pt-4">
-                <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black py-5 rounded-2xl hover:bg-[#d4a017] transition-all active:scale-[0.98] uppercase text-xs tracking-[0.3em] shadow-2xl shadow-[#b8860b]/20">
+                <button onclick="guardarPerfil()" class="w-full bg-[#b8860b] text-black font-black text-xs uppercase px-8 py-3 rounded-lg hover:scale-105 transition-all" style="background-color: var(--gold-faith);">
                     Guardar Cambios
                 </button>
             </div>
@@ -758,6 +755,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
