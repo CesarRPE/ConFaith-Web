@@ -172,13 +172,14 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 </div>
             </div>
 
-            <div class="dropdown-poly relative pr-4">
-                <button id="mobile-menu-button" class="group p-1.5 flex items-center justify-center rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-[#b8860b]/50 transition-all duration-300">
-                    <svg class="w-7 h-7 text-gray-400 group-hover:text-[#b8860b] transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" stroke-width="1.5"></circle>
-                        <path d="M8 9h8M8 12h8M8 15h8" stroke-width="1.5" stroke-linecap="round"></path>
+            <div class="dropdown-poly relative">
+                <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-[#b8860b] transition-colors flex items-center justify-center">
+                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 9H16M8 12H16M8 15H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                 </button>
+                
                 <div class="dropdown-poly-content right-0 left-auto w-52">
                     <div class="px-4 py-2 border-b border-white/5 text-[10px] text-[#b8860b] font-black uppercase tracking-widest">Navegación</div>
                     <a href="index.html" class="dropdown-item">🏠 Inicio</a>
@@ -671,6 +672,7 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
+
 
 
 
