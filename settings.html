@@ -128,51 +128,58 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </head>
 <body>
 
-    <nav class="navbar-custom shadow-lg">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between w-full">
-        
-        <div class="w-1/3 flex justify-start">
-            <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity w-fit">
-                <div class="flex items-baseline">
-                    <span class="brand-con text-2xl">Con</span>
-                    <span class="brand-faith text-3xl">Faith</span>
-                </div>
-                <p class="text-[10px] font-medium text-gray-400 mt-0.5 pl-1 hidden sm:block" style="font-family: 'Gelapitto', cursive;">
-                    Porque manifestando con faith la haces 🚀
-                </p>
-            </a>
-        </div>
+    <nav class="navbar-custom flex justify-between items-center shadow-lg">
+        <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity w-fit">
+    <div class="flex items-baseline">
+        <span class="brand-con text-2xl">Con</span>
+        <span class="brand-faith text-3xl">Faith</span>
+    </div>
+    
+    <p class="text-[12px] font-medium text-gray-400 mt-1 pl-1 whitespace-nowrap" style="font-family: 'Gelapitto', cursive;">
+        Porque manifestando con faith la haces &#x1F64C;
+    </p>
+</a>
 
-        <div class="w-1/3 flex justify-center z-10">
-            <div class="relative hidden lg:block w-full max-w-xl">
-                <input type="text" placeholder="Buscar mercados..." class="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-2 px-4 pl-9 focus:outline-none focus:bg-white/20 transition-all placeholder:text-gray-500 shadow-sm">
+        <div class="hidden md:flex items-center justify-end w-full max-w-[1200px] mx-auto px-4 gap-4">
+    <div class="flex items-center gap-4">
+        
+        <div class="relative hidden lg:flex flex-1 justify-center px-4 z-10">
+            <div class="relative w-full max-w-xl">
+                <input type="text" placeholder="Buscar mercados..." class="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-1.5 px-4 pl-9 focus:outline-none focus:bg-white/20 transition-all placeholder:text-gray-500 shadow-sm">
                 <div class="absolute left-3 top-1/2 -translate-y-1/2">
-                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                 </div>
             </div>
         </div>
 
-        <div class="w-1/3 flex items-center justify-end gap-4 z-20">
+        <div class="flex items-center gap-4 z-20">
             <div id="nav-balance-container"></div>
-            
+
             <div class="dropdown-poly relative">
                 <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
-                    <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs">
+                    <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
                         <span id="user-name-text">C</span>
                     </div>
+                    <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
                 </div>
+                <div class="dropdown-poly-content">
+                    <a href="settings.html" class="dropdown-item">⚙️ Ajustes</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">🚪 Cerrar Sesión</a>
                 </div>
+            </div>
 
-            <div class="dropdown-poly relative pr-2">
-                <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-[#b8860b] transition-colors">
-                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <circle cx="12" cy="12" r="10" stroke-width="1.5"></circle>
-                        <path d="M8 9h8M8 12h8M8 15h8" stroke-width="1.5" stroke-linecap="round"></path>
+            <div class="dropdown-poly relative">
+                <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-[#b8860b] transition-colors flex items-center justify-center">
+                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M8 9H16M8 12H16M8 15H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                 </button>
+                
                 <div class="dropdown-poly-content right-0 left-auto w-52">
                     <a href="index.html" class="dropdown-item">🏠 Inicio</a>
                     <a href="#" class="dropdown-item">🔥 Tendencias</a>
@@ -182,9 +189,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 </div>
             </div>
         </div>
-
-    </div>
-</nav>
+    </nav>
 
     <main class="w-full px-[1.25rem] py-12">
         <div class="flex flex-col md:flex-row gap-8">
@@ -666,9 +671,6 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     </script>
 </body>
 </html>
-
-
-
 
 
 
