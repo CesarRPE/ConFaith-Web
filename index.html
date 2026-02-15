@@ -506,16 +506,35 @@ onAuthStateChanged(auth, (user) => {
 
 // 5. LOGOUT GLOBAL
 window.handleLogout = function() {
-    signOut(auth).then(() => { window.location.reload(); });
+    signOut(auth).then(() => { 
+        window.location.reload(); 
+    }).catch((error) => {
+        console.error("Error al cerrar sesión:", error);
+    });
 };
 </script>
 
 <script>
 // 6. LÓGICA DE MODALES Y CARDS (Sin cambios)
-function openReg() { document.getElementById('reg-modal').classList.replace('hidden', 'flex'); }
-function closeReg() { document.getElementById('reg-modal').classList.replace('flex', 'hidden'); }
-function openLogin() { document.getElementById('login-modal').classList.replace('hidden', 'flex'); }
-function closeLogin() { document.getElementById('login-modal').classList.replace('flex', 'hidden'); }
+window.openReg = function() { 
+    const modal = document.getElementById('reg-modal');
+    if(modal) modal.classList.replace('hidden', 'flex'); 
+}
+
+window.closeReg = function() { 
+    const modal = document.getElementById('reg-modal');
+    if(modal) modal.classList.replace('flex', 'hidden'); 
+}
+
+window.openLogin = function() { 
+    const modal = document.getElementById('login-modal');
+    if(modal) modal.classList.replace('hidden', 'flex'); 
+}
+
+window.closeLogin = function() { 
+    const modal = document.getElementById('login-modal');
+    if(modal) modal.classList.replace('flex', 'hidden'); 
+}
 
 const cardsData = [
     {cat: "Economía", q: "¿Subirá el precio del pan en Lima antes de junio?"},
@@ -612,6 +631,7 @@ setInterval(nextSlide, 5000);
 </script>
 </body>
 </html>
+
 
 
 
