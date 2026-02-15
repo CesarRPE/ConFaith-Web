@@ -578,9 +578,41 @@ function closeModal() { document.getElementById('bet-modal').classList.replace('
 
 // Inicializar cards
 filterCards('Todos', null);
+// --- LÓGICA DEL CARRUSEL REPARADA ---
+let currentSlide = 0;
+const totalSlides = 6; // Asegúrate de que coincida con el número de imágenes que tienes
+const mainW = document.getElementById('sliderWrapper');
+const mirrorW = document.getElementById('mirrorWrapper');
+
+function updateSlider() {
+    const val = `translateX(-${currentSlide * 100}%)`;
+    if(mainW) {
+        mainW.style.transition = "transform 0.5s ease-in-out";
+        mainW.style.transform = val;
+    }
+    if(mirrorW) {
+        mirrorW.style.transition = "transform 0.5s ease-in-out";
+        mirrorW.style.transform = val;
+    }
+}
+
+// Funciones para los botones de flecha
+window.nextSlide = function() { 
+    currentSlide = (currentSlide + 1) % totalSlides; 
+    updateSlider(); 
+};
+
+window.prevSlide = function() { 
+    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; 
+    updateSlider(); 
+};
+
+// Auto-play cada 5 segundos
+setInterval(nextSlide, 5000);
 </script>
 </body>
 </html>
+
 
 
 
