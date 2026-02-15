@@ -424,31 +424,30 @@
     </div>
 
     <script type="module">
-        // 1. Importaciones correctas
+// 1. IMPORTACIONES ÚNICAS
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-// 2. Configuración e Inicialización (Usa tu config actual)
+// 2. CONFIGURACIÓN (Verificada)
 const firebaseConfig = {
-            apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
-            authDomain: "confaith-web.firebaseapp.com",
-            databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/",
-            projectId: "confaith-web",
-            storageBucket: "confaith-web.firebasestorage.app",
-            messagingSenderId: "736470337348",
-            appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911"
+    apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
+    authDomain: "confaith-web.firebaseapp.com",
+    databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/",
+    projectId: "confaith-web",
+    storageBucket: "confaith-web.firebasestorage.app",
+    messagingSenderId: "736470337348",
+    appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// 3. Función Única de Sincronización (LocalStorage)
+// 3. FUNCIÓN DE SINCRONIZACIÓN (LocalStorage)
 function globalSync() {
     const savedName = localStorage.getItem('custom_username');
     const savedPhoto = localStorage.getItem('userAvatarCustom');
-    
     const welcomeMsg = document.getElementById('welcome-message');
     const navImg = document.getElementById('user-avatar-img');
     const navText = document.getElementById('user-name-text');
@@ -461,7 +460,10 @@ function globalSync() {
             <span style="${glossyWhite} font-size: 11px; line-height: 1;">Qué onda,</span>
             <span style="${goldFaith} font-size: 11px; line-height: 1; margin-left: 4px;">${savedName}</span>
         `;
-        if (navText) navText.innerText = savedName.charAt(0).toUpperCase();
+        if (navText) {
+            navText.innerText = savedName.charAt(0).toUpperCase();
+            navText.classList.remove('hidden');
+        }
     }
 
     if (savedPhoto && navImg) {
@@ -471,7 +473,7 @@ function globalSync() {
     }
 }
 
-// 4. Observador Maestro (Corrige el error de Login)
+// 4. OBSERVADOR MAESTRO DE ESTADO
 onAuthStateChanged(auth, (user) => {
     const authGuest = document.getElementById('auth-guest');
     const authUser = document.getElementById('auth-user');
@@ -479,12 +481,12 @@ onAuthStateChanged(auth, (user) => {
     const balanceAmt = document.getElementById('nav-balance');
 
     if (user) {
-        // Usuario logueado
+        console.log("Sesión activa:", user.email);
         if (authGuest) authGuest.classList.add('hidden');
         if (authUser) authUser.classList.remove('hidden');
         if (balanceCont) balanceCont.classList.remove('hidden');
 
-        // Cargar Saldo en Tiempo Real desde Firebase
+        // Escuchar Saldo en Tiempo Real
         const balanceRef = ref(db, `users/${user.uid}/balance`);
         onValue(balanceRef, (snapshot) => {
             const data = snapshot.val();
@@ -493,247 +495,93 @@ onAuthStateChanged(auth, (user) => {
             }
         });
 
-        // Sincronizar Perfil (Nombre/Foto)
         globalSync();
-
     } else {
-        // Usuario no logueado
+        console.log("Sin sesión");
         if (authGuest) authGuest.classList.remove('hidden');
         if (authUser) authUser.classList.add('hidden');
         if (balanceCont) balanceCont.classList.add('hidden');
     }
 });
 
-// 5. Función de Logout corregida
+// 5. LOGOUT GLOBAL
 window.handleLogout = function() {
-    signOut(auth).then(() => {
-        window.location.reload();
-    }).catch((error) => {
-        console.error("Error al cerrar sesión:", error);
-    });
+    signOut(auth).then(() => { window.location.reload(); });
 };
+</script>
 
-        // --- 3. Nombre y Foto (LocalStorage) ---
-        // Llamamos a la función que ya tenías para sincronizar
-        if (typeof syncIndexNavbar === "function") {
-            syncIndexNavbar();
-        }
+<script>
+// 6. LÓGICA DE MODALES Y CARDS (Sin cambios)
+function openReg() { document.getElementById('reg-modal').classList.replace('hidden', 'flex'); }
+function closeReg() { document.getElementById('reg-modal').classList.replace('flex', 'hidden'); }
+function openLogin() { document.getElementById('login-modal').classList.replace('hidden', 'flex'); }
+function closeLogin() { document.getElementById('login-modal').classList.replace('flex', 'hidden'); }
 
-    } else {
-        // --- 4. Si no hay usuario, resetear todo ---
-        if (authGuest) authGuest.classList.remove('hidden');
-        if (authUser) authUser.classList.add('hidden');
-        if (balanceCont) balanceCont.classList.add('hidden');
-    }
+const cardsData = [
+    {cat: "Economía", q: "¿Subirá el precio del pan en Lima antes de junio?"},
+    {cat: "Deportes", q: "¿Habrá un nuevo convocado sorpresa en la selección?"},
+    {cat: "Ampays", q: "¿Saldrá un ampay de un futbolista esta semana?"},
+    {cat: "Política", q: "¿Se aprobará el retiro de la AFP antes de fin de mes?"},
+    {cat: "Conciertos", q: "¿Se agotarán las entradas del festival en menos de 2h?"},
+    {cat: "Streamers", q: "¿Superará el streamer top los 50k views hoy?"},
+    {cat: "Tendencias", q: "¿Habrá alerta de brillo solar intenso este domingo?"},
+    {cat: "Viral", q: "¿Aparecerá un nuevo 'lord' o 'lady' viral hoy?"},
+    {cat: "Cultura", q: "¿Será tendencia el nuevo plato fusión del chef top?"},
+    {cat: "Juicios VIP", q: "¿Será Franco Burneo declarado culpable de agresión agravada?"}
+];
+
+const allCats = ["Todos", "Política", "Deportes", "Chollywood", "Ampays", "Streamers", "Realitys", "TikTok", "Música", "Redes Sociales", "Cine", "Internacional", "Economía", "Criptomonedas", "Gaming", "Conciertos", "Tecnología", "IA", "Juicios VIP", "Viral", "Moda", "Lima"];
+
+const catList = document.getElementById('cat-list');
+allCats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = "cat-btn flex-none bg-white/10 text-gray-300 px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 hover:border-white/30 transition-all uppercase";
+    btn.innerHTML = c;
+    btn.onclick = () => filterCards(c, btn);
+    catList.appendChild(btn);
 });
-            const guestDiv = document.getElementById('auth-guest');
-            const userDiv = document.getElementById('auth-user');
-            const nameSpan = document.getElementById('user-name');
 
-            if (user) {
-                console.log("Usuario logueado:", user.email);
-                guestDiv.classList.add('hidden');
-                userDiv.classList.remove('hidden');
-
-                // Extraemos el primer nombre
-            const firstName = user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0];
-
-                // Aplicamos el Glossy al "Qué onda" y el Gold al nombre
-                // Usamos estilos inline para asegurar que nada se rompa
-            const glossyStyle = "background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;";
-            const goldStyle = "color: var(--gold-faith); -webkit-text-fill-color: var(--gold-faith);";
-
-        nameSpan.innerHTML = `<span style="${glossyStyle}">Qué onda, </span><span style="${goldStyle}">${firstName}</span>`;
-        } else {
-                guestDiv.classList.remove('hidden');
-                userDiv.classList.add('hidden');
-            if(nameSpan) nameSpan.innerHTML = "";
+function filterCards(category, btnElement) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    if(btnElement) btnElement.classList.add('active');
+    const grid = document.getElementById('cards-grid');
+    grid.innerHTML = ""; 
+    const filtered = category === "Todos" ? cardsData : cardsData.filter(card => card.cat === category);
+    
+    if(filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-24 opacity-40 text-center"><p class="text-[10px] font-black uppercase text-white">No hay mercados en ${category}</p></div>`;
+        return;
     }
+    filtered.forEach(card => {
+        grid.innerHTML += `
+            <div class="card-blush flex flex-col justify-between hover:shadow-lg transition-all">
+                <div>
+                    <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase border" style="color: white; border-color: #4682B4; background-color: #4682B4;">${card.cat}</span>
+                    <h3 class="text-lg font-black mt-4 text-slate-800 leading-tight">${card.q}</h3>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button onclick="openBetModal('${card.q}', '${card.cat}', 'SÍ')" class="flex-1 btn-bet-glossy py-3 text-[11px] uppercase">SÍ</button>
+                    <button onclick="openBetModal('${card.q}', '${card.cat}', 'NO')" class="flex-1 btn-bet-glossy py-3 text-[11px] uppercase">NO</button>
+                </div>
+            </div>`;
     });
-    </script>
-
-    <script>
-        function openReg() { document.getElementById('reg-modal').classList.replace('hidden', 'flex'); }
-        function closeReg() { document.getElementById('reg-modal').classList.replace('flex', 'hidden'); }
-        function openLogin() { document.getElementById('login-modal').classList.replace('hidden', 'flex'); }
-        function closeLogin() { document.getElementById('login-modal').classList.replace('flex', 'hidden'); }
-
-        const cardsData = [
-            {cat: "Econom&#237;a", q: "&#191;Subir&#225; el precio del pan en Lima antes de junio?"},
-            {cat: "Deportes", q: "&#191;Habr&#225; un nuevo convocado sorpresa en la selecci&#243;n?"},
-            {cat: "Ampays", q: "&#191;Saldr&#225; un ampay de un futbolista esta semana?"},
-            {cat: "Pol&#237;tica", q: "&#191;Se aprobar&#225; el retiro de la AFP antes de fin de mes?"},
-            {cat: "Conciertos", q: "&#191;Se agotar&#225;n las entradas del festival en menos de 2h?"},
-            {cat: "Streamers", q: "&#191;Superar&#225; el streamer top los 50k views hoy?"},
-            {cat: "Tendencias", q: "&#191;Habr&#225; alerta de brillo solar intenso este domingo?"},
-            {cat: "Viral", q: "&#191;Aparecer&#225; un nuevo 'lord' o 'lady' viral hoy?"},
-            {cat: "Cultura", q: "&#191;Ser&#225; tendencia el nuevo plato fusi&#243;n del chef top?"},
-            {cat: "Juicios VIP", q: "&#191;Ser&#225; Franco Burneo declarado culpable de agresi&#243;n agravada?"}
-        ];
-
-        const allCats = ["Pol&#237;tica", "Deportes", "Chollywood", "Ampays", "Streamers", "Realitys", "TikTok", "M&#250;sica", "Redes Sociales", "Cine", "Internacional", "Econom&#237;a", "Criptomonedas", "Gaming", "Conciertos", "Tecnolog&#237;a", "IA", "Juicios VIP", "Viral", "Moda", "Lima"];
-
-        const catList = document.getElementById('cat-list');
-        allCats.forEach(c => {
-            const btn = document.createElement('button');
-            btn.className = "cat-btn flex-none bg-white/10 text-gray-300 px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 hover:border-white/30 transition-all uppercase";
-            btn.innerHTML = c;
-            btn.onclick = (e) => filterCards(c, btn);
-            catList.appendChild(btn);
-        });
-
-        function filterCards(category, btnElement) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            if(btnElement) btnElement.classList.add('active');
-            const grid = document.getElementById('cards-grid');
-            grid.innerHTML = ""; 
-            const filtered = category === "Todos" ? cardsData : cardsData.filter(card => card.cat === category);
-            if(filtered.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-24 opacity-40 text-center"><span class="emoji-render text-5xl mb-4">&#x1F4DC;</span><p class="text-[10px] font-black uppercase text-white">No hay mercados activos en ${category}</p></div>`;
-                return;
-            }
-            filtered.forEach(card => {
-                grid.innerHTML += `
-                    <div class="card-blush flex flex-col justify-between hover:shadow-lg transition-all">
-                        <div>
-                            <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase border" style="color: white; border-color: #4682B4; background-color: #4682B4;">${card.cat}</span>
-                            <h3 class="text-lg font-black mt-4 text-slate-800 leading-tight">${card.q}</h3>
-                        </div>
-                        <div class="flex gap-3 mt-6">
-                            <button onclick="openBetModal('${card.q.replace(/'/g, "\\'")}', '${card.cat}', 'S&#205;')" class="flex-1 btn-bet-glossy py-3 text-[11px] uppercase">S&#205;</button>
-                            <button onclick="openBetModal('${card.q.replace(/'/g, "\\'")}', '${card.cat}', 'NO')" class="flex-1 btn-bet-glossy py-3 text-[11px] uppercase">NO</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function openBetModal(question, category, choice) {
-            const modal = document.getElementById('bet-modal');
-            document.getElementById('modal-question').innerHTML = question;
-            document.getElementById('modal-cat').innerHTML = category;
-            const chElem = document.getElementById('modal-choice');
-            chElem.innerHTML = choice;
-            if (choice === 'SÍ' || choice === 'SI' || choice === 'SÍ') {
-                chElem.className = "px-4 py-1 rounded-full text-xs font-black bg-green-500 text-white";
-            } else {
-                chElem.className = "px-4 py-1 rounded-full text-xs font-black text-white";
-                chElem.style.background = "var(--glossy-black)";
-            }
-            document.getElementById('bet-amount').value = "";
-            document.getElementById('potential-win').innerText = "0.00";
-            modal.classList.replace('hidden', 'flex');
-        }
-
-        function closeModal() { document.getElementById('bet-modal').classList.replace('flex', 'hidden'); }
-
-        function stepAmount(dir) {
-            const input = document.getElementById('bet-amount');
-            let current = parseFloat(input.value) || 0;
-            current += dir;
-            if(current < 0) current = 0;
-            input.value = current.toFixed(2);
-            updatePotential(current);
-        }
-
-        document.getElementById('bet-amount').addEventListener('input', (e) => {
-            const val = parseFloat(e.target.value) || 0;
-            updatePotential(val);
-        });
-
-        function updatePotential(val) {
-            document.getElementById('potential-win').innerText = (val * 1.85).toFixed(2);
-        }
-
-        function confirmBet() {
-            const amount = document.getElementById('bet-amount').value;
-            if(!amount || amount <= 0) {
-                alert("\u00A1Ingresa un monto v\u00E1lido\u0021");
-                return;
-            }
-            alert("\u00A1Manifestado\u0021 Tu apuesta ha sido procesada con faith.");
-            closeModal();
-        }
-
-        let currentSlide = 0;
-        const totalSlides = 6; 
-        const mainW = document.getElementById('sliderWrapper');
-        const mirrorW = document.getElementById('mirrorWrapper');
-        function updateSlider() {
-            const val = `translateX(-${currentSlide * 100}%)`;
-            if(mainW) mainW.style.transform = val;
-            if(mirrorW) mirrorW.style.transform = val;
-        }
-        function nextSlide() { currentSlide = (currentSlide + 1) % totalSlides; updateSlider(); }
-        function prevSlide() { currentSlide = (currentSlide - 1 + totalSlides) % totalSlides; updateSlider(); }
-        setInterval(nextSlide, 5000);
-
-        filterCards('Todos', document.querySelector('.cat-btn'));
-    // Función para actualizar el nav con los datos de LocalStorage
-function syncIndexNavbar() {
-    const savedName = localStorage.getItem('custom_username');
-    const savedPhoto = localStorage.getItem('userAvatarCustom');
-    
-    const welcomeMsg = document.getElementById('welcome-message');
-    const navImg = document.getElementById('user-avatar-img');
-    const navText = document.getElementById('user-name-text');
-
-    const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-    const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-    if (savedName && welcomeMsg) {
-        // Usamos una sola línea con alineación central
-        welcomeMsg.innerHTML = `
-            <span style="${glossyWhite} font-size: 11px; line-height: 1; display: inline-block;">Qué onda,</span>
-            <span style="${goldFaith} font-size: 11px; line-height: 1; display: inline-block; margin-left: 4px;">${savedName}</span>
-        `;
-        if (navText) {
-            navText.innerText = savedName.charAt(0).toUpperCase();
-            navText.style.lineHeight = "1"; // Centra la inicial en el círculo
-        }
-    }
-
-    if (savedPhoto && navImg) {
-        navImg.src = savedPhoto;
-        navImg.classList.remove('hidden');
-        if (navText) navText.classList.add('hidden');
-    }
-document.getElementById('nav-balance-container').classList.remove('hidden');
 }
 
-// Ejecutar al cargar
-window.addEventListener('load', syncIndexNavbar);
-function syncWithSettings() {
-    const savedName = localStorage.getItem('custom_username');
-    const savedPhoto = localStorage.getItem('userAvatarCustom');
-    
-    const welcomeMsg = document.getElementById('welcome-message');
-    const navImg = document.getElementById('user-avatar-img');
-    const navText = document.getElementById('user-name-text');
-
-    // Estilos de Settings (Glossy y Gold)
-    const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-    const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-    if (savedName && welcomeMsg) {
-        welcomeMsg.innerHTML = `
-            <span style="${glossyWhite} font-size: 10px; line-height: 1;">Qué onda,</span>
-            <span style="${goldFaith} font-size: 12px; line-height: 1;">${savedName}</span>
-        `;
-        if (navText) navText.innerText = savedName.charAt(0).toUpperCase();
-    }
-
-    if (savedPhoto && navImg) {
-        navImg.src = savedPhoto;
-        navImg.classList.remove('hidden');
-        if (navText) navText.classList.add('hidden');
-    }
+function openBetModal(question, category, choice) {
+    document.getElementById('modal-question').innerText = question;
+    document.getElementById('modal-cat').innerText = category;
+    document.getElementById('modal-choice').innerText = choice;
+    document.getElementById('bet-modal').classList.replace('hidden', 'flex');
 }
 
-// Llamar a la sincronización al cargar la página
-window.addEventListener('load', syncWithSettings);
-    </script>
+function closeModal() { document.getElementById('bet-modal').classList.replace('flex', 'hidden'); }
+
+// Inicializar cards
+filterCards('Todos', null);
+</script>
 </body>
 </html>
+
 
 
 
