@@ -407,7 +407,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                             <div id="seguridad" class="content-section ...">
         </div>
 
-    <div id="soporte" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+    <div id="soporte" class="content-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
     <div class="flex justify-between items-start mb-6">
         <div>
             <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Centro de Ayuda</p>
@@ -620,14 +620,29 @@ h1, h2, h3, h4, h5, h6, b, strong {
             container.appendChild(button);
         }
 
-        function showSection(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const targetSection = document.getElementById(id);
-            if(targetSection) targetSection.classList.add('active');
-            const targetBtn = document.getElementById('btn-' + id);
-            if(targetBtn) targetBtn.classList.add('active');
-        }
+        function showSection(sectionId) {
+    // 1. Ocultar todas las secciones de contenido
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.add('hidden');
+    });
+
+    // 2. Mostrar la sección seleccionada
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    }
+
+    // 3. Quitar el estado 'active' de TODOS los botones del menú
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    // 4. Activar el botón correspondiente (el ID del botón debe ser btn- + nombre de sección)
+    const activeBtn = document.getElementById('btn-' + sectionId);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+    }
+}
         function openManualCardModal() {
     document.getElementById('card-modal').classList.remove('hidden');
     document.getElementById('card-modal').classList.add('flex');
@@ -812,6 +827,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
