@@ -425,7 +425,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
@@ -489,29 +489,38 @@
         };
 
         onAuthStateChanged(auth, (user) => {
+    const authGuest = document.getElementById('auth-guest');
+    const authUser = document.getElementById('auth-user');
     const balanceCont = document.getElementById('nav-balance-container');
     const balanceElement = document.getElementById('nav-balance');
 
     if (user) {
-        // 1. Mostrar el contenedor del saldo
+        // --- 1. Gestión de Interfaz ---
+        if (authGuest) authGuest.classList.add('hidden');
+        if (authUser) authUser.classList.remove('hidden');
         if (balanceCont) balanceCont.classList.remove('hidden');
 
-        // 2. Traer el Saldo en Tiempo Real
-        const balanceRef = ref(db, 'users/' + user.uid + '/balance');
+        // --- 2. Saldo en Tiempo Real (Firebase) ---
+        const balanceRef = ref(db, `users/${user.uid}/balance`);
         onValue(balanceRef, (snapshot) => {
             const data = snapshot.val();
             if (balanceElement) {
-                // Si el dato no existe en Firebase, ponemos 0
+                // Si no hay saldo en Firebase, muestra 0.00
                 const monto = data || 0;
                 balanceElement.innerText = `S/ ${monto.toFixed(2)}`;
             }
         });
 
-        // 3. Ejecutar tu función de sincronización de nombre/foto (LocalStorage)
-        syncIndexNavbar(); 
+        // --- 3. Nombre y Foto (LocalStorage) ---
+        // Llamamos a la función que ya tenías para sincronizar
+        if (typeof syncIndexNavbar === "function") {
+            syncIndexNavbar();
+        }
 
     } else {
-        // Si sale de la sesión, ocultamos todo
+        // --- 4. Si no hay usuario, resetear todo ---
+        if (authGuest) authGuest.classList.remove('hidden');
+        if (authUser) authUser.classList.add('hidden');
         if (balanceCont) balanceCont.classList.add('hidden');
     }
 });
@@ -723,6 +732,7 @@ window.addEventListener('load', syncWithSettings);
     </script>
 </body>
 </html>
+
 
 
 
