@@ -160,9 +160,10 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="dropdown-poly relative">
                 <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
-                    <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-[#b8860b] to-[#ffd700] flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-[#b8860b]/20">
-                        <span id="user-name-text">C</span>
-                    </div>
+                    <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
+    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
+    <span id="user-name-text" class="text-black font-black text-lg">C</span>
+</div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
@@ -245,15 +246,17 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Avatar del Perfil</label>
                 </div>
                 <div class="flex gap-4">
-                    <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-1 transition-all" style="focus-within: ring-color: var(--gold-faith);">
-                        <span id="file-name-display" class="truncate font-medium">Selecciona una imagen</span>
-                    </div>
-                    <button type="button" onclick="document.getElementById('avatar-upload-input').click();" 
-                        class="bg-white/5 hover:bg-white/10 text-white text-[10px] font-black px-8 py-4 rounded-2xl transition-all border border-white/10 uppercase tracking-[0.2em]">
-                        Examinar
-                    </button>
-                    <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
-                </div>
+    <div class="flex-1 bg-[#0f172a] border border-white/10 rounded-2xl px-6 py-4 text-gray-400 text-sm flex items-center">
+        <span id="file-name-display">Selecciona una imagen</span>
+    </div>
+    
+    <button type="button" onclick="document.getElementById('avatar-upload-input').click();" 
+        class="bg-white/5 hover:bg-white/10 text-white text-[10px] font-black px-8 py-4 rounded-2xl transition-all border border-white/10 uppercase tracking-[0.2em]">
+        Examinar
+    </button>
+
+    <input type="file" id="avatar-upload-input" class="hidden" accept="image/*">
+</div>
             </div>
 
             <div class="flex flex-col gap-3">
@@ -710,23 +713,24 @@ document.getElementById('payment-form')?.addEventListener('submit', function(e) 
     document.getElementById('avatar-upload-input').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
-        // Mostrar nombre del archivo en el recuadro
+        // 1. Actualizar el texto del campo "Examinar"
         document.getElementById('file-name-display').innerText = file.name;
-        document.getElementById('file-name-display').classList.remove('text-gray-400');
-        document.getElementById('file-name-display').classList.add('text-white');
 
-        // Procesar imagen para el Nav (el círculo amarillo)
         const reader = new FileReader();
         reader.onload = function(event) {
             const imageUrl = event.target.result;
+            
+            // 2. Actualizar el avatar del NAV (el círculo amarillo arriba a la derecha)
             const navImg = document.getElementById('user-avatar-img');
-            const navText = document.getElementById('user-name-text');
+            const navText = document.getElementById('user-name-text'); // La "C" o inicial
             
             if(navImg) {
                 navImg.src = imageUrl;
-                navImg.classList.remove('hidden');
-                navText.classList.add('hidden');
+                navImg.classList.remove('hidden'); // Mostramos la foto
+                if(navText) navText.classList.add('hidden'); // Ocultamos la inicial
             }
+
+            // 3. Guardar en memoria del navegador para que no se borre al refrescar
             localStorage.setItem('userAvatarCustom', imageUrl);
         };
         reader.readAsDataURL(file);
@@ -757,6 +761,7 @@ window.addEventListener('load', () => {
     </script>
 </body>
 </html>
+
 
 
 
