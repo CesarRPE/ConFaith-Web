@@ -128,71 +128,37 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </head>
 <body>
 
-    <nav class="navbar-custom relative shadow-lg">
-    <div class="w-full px-4 h-16 flex items-center justify-between">
+    <nav class="bg-[#121212]/80 backdrop-blur-md border-b border-white/5 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         
-        <div class="flex flex-col justify-center">
-            <a href="index.html" class="brand-container flex flex-col hover:opacity-90 transition-opacity w-fit">
-                <div class="flex items-baseline">
-                    <span class="brand-con text-2xl">Con</span>
-                    <span class="brand-faith text-3xl">Faith</span>
-                </div>
-                <p class="text-[10px] font-medium text-gray-400 mt-0.5 pl-1 hidden sm:block" style="font-family: 'Gelapitto', cursive;">
-                    Manifestando con faith la haces 🙌
-                </p>
-            </a>
+        <div onclick="window.location.href='index.html'" class="flex items-center gap-2 cursor-pointer">
+            <div class="w-8 h-8 bg-[#b8860b] rounded-lg flex items-center justify-center shadow-lg shadow-yellow-900/20">
+                <span class="text-white font-black text-xl italic">C</span>
+            </div>
+            <h1 class="text-white font-black text-lg tracking-tighter italic uppercase">Con<span class="text-[#b8860b]">Faith</span></h1>
         </div>
 
-        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:block w-full max-w-xl z-10">
-            <div class="relative">
-                <input type="text" placeholder="Buscar mercados..." class="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[11px] rounded-full py-2 px-4 pl-10 focus:outline-none focus:bg-white/20 transition-all placeholder:text-gray-500 shadow-sm">
-                <div class="absolute left-3 top-1/2 -translate-y-1/2">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+        <div class="flex items-center gap-4">
+            <div id="nav-balance-container" onclick="showSection('billetera')" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
+                <span class="text-[8px] font-black text-white/60 uppercase tracking-tighter">Saldo</span>
+                <span id="nav-balance" class="text-[11px] font-black text-[#b8860b]" style="text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
+                    S/ 0.00
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3 pl-3 border-l border-white/10">
+                <div id="welcome-message" class="hidden md:block">
+                    </div>
+                <div class="relative group cursor-pointer" onclick="showSection('perfil')">
+                    <div class="w-9 h-9 rounded-full border-2 border-[#b8860b] overflow-hidden bg-slate-800 flex items-center justify-center shadow-lg shadow-yellow-900/10">
+                        <img id="user-avatar-img" src="" alt="Profile" class="w-full h-full object-cover hidden">
+                        <span id="user-name-text" class="text-white font-black text-sm hidden"></span>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="flex items-center gap-4 z-20">
-            <div id="nav-balance-container"></div>
-
-            <div class="dropdown-poly relative">
-                <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
-                    <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
-                    <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
-    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-    <span id="user-name-text" class="text-black font-black text-lg">C</span>
-</div>
-                    <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </div>
-                <div class="dropdown-poly-content">
-                    <a href="settings.html" class="dropdown-item">⚙️ Ajustes</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" onclick="handleLogout()" class="dropdown-item text-red-400">🚪 Cerrar Sesión</a>
-                </div>
-            </div>
-
-            <div class="dropdown-poly relative">
-                <button id="mobile-menu-button" class="p-2 text-gray-400 hover:text-[#b8860b] transition-colors flex items-center justify-center">
-                    <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
-                        <path d="M8 9H16M8 12H16M8 15H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </button>
-                
-                <div class="dropdown-poly-content right-0 left-auto w-52">
-                    <a href="index.html" class="dropdown-item">🏠 Inicio</a>
-                    <a href="#" class="dropdown-item">🔥 Tendencias</a>
-                    <a href="#" class="dropdown-item">🏆 Leaderboard</a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" onclick="showSection('soporte')" class="dropdown-item text-gray-400">🆘 Soporte</a>
-                </div>
-            </div>
-        </div>
-    </nav>
+    </div>
+</nav>
 
     <main class="w-full px-[1.25rem] py-12">
         <div class="flex flex-col md:flex-row gap-8">
@@ -506,72 +472,45 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
     onAuthStateChanged(auth, (user) => {
-        const nameText = document.getElementById('user-name-text');
-        const welcomeMsg = document.getElementById('welcome-message');
-        const balanceContainer = document.getElementById('nav-balance-container');
-        const inputUser = document.getElementById('input-username');
-        const inputBio = document.getElementById('input-bio');
-        const navImg = document.getElementById('user-avatar-img');
-        
-        if (user) {
-            // Estilos Maestros (Definidos aquí para que ambos listeners los usen)
-            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+    const welcome = document.getElementById('welcome-message');
+    const avatarImg = document.getElementById('user-avatar-img');
+    const avatarTxt = document.getElementById('user-name-text');
+    const bAmt = document.getElementById('nav-balance');
 
-            // PRE-DIBUJAR ESTRUCTURA (Solo una vez si no existe)
-            // Dentro de onAuthStateChanged en settings.html
-if (balanceContainer && !document.getElementById('nav-balance')) {
-    balanceContainer.innerHTML = `
-        <div onclick="window.showSection('billetera')" 
-             class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner cursor-pointer hover:bg-white/10 transition-all active:scale-95">
-            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
-        </div>
-    `;
-}
+    if (user) {
+        // Actualizar el saldo en la pastilla dorada
+        onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+            if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
+        });
 
-            // A. Escuchar Saldo en Tiempo Real (Listener Independiente)
-            onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
-                const saldo = snapshot.val() || 0;
-                window.actualizarSaldo(saldo); 
-            });
+        // Cargar perfil con el estilo "Qué onda,"
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+            const photo = data?.photo || user.photoURL;
 
-            // B. Escuchar Perfil en la Nube
-            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-                const data = snapshot.val();
-                
-                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-                const initial = firstName.charAt(0).toUpperCase();
-                const photo = data?.photo || user.photoURL;
+            if (welcome) {
+                welcome.innerHTML = `
+                    <div class="flex items-center gap-1.5 mr-1">
+                        <span class="text-white font-extrabold text-[11px]">Qué onda,</span>
+                        <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
+                    </div>`;
+            }
 
-                // Rellenar Inputs
-                if(inputUser) inputUser.value = data?.username || "";
-                if(inputBio) inputBio.value = data?.bio || "";
-
-                // Actualizar interfaz de bienvenida
-                if(nameText) nameText.innerText = initial;
-                if(welcomeMsg) {
-                    welcomeMsg.innerHTML = `
-                        <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                        <span style="${goldFaith} font-size: 11px;">${firstName}</span>
-                    `;
-                }
-
-                // Actualizar Foto
-                if (photo && navImg) {
-                    navImg.src = photo;
-                    navImg.classList.remove('hidden');
-                    if(nameText) nameText.classList.add('hidden');
-                }
-                
-                // IMPORTANTE: Se eliminó el balanceContainer.innerHTML de aquí 
-                // para evitar que pise el saldo real.
-            });
-
-        } else {
-            window.location.href = "index.html";
-        }
-    });
+            if (photo && avatarImg) {
+                avatarImg.src = photo;
+                avatarImg.classList.remove('hidden');
+                avatarTxt?.classList.add('hidden');
+            } else if (avatarTxt) {
+                avatarTxt.innerText = name.charAt(0).toUpperCase();
+                avatarTxt.classList.remove('hidden');
+                avatarImg?.classList.add('hidden');
+            }
+        });
+    } else {
+        window.location.href = 'index.html';
+    }
+});
 
     // --- 4. FUNCIONES GLOBALES ---
     window.handleLogout = async () => {
@@ -669,6 +608,7 @@ window.addEventListener('load', () => {
 </script>
 </body>
 </html>
+
 
 
 
