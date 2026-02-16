@@ -548,26 +548,38 @@ onAuthStateChanged(auth, (user) => {
             if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
         });
 
-        // Sincronizar UI con LocalStorage
-        const name = localStorage.getItem('custom_username');
-        const photo = localStorage.getItem('userAvatarCustom');
-        const welcome = document.getElementById('welcome-message');
-        const avatarImg = document.getElementById('user-avatar-img');
-        const avatarTxt = document.getElementById('user-name-text');
+       // --- Sincronización Real con la Nube (Firebase) ---
+const welcome = document.getElementById('welcome-message');
+const avatarImg = document.getElementById('user-avatar-img');
+const avatarTxt = document.getElementById('user-name-text');
 
-        if (name && welcome) {
-            welcome.innerHTML = `<span style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 11px;">Qué onda,</span> <span style="color: #b8860b; font-weight: 900; font-size: 11px; margin-left: 4px;">${name}</span>`;
-            if (avatarTxt) avatarTxt.innerText = name.charAt(0).toUpperCase();
-        }
-        if (photo && avatarImg) {
-            avatarImg.src = photo;
-            avatarImg.classList.remove('hidden');
-            avatarTxt?.classList.add('hidden');
-        }
-    } else {
-        guest?.classList.remove('hidden');
-        uic?.classList.add('hidden');
-        bCont?.classList.add('hidden');
+// Escuchamos los cambios en el perfil del usuario en la base de datos
+onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+    const data = snapshot.val();
+    
+    // 1. Prioridad al nombre: Nube > Google > "Usuario"
+    const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+    
+    // 2. Prioridad a la foto: Nube > Google > Nada
+    const photo = data?.photo || user.photoURL;
+
+    // Actualizamos el Saludo
+    if (welcome) {
+        welcome.innerHTML = `
+            <span style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 11px;">Qué onda, </span>
+            <span style="color: #b8860b; font-weight: 900; font-size: 11px; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);">${name}</span>
+        `;
+    }
+
+    // Actualizamos el Avatar
+    if (photo && avatarImg) {
+        avatarImg.src = photo;
+        avatarImg.classList.remove('hidden');
+        if (avatarTxt) avatarTxt.classList.add('hidden');
+    } else if (avatarTxt) {
+        avatarTxt.innerText = name.charAt(0).toUpperCase();
+        avatarTxt.classList.remove('hidden');
+        if (avatarImg) avatarImg.classList.add('hidden');
     }
 });
 
@@ -671,6 +683,7 @@ onAuthStateChanged(auth, (user) => {
 </script>
 </body>
 </html>
+
 
 
 
