@@ -213,13 +213,11 @@
 
         <div class="flex items-center gap-4">
     
-    <div id="nav-balance-container" onclick="window.location.href='settings.html?section=billetera'" class="hidden cursor-pointer flex flex-col items-end justify-center px-3 py-1 bg-white/5 rounded-xl border border-white/10 shadow-inner hover:bg-white/10 transition-all active:scale-95 group">
-     <span class="text-[7px] uppercase tracking-widest font-black" style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-         SALDO
-     </span>
-     <span id="nav-balance" class="text-[11px] leading-none" style="color: #b8860b; font-weight: 900; text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
-         S/ 0.00
-     </span>
+    <div id="nav-balance-container" class="hidden cursor-pointer flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
+    <span class="text-[8px] font-black text-white/60 uppercase tracking-tighter">Saldo</span>
+    <span id="nav-balance" class="text-[11px] font-black text-[#b8860b]" style="text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
+        S/ 0.00
+    </span>
 </div>
 
             <div id="auth-guest" class="flex gap-2">
@@ -693,6 +691,7 @@ onAuthStateChanged(auth, (user) => {
     const guest = document.getElementById('auth-guest');
     const uic = document.getElementById('auth-user');
     const bCont = document.getElementById('nav-balance-container');
+    const bAmt = document.getElementById('nav-balance');
     const welcome = document.getElementById('welcome-message');
     const avatarImg = document.getElementById('user-avatar-img');
     const avatarTxt = document.getElementById('user-name-text');
@@ -700,46 +699,44 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         guest?.classList.add('hidden');
         uic?.classList.remove('hidden');
-        bCont?.classList.remove('hidden');
+        
+        if (bCont) {
+            bCont.classList.remove('hidden');
+            bCont.onclick = () => window.location.href = 'settings.html?section=billetera';
+        }
 
-        // 1. Escuchar Saldo
+        // Escuchar Saldo
         onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
-            const val = snap.val() !== null ? snap.val() : 0;
-            if(document.getElementById('nav-balance')) {
-                document.getElementById('nav-balance').innerText = `S/ ${parseFloat(val).toFixed(2)}`;
-            }
+            if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
         });
 
-        // 2. Escuchar Perfil (Foto y Nombre)
+        // Escuchar Perfil (Foto y Nombre según imagen)
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
             const data = snapshot.val();
-            // Prioridad de nombre: DB > Google > "Usuario"
             const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
-            // Prioridad de foto: DB > Google
             const photo = data?.photo || user.photoURL;
 
-            // Renderizar Mensaje de Bienvenida (Estilo Glossy Restaurado)
+            // Welcome Message idéntico a la imagen_a4eaca.png
             if (welcome) {
                 welcome.innerHTML = `
-                    <div class="flex flex-col items-end leading-tight mr-2">
-                        <span style="background: linear-gradient(180deg, #FFFFFF 0%, #999 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: 1px;">HOLA,</span>
-                        <span style="color: #b8860b; font-weight: 900; font-size: 12px; text-shadow: 0 0 12px rgba(184,134,11,0.4);">${name}</span>
+                    <div class="flex items-center gap-1.5 mr-1">
+                        <span class="text-white font-extrabold text-[11px]">Qué onda,</span>
+                        <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
                     </div>
                 `;
             }
 
-            // Renderizar Avatar
+            // Actualización de Foto de Perfil
             if (photo && avatarImg) {
                 avatarImg.src = photo;
-                avatarImg.classList.remove('hidden'); // Mostrar imagen
-                avatarTxt?.classList.add('hidden');   // Ocultar texto
+                avatarImg.classList.remove('hidden');
+                avatarTxt?.classList.add('hidden');
             } else if (avatarTxt) {
                 avatarTxt.innerText = name.charAt(0).toUpperCase();
-                avatarTxt.classList.remove('hidden'); // Mostrar texto
-                avatarImg?.classList.add('hidden');   // Ocultar imagen
+                avatarTxt.classList.remove('hidden');
+                avatarImg?.classList.add('hidden');
             }
         });
-
     } else {
         guest?.classList.remove('hidden');
         uic?.classList.add('hidden');
@@ -779,6 +776,7 @@ onAuthStateChanged(auth, (user) => {
 </script>
 </body>
 </html>
+
 
 
 
