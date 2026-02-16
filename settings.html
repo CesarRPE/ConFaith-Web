@@ -844,9 +844,17 @@ window.addEventListener('load', () => {
     // Muestra solo el seleccionado
     document.getElementById(tabId).classList.remove('hidden');
 }
+    window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get('section');
+    if (section && typeof window.showSection === 'function') {
+        window.showSection(section);
+    }
+});
     </script>
 </body>
 </html>
+
 
 
 
