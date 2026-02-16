@@ -514,66 +514,63 @@ h1, h2, h3, h4, h5, h6, b, strong {
         const navImg = document.getElementById('user-avatar-img');
         
         if (user) {
-            // A. Escuchar Saldo en Tiempo Real (Actualización Instantánea)
-onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
-    const saldo = snapshot.val() || 0;
-    const formatted = parseFloat(saldo).toFixed(2);
+        // --- 1. PREPARAR LA ESTRUCTURA (Solo una vez) ---
+        // Definimos los estilos aquí para usarlos en ambas secciones
+        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-    // 1. Actualizar Saldo en el NAV (Barra superior)
-    const navBal = document.getElementById('nav-balance');
-    if (navBal) navBal.innerText = `S/ ${formatted}`;
-
-    // 2. Actualizar Saldo en la sección principal (Si el usuario está ahí)
-    const mainBal = document.getElementById('main-balance');
-    if (mainBal) mainBal.innerText = `S/ ${formatted}`;
-});
-
-            // B. Escuchar Perfil en la Nube (Firebase)
-            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-                const data = snapshot.val();
-                
-                // Prioridad: Nube > Google > Email
-                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-                const initial = firstName.charAt(0).toUpperCase();
-                const photo = data?.photo || user.photoURL;
-
-                const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-                const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-                // Rellenar Inputs de configuración
-                if(inputUser) inputUser.value = data?.username || "";
-                if(inputBio) inputBio.value = data?.bio || "";
-
-                // Actualizar interfaz
-                if(nameText) nameText.innerText = initial;
-                if(welcomeMsg) {
-                    welcomeMsg.innerHTML = `
-                        <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                        <span style="${goldFaith} font-size: 11px;">${firstName}</span>
-                    `;
-                }
-
-                // Actualizar Foto (Si hay en la nube)
-                if (photo && navImg) {
-                    navImg.src = photo;
-                    navImg.classList.remove('hidden');
-                    if(nameText) nameText.classList.add('hidden');
-                }
-
-                if(balanceContainer) {
-                    balanceContainer.innerHTML = `
-                        <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
-                            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
-                        </div>
-                    `;
-                }
-            });
-
-        } else {
-            window.location.href = "index.html";
+        if(balanceContainer && !document.getElementById('nav-balance')) {
+            balanceContainer.innerHTML = `
+                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
+                    <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
+                </div>
+            `;
         }
-    });
+
+        // --- 2. ESCUCHAR SALDO (Sección A) ---
+        onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
+            const saldo = snapshot.val() || 0;
+            const formatted = parseFloat(saldo).toFixed(2);
+            
+            const navBal = document.getElementById('nav-balance');
+            if (navBal) navBal.innerText = `S/ ${formatted}`;
+
+            const mainBal = document.getElementById('main-balance');
+            if (mainBal) mainBal.innerText = `S/ ${formatted}`;
+        });
+
+        // --- 3. ESCUCHAR PERFIL (Sección B) ---
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
+            const initial = firstName.charAt(0).toUpperCase();
+            const photo = data?.photo || user.photoURL;
+
+            // Rellenar Inputs
+            if(inputUser) inputUser.value = data?.username || "";
+            if(inputBio) inputBio.value = data?.bio || "";
+
+            // UI
+            if(nameText) nameText.innerText = initial;
+            if(welcomeMsg) {
+                welcomeMsg.innerHTML = `
+                    <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
+                    <span style="${goldFaith} font-size: 11px;">${firstName}</span>
+                `;
+            }
+
+            if (photo && navImg) {
+                navImg.src = photo;
+                navImg.classList.remove('hidden');
+                if(nameText) nameText.classList.add('hidden');
+            }
+        });
+
+    } else {
+        window.location.href = "index.html";
+    }
+});
 
     // --- 4. FUNCIONES GLOBALES ---
     window.handleLogout = async () => {
@@ -657,6 +654,7 @@ onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
 </script>
 </body>
 </html>
+
 
 
 
