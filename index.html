@@ -447,7 +447,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// --- 3. FUNCIONES GLOBALES (LOGIN / REGISTRO / GOOGLE) ---
+// --- 3. FUNCIONES GLOBALES ---
 window.openReg = () => document.getElementById('reg-modal')?.classList.replace('hidden', 'flex');
 window.closeReg = () => document.getElementById('reg-modal')?.classList.replace('flex', 'hidden');
 window.openLogin = () => document.getElementById('login-modal')?.classList.replace('hidden', 'flex');
@@ -460,13 +460,12 @@ window.signInWithGoogle = async function() {
         window.closeLogin();
     } catch (error) {
         console.error("Error Google:", error);
-        alert("Error al conectar con Google.");
     }
 };
 
 window.handleLogout = () => signOut(auth).then(() => window.location.reload());
 
-// --- 4. DATOS Y LÓGICA DE MERCADOS ---
+// --- 4. DATOS DE MERCADOS ---
 const cardsData = [
     {cat: "Economía", q: "¿Subirá el precio del pan en Lima antes de junio?"},
     {cat: "Deportes", q: "¿Habrá un nuevo convocado sorpresa en la selección?"},
@@ -483,19 +482,14 @@ const cardsData = [
 const allCats = ["Todos", "Política", "Deportes", "Chollywood", "Ampays", "Streamers", "Realitys", "TikTok", "Música", "Redes Sociales", "Cine", "Internacional", "Economía", "Criptomonedas", "Gaming", "Conciertos", "Tecnología", "IA", "Juicios VIP", "Viral", "Moda", "Lima"];
 
 window.filterCards = (category, btnElement) => {
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    if(btnElement) btnElement.classList.add('active');
+    if(btnElement) {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active', 'bg-gold-faith', 'text-black'));
+        btnElement.classList.add('active', 'bg-gold-faith', 'text-black');
+    }
     const grid = document.getElementById('cards-grid');
     if(!grid) return;
     grid.innerHTML = "";
-    
     const filtered = category === "Todos" ? cardsData : cardsData.filter(c => c.cat === category);
-    
-    if(filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full py-24 opacity-40 text-center"><p class="text-[10px] font-black uppercase text-white">No hay mercados en ${category}</p></div>`;
-        return;
-    }
-
     filtered.forEach(card => {
         grid.innerHTML += `
             <div class="card-blush flex flex-col justify-between">
@@ -512,9 +506,9 @@ window.filterCards = (category, btnElement) => {
 };
 
 window.openBetModal = (question, category, choice) => {
-    document.getElementById('modal-question').innerHTML = question;
-    document.getElementById('modal-cat').innerHTML = category;
-    document.getElementById('modal-choice').innerHTML = choice;
+    document.getElementById('modal-question').innerText = question;
+    document.getElementById('modal-cat').innerText = category;
+    document.getElementById('modal-choice').innerText = choice;
     document.getElementById('bet-modal').classList.replace('hidden', 'flex');
 };
 window.closeModal = () => document.getElementById('bet-modal').classList.replace('flex', 'hidden');
@@ -525,164 +519,77 @@ window.nextSlide = () => { currentSlide = (currentSlide + 1) % 6; updateSlider()
 window.prevSlide = () => { currentSlide = (currentSlide - 1 + 6) % 6; updateSlider(); };
 function updateSlider() {
     const val = `translateX(-${currentSlide * 100}%)`;
-    const s1 = document.getElementById('sliderWrapper');
-    const s2 = document.getElementById('mirrorWrapper');
-    if(s1) s1.style.transform = val;
-    if(s2) s2.style.transform = val;
+    document.getElementById('sliderWrapper').style.transform = val;
+    document.getElementById('mirrorWrapper').style.transform = val;
 }
 setInterval(window.nextSlide, 5000);
 
-// --- 6. ESTADO USUARIO ---
+// --- 6. ESTADO USUARIO & NUBE ---
 onAuthStateChanged(auth, (user) => {
     const guest = document.getElementById('auth-guest');
     const uic = document.getElementById('auth-user');
     const bCont = document.getElementById('nav-balance-container');
     const bAmt = document.getElementById('nav-balance');
+    const welcome = document.getElementById('welcome-message');
+    const avatarImg = document.getElementById('user-avatar-img');
+    const avatarTxt = document.getElementById('user-name-text');
 
     if (user) {
         guest?.classList.add('hidden');
         uic?.classList.remove('hidden');
         bCont?.classList.remove('hidden');
 
+        // Escuchar Saldo
         onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
             if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
         });
 
-       // --- Sincronización Real con la Nube (Firebase) ---
-const welcome = document.getElementById('welcome-message');
-const avatarImg = document.getElementById('user-avatar-img');
-const avatarTxt = document.getElementById('user-name-text');
+        // Escuchar Perfil (La Nube)
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+            const photo = data?.photo || user.photoURL;
 
-// Escuchamos los cambios en el perfil del usuario en la base de datos
-onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-    const data = snapshot.val();
-    
-    // 1. Prioridad al nombre: Nube > Google > "Usuario"
-    const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
-    
-    // 2. Prioridad a la foto: Nube > Google > Nada
-    const photo = data?.photo || user.photoURL;
-
-    // Actualizamos el Saludo
-    if (welcome) {
-        welcome.innerHTML = `
-            <span style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 11px;">Qué onda, </span>
-            <span style="color: #b8860b; font-weight: 900; font-size: 11px; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);">${name}</span>
-        `;
-    }
-
-    // Actualizamos el Avatar
-    if (photo && avatarImg) {
-        avatarImg.src = photo;
-        avatarImg.classList.remove('hidden');
-        if (avatarTxt) avatarTxt.classList.add('hidden');
-    } else if (avatarTxt) {
-        avatarTxt.innerText = name.charAt(0).toUpperCase();
-        avatarTxt.classList.remove('hidden');
-        if (avatarImg) avatarImg.classList.add('hidden');
+            if (welcome) {
+                welcome.innerHTML = `
+                    <span class="text-glossy-white font-size-[11px]">Qué onda, </span>
+                    <span style="color: #b8860b; font-weight: 900; font-size: 11px;">${name}</span>
+                `;
+            }
+            if (photo && avatarImg) {
+                avatarImg.src = photo;
+                avatarImg.classList.remove('hidden');
+                avatarTxt?.classList.add('hidden');
+            } else if (avatarTxt) {
+                avatarTxt.innerText = name.charAt(0).toUpperCase();
+                avatarTxt.classList.remove('hidden');
+                avatarImg?.classList.add('hidden');
+            }
+        });
+    } else {
+        guest?.classList.remove('hidden');
+        uic?.classList.add('hidden');
+        bCont?.classList.add('hidden');
     }
 });
 
-// --- 7. INICIO ---
+// --- 7. INICIALIZACIÓN DE CATEGORÍAS ---
 const catList = document.getElementById('cat-list');
 if(catList) {
     catList.innerHTML = "";
     allCats.forEach(c => {
         const btn = document.createElement('button');
         btn.className = "cat-btn flex-none bg-white/10 text-gray-300 px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase";
-        btn.innerHTML = c;
-        btn.onclick = () => window.filterCards(c, btn);
+        btn.innerText = c;
+        btn.onclick = (e) => window.filterCards(c, e.target);
         catList.appendChild(btn);
     });
 }
 window.filterCards('Todos');
-// --- 1. MODIFICAR FUNCIÓN GUARDAR PERFIL ---
-window.guardarPerfil = async function() {
-    const user = auth.currentUser;
-    if (!user) {
-        alert("Debes estar logueado para guardar cambios.");
-        return;
-    }
-
-    const inputUser = document.getElementById('input-username').value;
-    const inputBio = document.getElementById('input-bio').value;
-    const welcomeMsg = document.getElementById('welcome-message');
-
-    // Estructura de datos para la nube
-    const perfilData = {
-        username: inputUser,
-        bio: inputBio,
-        // Si hay una imagen nueva cargada, la incluimos; si no, no tocamos la anterior
-        ...(tempImageData && { photo: tempImageData }) 
-    };
-
-    try {
-        // GUARDAR EN FIREBASE (La Nube Segura)
-        const { update } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js");
-        await update(ref(db, `users/${user.uid}/profile`), perfilData);
-
-        // También actualizamos LocalStorage para que el cambio sea instantáneo visualmente
-        localStorage.setItem('custom_username', inputUser);
-        localStorage.setItem('custom_bio', inputBio);
-        if (tempImageData) localStorage.setItem('userAvatarCustom', tempImageData);
-
-        // Actualizar UI de bienvenida
-        if (inputUser.trim() !== "" && welcomeMsg) {
-            const goldFaith = "color: #b8860b; font-weight: 900; font-size: 11px; margin-left: 4px;";
-            welcomeMsg.querySelector('span:last-child').style = goldFaith;
-            welcomeMsg.querySelector('span:last-child').innerText = inputUser;
-        }
-
-        mostrarPopupExito();
-        tempImageData = null; // Limpiar buffer de imagen
-    } catch (error) {
-        console.error("Error al guardar en la nube:", error);
-        alert("Hubo un error al sincronizar con la nube.");
-    }
-};
-
-// --- 2. MODIFICAR EL OBSERVADOR DE AUTH (Para traer datos de la nube) ---
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // ... tu lógica de saldo existente ...
-
-        // TRAER PERFIL DE FIREBASE
-        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                // Rellenar inputs
-                if(document.getElementById('input-username')) document.getElementById('input-username').value = data.username || "";
-                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data.bio || "";
-                
-                // Actualizar Avatar si existe en la nube
-                if (data.photo) {
-                    const navImg = document.getElementById('user-avatar-img');
-                    const navText = document.getElementById('user-name-text');
-                    if(navImg) {
-                        navImg.src = data.photo;
-                        navImg.classList.remove('hidden');
-                        if(navText) navText.classList.add('hidden');
-                    }
-                }
-                
-                // Actualizar Saludo
-                const welcomeMsg = document.getElementById('welcome-message');
-                if(welcomeMsg && data.username) {
-                    const goldFaith = "color: #b8860b; font-weight: 900; font-size: 11px; margin-left: 4px;";
-                    welcomeMsg.innerHTML = `
-                        <span style="color:white; font-size:11px;">Qué onda, </span>
-                        <span style="${goldFaith}">${data.username}</span>
-                    `;
-                }
-            }
-        });
-    } else {
-        window.location.href = "index.html";
-    }
-});
 </script>
 </body>
 </html>
+
 
 
 
