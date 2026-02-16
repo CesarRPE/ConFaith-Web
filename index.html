@@ -408,15 +408,22 @@
                 </div>
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-400">Monto a apostar</label>
-                    <div class="relative flex items-center bg-gray-100 rounded-2xl border-2 border-transparent focus-within:border-[#b8860b] transition-all overflow-hidden px-4">
+                    <div class="relative flex items-center bg-gray-100 rounded-2xl border-2 border-transparent focus-within:border-[#b8860b] transition-all overflow-hidden px-4 mb-3">
     <input type="number" id="bet-amount" placeholder="0.00" class="w-full text-2xl font-black py-4 bg-transparent focus:outline-none">
     <div class="flex items-center">
         <span class="font-black text-gray-400 text-sm">PEN</span>
-        <div class="stepper-arrows select-none">
-    <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(1)">&#9650;</span>
-    <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(-1)">&#9660;</span>
-</div>
+        <div class="stepper-arrows select-none ml-2">
+            <span class="cursor-pointer hover:text-black transition-colors block" onclick="stepAmount(1)">&#9650;</span>
+            <span class="cursor-pointer hover:text-black transition-colors block" onclick="stepAmount(-1)">&#9660;</span>
+        </div>
     </div>
+</div>
+
+<div class="flex gap-2 mb-4">
+    <button onclick="setQuickAmount(5)" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-[10px] font-black transition-all border border-gray-200">+5</button>
+    <button onclick="setQuickAmount(10)" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-[10px] font-black transition-all border border-gray-200">+10</button>
+    <button onclick="setQuickAmount(50)" class="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-[10px] font-black transition-all border border-gray-200">+50</button>
+    <button onclick="setQuickAmount('MAX')" class="flex-1 py-2 bg-[#b8860b]/10 hover:bg-[#b8860b]/20 text-[#b8860b] rounded-xl text-[10px] font-black transition-all border border-[#b8860b]/20">MAX</button>
 </div>
 <div class="bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-300">
     <div class="flex justify-between text-xs font-bold mb-2">
@@ -625,9 +632,36 @@ window.stepAmount = (delta) => {
     // Disparamos manualmente el evento 'input' para que se recalcule el "Retorno Potencial"
     input.dispatchEvent(new Event('input'));
 };
+// Función para las flechas (mejorada)
+window.stepAmount = (delta) => {
+    const input = document.getElementById('bet-amount');
+    if (!input) return;
+    let currentVal = parseFloat(input.value) || 0;
+    input.value = Math.max(0, currentVal + delta).toFixed(2);
+    input.dispatchEvent(new Event('input'));
+};
+
+// Nueva función para botones rápidos
+window.setQuickAmount = (amount) => {
+    const input = document.getElementById('bet-amount');
+    if (!input) return;
+
+    if (amount === 'MAX') {
+        // Obtenemos el saldo actual del DOM (que ya tiene el S/ adelante)
+        const balanceStr = document.getElementById('nav-balance')?.innerText || "0";
+        const balanceValue = parseFloat(balanceStr.replace('S/', '').trim()) || 0;
+        input.value = balanceValue.toFixed(2);
+    } else {
+        let currentVal = parseFloat(input.value) || 0;
+        input.value = (currentVal + amount).toFixed(2);
+    }
+    
+    input.dispatchEvent(new Event('input'));
+};
 </script>
 </body>
 </html>
+
 
 
 
