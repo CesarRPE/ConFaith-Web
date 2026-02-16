@@ -514,42 +514,45 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const navImg = document.getElementById('user-avatar-img');
     
     if (user) {
-        // --- 1. ESTILOS ---
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
         const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-        // --- 2. ESTRUCTURA DEL NAV (Evita que se borre el ID) ---
-        if (balanceContainer && !document.getElementById('nav-balance')) {
+        // 1. DIBUJAR ESTRUCTURA DEL NAV (Solo una vez)
+        if (balanceContainer) {
             balanceContainer.innerHTML = `
                 <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
                     <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
+                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">Cargando...</span>
                 </div>
             `;
         }
 
-        // --- 3. ESCUCHAR SALDO (EL ARREGLO) ---
+        // 2. ESCUCHAR SALDO (Listener Maestro)
         onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
             const saldo = snapshot.val() || 0;
-            const formatted = parseFloat(saldo).toFixed(2);
+            const formatted = `S/ ${parseFloat(saldo).toFixed(2)}`;
 
-            // Actualiza el Nav
+            // Actualizar Nav
             const navBal = document.getElementById('nav-balance');
-            if (navBal) navBal.innerText = `S/ ${formatted}`;
+            if (navBal) navBal.innerText = formatted;
 
-            // Actualiza el saldo grande en la sección de Billetera
-            // Asegúrate de que en tu HTML el H2 tenga id="main-balance"
+            // Actualizar Saldo Grande (Búsqueda por ID y por Clase para asegurar)
             const mainBal = document.getElementById('main-balance');
             if (mainBal) {
-                mainBal.innerText = `S/ ${formatted}`;
+                mainBal.innerText = formatted;
             } else {
-                // Si no lo encuentra por ID, lo busca por la clase que usas en el diseño
-                const fallbackBal = document.querySelector('.text-4xl.font-black.text-white');
-                if (fallbackBal) fallbackBal.innerText = `S/ ${formatted}`;
+                // Si el ID falla, buscamos el elemento que tiene el texto "S/ 0.00" original
+                const allElements = document.getElementsByTagName('h2');
+                for (let el of allElements) {
+                    if (el.innerText.includes('S/') && el.classList.contains('text-4xl')) {
+                        el.id = "main-balance"; // Le asignamos el ID dinámicamente
+                        el.innerText = formatted;
+                    }
+                }
             }
         });
 
-        // --- 4. ESCUCHAR PERFIL ---
+        // 3. ESCUCHAR PERFIL
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
             const data = snapshot.val();
             const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
@@ -659,6 +662,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
