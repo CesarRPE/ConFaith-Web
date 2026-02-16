@@ -845,15 +845,26 @@ window.addEventListener('load', () => {
     document.getElementById(tabId).classList.remove('hidden');
 }
     window.addEventListener('load', () => {
+    // 1. Revisamos si en la URL dice "?section=soporte"
     const params = new URLSearchParams(window.location.search);
     const section = params.get('section');
-    if (section && typeof window.showSection === 'function') {
-        window.showSection(section);
+
+    // 2. Si existe el parámetro, ejecutamos la función de mostrar sección
+    if (section) {
+        // Le damos un mini respiro de 100ms para que la página cargue bien
+        setTimeout(() => {
+            if (typeof window.showSection === 'function') {
+                window.showSection(section);
+            } else if (typeof showSection === 'function') {
+                showSection(section);
+            }
+        }, 100);
     }
 });
     </script>
 </body>
 </html>
+
 
 
 
