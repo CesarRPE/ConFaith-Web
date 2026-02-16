@@ -658,9 +658,46 @@ window.setQuickAmount = (amount) => {
     
     input.dispatchEvent(new Event('input'));
 };
+// Función para procesar la apuesta en Firebase
+window.confirmBet = async () => {
+    const amount = parseFloat(document.getElementById('bet-amount').value);
+    const user = auth.currentUser;
+
+    if (!user || isNaN(amount) || amount <= 0) {
+        alert("Ingresa un monto válido");
+        return;
+    }
+
+    const userRef = ref(db, `users/${user.uid}`);
+    const snap = await get(child(userRef, 'balance'));
+    const currentBalance = snap.val() || 0;
+
+    if (amount > currentBalance) {
+        alert("Saldo insuficiente en tu billetera PEN");
+        return;
+    }
+
+    // 1. Restar saldo
+    await update(userRef, { balance: currentBalance - amount });
+
+    // 2. Registrar apuesta (puedes usar push para generar un ID único)
+    const betRef = push(ref(db, 'bets'));
+    await set(betRef, {
+        uid: user.uid,
+        amount: amount,
+        predictionId: window.currentPredictionId, // Necesitaremos guardar este ID al abrir el modal
+        side: window.currentSide,
+        timestamp: Date.now(),
+        status: 'pending'
+    });
+
+    alert(`¡Apuesta de S/ ${amount.toFixed(2)} confirmada!`);
+    closeBetModal(); // Función que ya tienes para cerrar el modal
+};
 </script>
 </body>
 </html>
+
 
 
 
