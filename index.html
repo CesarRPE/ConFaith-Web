@@ -546,16 +546,20 @@ onAuthStateChanged(auth, (user) => {
 
         // Escuchar Perfil (La Nube)
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-            const data = snapshot.val();
-            const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
-            const photo = data?.photo || user.photoURL;
+    const data = snapshot.val();
+    const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+    const photo = data?.photo || user.photoURL;
 
-            if (welcome) {
-                welcome.innerHTML = `
-                    <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                    <span style="${goldFaith} font-size: 11px;">${name}</span>
-                `;
-            }
+    // --- AQUÍ ESTÁ EL TRUCO: DEBES DEFINIR ESTO AQUÍ ADENTRO ---
+    const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+    const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+
+    if (welcome) {
+        welcome.innerHTML = `
+            <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
+            <span style="${goldFaith} font-size: 11px;">${name}</span>
+        `;
+    }
             if (photo && avatarImg) {
                 avatarImg.src = photo;
                 avatarImg.classList.remove('hidden');
@@ -589,6 +593,7 @@ window.filterCards('Todos');
 </script>
 </body>
 </html>
+
 
 
 
