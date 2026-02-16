@@ -330,7 +330,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <div class="bg-[#0f172a] rounded-xl p-6 border border-white/5 mb-8">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Disponible</p>
                         <div class="flex items-baseline gap-2">
-                            <span id="main-balance" class="text-3xl font-black text-white">S/ 0.00</span>
+                            <h2 id="main-balance" class="text-4xl font-black text-white mt-1">S/ 0.00</h2>
                             <span class="text-xs font-bold text-gray-500 uppercase">PEN</span>
                         </div>
                     </div>
@@ -514,11 +514,11 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const navImg = document.getElementById('user-avatar-img');
     
     if (user) {
-        // --- 1. ESTILOS REUTILIZABLES ---
+        // --- 1. ESTILOS ---
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
         const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-        // --- 2. INICIALIZAR ESTRUCTURA DEL NAV (Solo si no existe) ---
+        // --- 2. ESTRUCTURA DEL NAV (Evita que se borre el ID) ---
         if (balanceContainer && !document.getElementById('nav-balance')) {
             balanceContainer.innerHTML = `
                 <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
@@ -528,35 +528,35 @@ h1, h2, h3, h4, h5, h6, b, strong {
             `;
         }
 
-        // --- 3. ESCUCHAR SALDO EN TIEMPO REAL (Sección A) ---
-        // Este listener está separado para que NADA lo interrumpa
+        // --- 3. ESCUCHAR SALDO (EL ARREGLO) ---
         onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
             const saldo = snapshot.val() || 0;
             const formatted = parseFloat(saldo).toFixed(2);
 
-            // Actualizar en el Nav
+            // Actualiza el Nav
             const navBal = document.getElementById('nav-balance');
             if (navBal) navBal.innerText = `S/ ${formatted}`;
 
-            // Actualizar en la sección principal de Billetera
+            // Actualiza el saldo grande en la sección de Billetera
+            // Asegúrate de que en tu HTML el H2 tenga id="main-balance"
             const mainBal = document.getElementById('main-balance');
-            if (mainBal) mainBal.innerText = `S/ ${formatted}`;
+            if (mainBal) {
+                mainBal.innerText = `S/ ${formatted}`;
+            } else {
+                // Si no lo encuentra por ID, lo busca por la clase que usas en el diseño
+                const fallbackBal = document.querySelector('.text-4xl.font-black.text-white');
+                if (fallbackBal) fallbackBal.innerText = `S/ ${formatted}`;
+            }
         });
 
-        // --- 4. ESCUCHAR PERFIL EN LA NUBE (Sección B) ---
+        // --- 4. ESCUCHAR PERFIL ---
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
             const data = snapshot.val();
-            
             const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-            const initial = firstName.charAt(0).toUpperCase();
-            const photo = data?.photo || user.photoURL;
-
-            // Rellenar Inputs
+            
             if(inputUser) inputUser.value = data?.username || "";
             if(inputBio) inputBio.value = data?.bio || "";
 
-            // Actualizar interfaz visual
-            if(nameText) nameText.innerText = initial;
             if(welcomeMsg) {
                 welcomeMsg.innerHTML = `
                     <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
@@ -564,7 +564,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 `;
             }
 
-            // Actualizar Foto de Perfil
+            const photo = data?.photo || user.photoURL;
             if (photo && navImg) {
                 navImg.src = photo;
                 navImg.classList.remove('hidden');
@@ -573,7 +573,6 @@ h1, h2, h3, h4, h5, h6, b, strong {
         });
 
     } else {
-        // Si no hay usuario, mandarlo al inicio
         window.location.href = "index.html";
     }
 });
@@ -660,6 +659,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
