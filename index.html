@@ -451,7 +451,7 @@
         query, orderByChild, equalTo, serverTimestamp 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 2. CONFIGURACIÓN
+    // 2. CONFIGURACIÓN FIREBASE
     const firebaseConfig = {
         apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
         authDomain: "confaith-web.firebaseapp.com",
@@ -473,7 +473,7 @@
         limit: 1000 
     };
 
-    // --- DATOS MAESTROS DE PREDICCIONES (Sustituye a cardsData) ---
+    // DATOS MAESTROS DE PREDICCIONES
     window.allPredictions = [
         { id: 1, title: '¿Subirá el precio del pan en Lima antes de junio?', category: 'Economía' },
         { id: 2, title: '¿Habrá un nuevo convocado sorpresa en la selección?', category: 'Deportes' },
@@ -493,10 +493,10 @@
     window.openLogin = () => document.getElementById('login-modal')?.classList.replace('hidden', 'flex');
     window.closeLogin = () => document.getElementById('login-modal')?.classList.replace('flex', 'hidden');
     
-    // Función para cerrar el modal de apuestas (Faltaba definirla)
+    // Función correcta para cerrar modal
     window.closeModal = () => document.getElementById('bet-modal')?.classList.replace('flex', 'hidden');
 
-    // 5. RENDERIZADO DE TARJETAS (CORREGIDO)
+    // 5. RENDERIZADO DE TARJETAS
     window.filterCards = (category, btnElement) => {
         if(btnElement) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active', 'bg-gold-faith', 'text-black'));
@@ -507,7 +507,6 @@
         
         grid.innerHTML = "";
         
-        // Usamos window.allPredictions
         const filtered = category === "Todos" ? window.allPredictions : window.allPredictions.filter(p => p.category === category);
         
         filtered.forEach(p => {
@@ -550,7 +549,6 @@
         currentBetData.predictionId = id;
         currentBetData.side = side;
 
-        // Nota: en el HTML el ID es "modal-question", no "modal-title"
         const titleEl = document.getElementById('modal-question') || document.getElementById('modal-title');
         if(titleEl) titleEl.innerText = prediction.title;
         
@@ -562,7 +560,6 @@
                 : 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest text-white bg-red-500';
         }
         
-        // Reset inputs
         const input = document.getElementById('bet-amount');
         if(input) input.value = "";
         const potWin = document.getElementById('potential-win');
@@ -581,7 +578,7 @@
         if (isNaN(amount) || amount <= 0) return alert("Monto no válido");
 
         try {
-            // Verificar límite de apuestas (Regla 1000)
+            // Verificar límite de apuestas
             const betsRef = ref(db, 'bets');
             const q = query(betsRef, orderByChild('predictionId'), equalTo(currentBetData.predictionId));
             const snap = await get(q);
@@ -613,11 +610,11 @@
             await update(userRef, { balance: balance - amount });
             
             alert("¡Apuesta confirmada!");
-            window.closeModal();
+            window.closeModal(); // <--- CORRECCIÓN AQUÍ (antes decía closeBetModal)
 
         } catch (e) {
             console.error(e);
-            alert("Error al procesar. Intenta de nuevo.");
+            alert("Error al procesar: " + e.message); // Esto te dirá el error exacto si vuelve a pasar
         }
     };
 
@@ -644,14 +641,13 @@
         input.dispatchEvent(new Event('input'));
     };
 
-    // Listener para calcular retorno potencial
+    // Calcular retorno
     document.getElementById('bet-amount')?.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value) || 0;
-        // Ejemplo simple: Retorno x1.8
         document.getElementById('potential-win').innerText = (val * 1.8).toFixed(2);
     });
 
-    // 7. AUTENTICACIÓN Y SISTEMA
+    // 7. AUTENTICACIÓN
     window.signInWithGoogle = async function() {
         const provider = new GoogleAuthProvider();
         try {
@@ -661,8 +657,8 @@
     };
 
     window.handleLogout = () => signOut(auth).then(() => window.location.reload());
-    window.handleConnect = () => alert("Función email/password pendiente de conectar a Firebase"); // Placeholder
-    window.handleRegister = () => alert("Función registro pendiente de conectar a Firebase"); // Placeholder
+    window.handleConnect = () => alert("Función email/password pendiente"); 
+    window.handleRegister = () => alert("Función registro pendiente"); 
 
     onAuthStateChanged(auth, (user) => {
         const guest = document.getElementById('auth-guest');
@@ -715,7 +711,7 @@
         }
     });
 
-    // 8. INICIALIZACIÓN (CARRUSEL Y CATEGORÍAS)
+    // 8. INICIALIZACIÓN
     let currentSlide = 0;
     window.nextSlide = () => { currentSlide = (currentSlide + 1) % 6; updateSlider(); };
     window.prevSlide = () => { currentSlide = (currentSlide - 1 + 6) % 6; updateSlider(); };
@@ -738,11 +734,12 @@
         });
     }
 
-    // Inicializar la grilla con "Todos"
+    // Inicializar
     window.filterCards('Todos');
 </script>
 </body>
 </html>
+
 
 
 
