@@ -584,9 +584,94 @@ if(catList) {
     });
 }
 window.filterCards('Todos');
+// --- 1. MODIFICAR FUNCIÓN GUARDAR PERFIL ---
+window.guardarPerfil = async function() {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("Debes estar logueado para guardar cambios.");
+        return;
+    }
+
+    const inputUser = document.getElementById('input-username').value;
+    const inputBio = document.getElementById('input-bio').value;
+    const welcomeMsg = document.getElementById('welcome-message');
+
+    // Estructura de datos para la nube
+    const perfilData = {
+        username: inputUser,
+        bio: inputBio,
+        // Si hay una imagen nueva cargada, la incluimos; si no, no tocamos la anterior
+        ...(tempImageData && { photo: tempImageData }) 
+    };
+
+    try {
+        // GUARDAR EN FIREBASE (La Nube Segura)
+        const { update } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js");
+        await update(ref(db, `users/${user.uid}/profile`), perfilData);
+
+        // También actualizamos LocalStorage para que el cambio sea instantáneo visualmente
+        localStorage.setItem('custom_username', inputUser);
+        localStorage.setItem('custom_bio', inputBio);
+        if (tempImageData) localStorage.setItem('userAvatarCustom', tempImageData);
+
+        // Actualizar UI de bienvenida
+        if (inputUser.trim() !== "" && welcomeMsg) {
+            const goldFaith = "color: #b8860b; font-weight: 900; font-size: 11px; margin-left: 4px;";
+            welcomeMsg.querySelector('span:last-child').style = goldFaith;
+            welcomeMsg.querySelector('span:last-child').innerText = inputUser;
+        }
+
+        mostrarPopupExito();
+        tempImageData = null; // Limpiar buffer de imagen
+    } catch (error) {
+        console.error("Error al guardar en la nube:", error);
+        alert("Hubo un error al sincronizar con la nube.");
+    }
+};
+
+// --- 2. MODIFICAR EL OBSERVADOR DE AUTH (Para traer datos de la nube) ---
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // ... tu lógica de saldo existente ...
+
+        // TRAER PERFIL DE FIREBASE
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Rellenar inputs
+                if(document.getElementById('input-username')) document.getElementById('input-username').value = data.username || "";
+                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data.bio || "";
+                
+                // Actualizar Avatar si existe en la nube
+                if (data.photo) {
+                    const navImg = document.getElementById('user-avatar-img');
+                    const navText = document.getElementById('user-name-text');
+                    if(navImg) {
+                        navImg.src = data.photo;
+                        navImg.classList.remove('hidden');
+                        if(navText) navText.classList.add('hidden');
+                    }
+                }
+                
+                // Actualizar Saludo
+                const welcomeMsg = document.getElementById('welcome-message');
+                if(welcomeMsg && data.username) {
+                    const goldFaith = "color: #b8860b; font-weight: 900; font-size: 11px; margin-left: 4px;";
+                    welcomeMsg.innerHTML = `
+                        <span style="color:white; font-size:11px;">Qué onda, </span>
+                        <span style="${goldFaith}">${data.username}</span>
+                    `;
+                }
+            }
+        });
+    } else {
+        window.location.href = "index.html";
+    }
+});
 </script>
 </body>
 </html>
+
 
 
 
