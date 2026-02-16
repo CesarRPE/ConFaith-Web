@@ -610,7 +610,7 @@
             await update(userRef, { balance: balance - amount });
             
             alert("¡Apuesta confirmada!");
-            window.closeModal(); // <--- CORRECCIÓN AQUÍ (antes decía closeBetModal)
+window.closeModal(); // Cambia closeBetModal por closeModal
 
         } catch (e) {
             console.error(e);
@@ -739,6 +739,7 @@
 </script>
 </body>
 </html>
+
 
 
 
