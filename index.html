@@ -440,6 +440,11 @@
     </div>
 
     <script type="module">
+let currentBetData = {
+    predictionId: null,
+    side: null,
+    limit: 1000 // Tu regla de límite máximo de apuestas por evento
+};
 // 1. IMPORTACIONES
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
@@ -521,13 +526,28 @@ window.filterCards = (category, btnElement) => {
     });
 };
 
-window.openBetModal = (question, category, choice) => {
-    document.getElementById('modal-question').innerText = question;
-    document.getElementById('modal-cat').innerText = category;
-    document.getElementById('modal-choice').innerText = choice;
-    document.getElementById('bet-modal').classList.replace('hidden', 'flex');
+window.openBetModal = (id, side) => {
+    const modal = document.getElementById('bet-modal');
+    const prediction = allPredictions.find(p => p.id === id);
+    
+    if (!prediction || !modal) return;
+
+    // Guardamos los datos de la apuesta actual
+    currentBetData.predictionId = id;
+    currentBetData.side = side;
+
+    // Actualizamos la UI del modal
+    document.getElementById('modal-title').innerText = prediction.title;
+    document.getElementById('modal-side').innerText = side === 'yes' ? 'SÍ' : 'NO';
+    document.getElementById('modal-side').className = side === 'yes' ? 'text-green-500 font-black' : 'text-red-500 font-black';
+    
+    // Reset del input
+    document.getElementById('bet-amount').value = "";
+    document.getElementById('potential-win').innerText = "0.00";
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
 };
-window.closeModal = () => document.getElementById('bet-modal').classList.replace('flex', 'hidden');
 
 // --- 5. CARRUSEL ---
 let currentSlide = 0;
@@ -664,39 +684,58 @@ window.confirmBet = async () => {
     const user = auth.currentUser;
 
     if (!user || isNaN(amount) || amount <= 0) {
-        alert("Ingresa un monto válido");
+        alert("Por favor, ingresa un monto válido.");
         return;
     }
 
-    const userRef = ref(db, `users/${user.uid}`);
-    const snap = await get(child(userRef, 'balance'));
-    const currentBalance = snap.val() || 0;
+    try {
+        // 1. Verificar cuántas apuestas existen ya para este evento
+        const betsRef = ref(db, 'bets');
+        const betsQuery = query(betsRef, orderByChild('predictionId'), equalTo(currentBetData.predictionId));
+        const snapshot = await get(betsQuery);
+        const totalBets = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
 
-    if (amount > currentBalance) {
-        alert("Saldo insuficiente en tu billetera PEN");
-        return;
+        if (totalBets >= currentBetData.limit) {
+            alert("Lo sentimos, este evento ha alcanzado el límite de 1000 apuestas.");
+            return;
+        }
+
+        // 2. Verificar saldo del usuario
+        const userRef = ref(db, `users/${user.uid}`);
+        const userSnap = await get(userRef);
+        const currentBalance = userSnap.val()?.balance || 0;
+
+        if (amount > currentBalance) {
+            alert("Saldo insuficiente en tu billetera PEN.");
+            return;
+        }
+
+        // 3. Ejecutar la apuesta (Transacción)
+        const newBetRef = push(ref(db, 'bets'));
+        await set(newBetRef, {
+            uid: user.uid,
+            predictionId: currentBetData.predictionId,
+            side: currentBetData.side,
+            amount: amount,
+            status: 'active',
+            timestamp: serverTimestamp()
+        });
+
+        // 4. Actualizar saldo del usuario
+        await update(userRef, { balance: currentBalance - amount });
+
+        alert(`¡Apuesta confirmada! S/ ${amount.toFixed(2)} al ${currentBetData.side === 'yes' ? 'SÍ' : 'NO'}.`);
+        closeBetModal();
+
+    } catch (error) {
+        console.error("Error al procesar apuesta:", error);
+        alert("Hubo un error técnico. Inténtalo de nuevo.");
     }
-
-    // 1. Restar saldo
-    await update(userRef, { balance: currentBalance - amount });
-
-    // 2. Registrar apuesta (puedes usar push para generar un ID único)
-    const betRef = push(ref(db, 'bets'));
-    await set(betRef, {
-        uid: user.uid,
-        amount: amount,
-        predictionId: window.currentPredictionId, // Necesitaremos guardar este ID al abrir el modal
-        side: window.currentSide,
-        timestamp: Date.now(),
-        status: 'pending'
-    });
-
-    alert(`¡Apuesta de S/ ${amount.toFixed(2)} confirmada!`);
-    closeBetModal(); // Función que ya tienes para cerrar el modal
 };
 </script>
 </body>
 </html>
+
 
 
 
