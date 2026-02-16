@@ -330,7 +330,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <div class="bg-[#0f172a] rounded-xl p-6 border border-white/5 mb-8">
                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Saldo Disponible</p>
                         <div class="flex items-baseline gap-2">
-                            <h2 id="main-balance" class="text-4xl font-black text-white mt-1">S/ 0.00</h2>
+                            <span id="main-balance" class="text-3xl font-black text-white">S/ 0.00</span>
                             <span class="text-xs font-bold text-gray-500 uppercase">PEN</span>
                         </div>
                     </div>
@@ -506,60 +506,53 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
     onAuthStateChanged(auth, (user) => {
-    const nameText = document.getElementById('user-name-text');
-    const welcomeMsg = document.getElementById('welcome-message');
-    const balanceContainer = document.getElementById('nav-balance-container');
-    const inputUser = document.getElementById('input-username');
-    const inputBio = document.getElementById('input-bio');
-    const navImg = document.getElementById('user-avatar-img');
-    
-    if (user) {
+        const nameText = document.getElementById('user-name-text');
+        const welcomeMsg = document.getElementById('welcome-message');
+        const balanceContainer = document.getElementById('nav-balance-container');
+        const inputUser = document.getElementById('input-username');
+        const inputBio = document.getElementById('input-bio');
+        const navImg = document.getElementById('user-avatar-img');
+        
+        if (user) {
+        // --- 1. PREPARAR LA ESTRUCTURA (Solo una vez) ---
+        // Definimos los estilos aquí para usarlos en ambas secciones
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
         const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-        // 1. DIBUJAR ESTRUCTURA DEL NAV (Solo una vez)
-        if (balanceContainer) {
+        if(balanceContainer && !document.getElementById('nav-balance')) {
             balanceContainer.innerHTML = `
                 <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
                     <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">Cargando...</span>
+                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
                 </div>
             `;
         }
 
-        // 2. ESCUCHAR SALDO (Listener Maestro)
+        // --- 2. ESCUCHAR SALDO (Sección A) ---
         onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
             const saldo = snapshot.val() || 0;
-            const formatted = `S/ ${parseFloat(saldo).toFixed(2)}`;
-
-            // Actualizar Nav
+            const formatted = parseFloat(saldo).toFixed(2);
+            
             const navBal = document.getElementById('nav-balance');
-            if (navBal) navBal.innerText = formatted;
+            if (navBal) navBal.innerText = `S/ ${formatted}`;
 
-            // Actualizar Saldo Grande (Búsqueda por ID y por Clase para asegurar)
             const mainBal = document.getElementById('main-balance');
-            if (mainBal) {
-                mainBal.innerText = formatted;
-            } else {
-                // Si el ID falla, buscamos el elemento que tiene el texto "S/ 0.00" original
-                const allElements = document.getElementsByTagName('h2');
-                for (let el of allElements) {
-                    if (el.innerText.includes('S/') && el.classList.contains('text-4xl')) {
-                        el.id = "main-balance"; // Le asignamos el ID dinámicamente
-                        el.innerText = formatted;
-                    }
-                }
-            }
+            if (mainBal) mainBal.innerText = `S/ ${formatted}`;
         });
 
-        // 3. ESCUCHAR PERFIL
+        // --- 3. ESCUCHAR PERFIL (Sección B) ---
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
             const data = snapshot.val();
             const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-            
+            const initial = firstName.charAt(0).toUpperCase();
+            const photo = data?.photo || user.photoURL;
+
+            // Rellenar Inputs
             if(inputUser) inputUser.value = data?.username || "";
             if(inputBio) inputBio.value = data?.bio || "";
 
+            // UI
+            if(nameText) nameText.innerText = initial;
             if(welcomeMsg) {
                 welcomeMsg.innerHTML = `
                     <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
@@ -567,7 +560,6 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 `;
             }
 
-            const photo = data?.photo || user.photoURL;
             if (photo && navImg) {
                 navImg.src = photo;
                 navImg.classList.remove('hidden');
@@ -662,10 +654,6 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
-
-
-
-
 
 
 
