@@ -514,29 +514,39 @@ h1, h2, h3, h4, h5, h6, b, strong {
         const navImg = document.getElementById('user-avatar-img');
         
         if (user) {
-            // A. Escuchar Saldo en Tiempo Real
+            // Estilos Maestros (Definidos aquí para que ambos listeners los usen)
+            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+
+            // PRE-DIBUJAR ESTRUCTURA (Solo una vez si no existe)
+            if (balanceContainer && !document.getElementById('nav-balance')) {
+                balanceContainer.innerHTML = `
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
+                        <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                        <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
+                    </div>
+                `;
+            }
+
+            // A. Escuchar Saldo en Tiempo Real (Listener Independiente)
             onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
                 const saldo = snapshot.val() || 0;
-                window.actualizarSaldo(saldo);
+                window.actualizarSaldo(saldo); 
             });
 
-            // B. Escuchar Perfil en la Nube (Firebase)
+            // B. Escuchar Perfil en la Nube
             onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
                 const data = snapshot.val();
                 
-                // Prioridad: Nube > Google > Email
                 const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
                 const initial = firstName.charAt(0).toUpperCase();
                 const photo = data?.photo || user.photoURL;
 
-                const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-                const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-                // Rellenar Inputs de configuración
+                // Rellenar Inputs
                 if(inputUser) inputUser.value = data?.username || "";
                 if(inputBio) inputBio.value = data?.bio || "";
 
-                // Actualizar interfaz
+                // Actualizar interfaz de bienvenida
                 if(nameText) nameText.innerText = initial;
                 if(welcomeMsg) {
                     welcomeMsg.innerHTML = `
@@ -545,21 +555,15 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     `;
                 }
 
-                // Actualizar Foto (Si hay en la nube)
+                // Actualizar Foto
                 if (photo && navImg) {
                     navImg.src = photo;
                     navImg.classList.remove('hidden');
                     if(nameText) nameText.classList.add('hidden');
                 }
-
-                if(balanceContainer) {
-                    balanceContainer.innerHTML = `
-                        <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
-                            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
-                        </div>
-                    `;
-                }
+                
+                // IMPORTANTE: Se eliminó el balanceContainer.innerHTML de aquí 
+                // para evitar que pise el saldo real.
             });
 
         } else {
@@ -649,6 +653,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
