@@ -404,9 +404,9 @@
     <div class="flex items-center">
         <span class="font-black text-gray-400 text-sm">PEN</span>
         <div class="stepper-arrows select-none">
-            <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(1)">&#9650;</span>
-            <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(-1)">&#9660;</span>
-        </div>
+    <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(1)">&#9650;</span>
+    <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(-1)">&#9660;</span>
+</div>
     </div>
 </div>
 <div class="bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-300">
@@ -599,9 +599,27 @@ if(catList) {
     });
 }
 window.filterCards('Todos');
+// Función para hacer funcionar las flechas del modal de apuestas
+window.stepAmount = (delta) => {
+    const input = document.getElementById('bet-amount');
+    if (!input) return;
+    
+    // Obtenemos el valor actual o 0 si está vacío
+    let currentVal = parseFloat(input.value) || 0;
+    
+    // Calculamos el nuevo valor (mínimo 0)
+    let newVal = Math.max(0, currentVal + delta);
+    
+    // Actualizamos el input
+    input.value = newVal.toFixed(2);
+    
+    // Disparamos manualmente el evento 'input' para que se recalcule el "Retorno Potencial"
+    input.dispatchEvent(new Event('input'));
+};
 </script>
 </body>
 </html>
+
 
 
 
