@@ -213,10 +213,14 @@
 
         <div class="flex items-center gap-4">
     
-    <div id="nav-balance-container" class="hidden flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner self-center">
-         <span class="text-[7px] uppercase tracking-tighter" style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Saldo</span>
-         <span id="nav-balance" class="text-[10px]" style="color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);">S/ 0.00</span>
-    </div>
+    <div id="nav-balance-container" onclick="window.location.href='settings.html?section=billetera'" class="hidden cursor-pointer flex flex-col items-end justify-center px-3 py-1 bg-white/5 rounded-xl border border-white/10 shadow-inner hover:bg-white/10 transition-all active:scale-95 group">
+     <span class="text-[7px] uppercase tracking-widest font-black" style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+         SALDO
+     </span>
+     <span id="nav-balance" class="text-[11px] leading-none" style="color: #b8860b; font-weight: 900; text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
+         S/ 0.00
+     </span>
+</div>
 
             <div id="auth-guest" class="flex gap-2">
                 <button onclick="openReg()" class="btn-alt px-5 py-1.5 text-[10px] uppercase font-bold">Registrarse</button>
@@ -682,28 +686,66 @@
     window.handleConnect = () => alert("Función Próximamente");
     window.handleRegister = () => alert("Función Próximamente");
 
-    onAuthStateChanged(auth, (user) => {
-        const guest = document.getElementById('auth-guest');
-        const uic = document.getElementById('auth-user');
-        const bCont = document.getElementById('nav-balance-container');
-        if (user) {
-            guest?.classList.add('hidden');
-            uic?.classList.remove('hidden');
-            bCont?.classList.remove('hidden');
-            
-            onValue(ref(db, `users/${user.uid}/balance`), (s) => {
-                document.getElementById('nav-balance').innerText = `S/ ${(s.val() || 0).toFixed(2)}`;
-            });
-            onValue(ref(db, `users/${user.uid}/profile`), (s) => {
-                const name = s.val()?.username || user.displayName?.split(' ')[0] || "Usuario";
-                document.getElementById('welcome-message').innerHTML = `<span class="text-white text-[11px]">Hola, </span><span class="text-[#b8860b] font-black text-[11px]">${name}</span>`;
-            });
-        } else {
-            guest?.classList.remove('hidden');
-            uic?.classList.add('hidden');
-            bCont?.classList.add('hidden');
-        }
-    });
+    // Busca: onAuthStateChanged(auth, (user) => { ...
+// Y reemplaza todo ese bloque por esto:
+
+onAuthStateChanged(auth, (user) => {
+    const guest = document.getElementById('auth-guest');
+    const uic = document.getElementById('auth-user');
+    const bCont = document.getElementById('nav-balance-container');
+    const welcome = document.getElementById('welcome-message');
+    const avatarImg = document.getElementById('user-avatar-img');
+    const avatarTxt = document.getElementById('user-name-text');
+
+    if (user) {
+        guest?.classList.add('hidden');
+        uic?.classList.remove('hidden');
+        bCont?.classList.remove('hidden');
+
+        // 1. Escuchar Saldo
+        onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+            const val = snap.val() !== null ? snap.val() : 0;
+            if(document.getElementById('nav-balance')) {
+                document.getElementById('nav-balance').innerText = `S/ ${parseFloat(val).toFixed(2)}`;
+            }
+        });
+
+        // 2. Escuchar Perfil (Foto y Nombre)
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            // Prioridad de nombre: DB > Google > "Usuario"
+            const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+            // Prioridad de foto: DB > Google
+            const photo = data?.photo || user.photoURL;
+
+            // Renderizar Mensaje de Bienvenida (Estilo Glossy Restaurado)
+            if (welcome) {
+                welcome.innerHTML = `
+                    <div class="flex flex-col items-end leading-tight mr-2">
+                        <span style="background: linear-gradient(180deg, #FFFFFF 0%, #999 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 9px; text-transform: uppercase; letter-spacing: 1px;">HOLA,</span>
+                        <span style="color: #b8860b; font-weight: 900; font-size: 12px; text-shadow: 0 0 12px rgba(184,134,11,0.4);">${name}</span>
+                    </div>
+                `;
+            }
+
+            // Renderizar Avatar
+            if (photo && avatarImg) {
+                avatarImg.src = photo;
+                avatarImg.classList.remove('hidden'); // Mostrar imagen
+                avatarTxt?.classList.add('hidden');   // Ocultar texto
+            } else if (avatarTxt) {
+                avatarTxt.innerText = name.charAt(0).toUpperCase();
+                avatarTxt.classList.remove('hidden'); // Mostrar texto
+                avatarImg?.classList.add('hidden');   // Ocultar imagen
+            }
+        });
+
+    } else {
+        guest?.classList.remove('hidden');
+        uic?.classList.add('hidden');
+        bCont?.classList.add('hidden');
+    }
+});
 
     // 6. INICIALIZACIÓN
     // Renderizar categorías
@@ -737,6 +779,7 @@
 </script>
 </body>
 </html>
+
 
 
 
