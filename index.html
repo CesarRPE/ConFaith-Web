@@ -550,10 +550,10 @@ onAuthStateChanged(auth, (user) => {
             const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
             const photo = data?.photo || user.photoURL;
 
-            if(welcomeMsg) {
-                welcomeMsg.innerHTML = `
+            if (welcome) {
+                welcome.innerHTML = `
                     <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                    <span style="${goldFaith} font-size: 11px;">${firstName}</span>
+                    <span style="${goldFaith} font-size: 11px;">${name}</span>
                 `;
             }
             if (photo && avatarImg) {
@@ -589,6 +589,7 @@ window.filterCards('Todos');
 </script>
 </body>
 </html>
+
 
 
 
