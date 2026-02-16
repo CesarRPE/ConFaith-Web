@@ -400,21 +400,21 @@
                 <div class="space-y-2">
                     <label class="text-[10px] font-black uppercase text-gray-400">Monto a apostar</label>
                     <div class="relative flex items-center bg-gray-100 rounded-2xl border-2 border-transparent focus-within:border-[#b8860b] transition-all overflow-hidden px-4">
-                        <input type="number" id="bet-amount" placeholder="0.00" class="w-full text-2xl font-black py-4 bg-transparent focus:outline-none">
-                        <div class="flex items-center">
-                            <span class="font-black text-gray-400 text-sm">USDC</span>
-                            <div class="stepper-arrows select-none">
-                                <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(1)">&#9650;</span>
-                                <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(-1)">&#9660;</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-300">
-                    <div class="flex justify-between text-xs font-bold mb-2">
-                        <span class="text-gray-500">Retorno Potencial:</span>
-                        <span class="text-green-600">+$<span id="potential-win">0.00</span></span>
-                    </div>
+    <input type="number" id="bet-amount" placeholder="0.00" class="w-full text-2xl font-black py-4 bg-transparent focus:outline-none">
+    <div class="flex items-center">
+        <span class="font-black text-gray-400 text-sm">PEN</span>
+        <div class="stepper-arrows select-none">
+            <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(1)">&#9650;</span>
+            <span class="cursor-pointer hover:text-black transition-colors" onclick="stepAmount(-1)">&#9660;</span>
+        </div>
+    </div>
+</div>
+<div class="bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-300">
+    <div class="flex justify-between text-xs font-bold mb-2">
+        <span class="text-gray-500">Retorno Potencial:</span>
+        <span class="text-green-600">+S/ <span id="potential-win">0.00</span></span>
+    </div>
+</div>
                 </div>
                 <button onclick="confirmBet()" class="w-full btn-connect-gold py-4 text-sm rounded-2xl shadow-lg shadow-yellow-900/20 uppercase">
                     MANIFESTAR CON FAITH
@@ -602,6 +602,7 @@ window.filterCards('Todos');
 </script>
 </body>
 </html>
+
 
 
 
