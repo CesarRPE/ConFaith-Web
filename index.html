@@ -215,7 +215,7 @@
     
     <div id="nav-balance-container" class="hidden flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner self-center">
          <span class="text-[7px] uppercase tracking-tighter" style="background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;">Saldo</span>
-         <span id="nav-balance" class="text-[10px]" style="color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);">S/ 0.00</span>
+         <span id="nav-balance" class="text-[10px] text-gold-faith">S/ 0.00</span>
     </div>
 
             <div id="auth-guest" class="flex gap-2">
@@ -541,16 +541,18 @@ onAuthStateChanged(auth, (user) => {
         // --- MODIFICACIÓN AQUÍ: Hacemos el contenedor interactivo ---
         if (bCont) {
             bCont.classList.remove('hidden');
-            bCont.classList.add('cursor-pointer', 'hover:bg-white/10', 'transition-all', 'active:scale-95');
-            // Al hacer clic, enviamos el parámetro ?section=billetera
+            bCont.style.cursor = 'pointer';
             bCont.onclick = () => {
                 window.location.href = 'settings.html?section=billetera';
             };
         }
 
-        // Escuchar Saldo (Se mantiene igual, pero bAmt ahora está dentro de un contenedor clickeable)
+        // Escuchar Saldo en Soles (PEN)
         onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
-            if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
+            if (bAmt) {
+                const monto = snap.val() || 0;
+                bAmt.innerText = `S/ ${parseFloat(monto).toFixed(2)}`;
+            }
         });
 
         // Escuchar Perfil (La Nube)
@@ -602,6 +604,7 @@ window.filterCards('Todos');
 </script>
 </body>
 </html>
+
 
 
 
