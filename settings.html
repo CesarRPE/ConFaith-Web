@@ -506,20 +506,20 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
     onAuthStateChanged(auth, (user) => {
-        const nameText = document.getElementById('user-name-text');
-        const welcomeMsg = document.getElementById('welcome-message');
-        const balanceContainer = document.getElementById('nav-balance-container');
-        const inputUser = document.getElementById('input-username');
-        const inputBio = document.getElementById('input-bio');
-        const navImg = document.getElementById('user-avatar-img');
-        
-        if (user) {
-        // --- 1. PREPARAR LA ESTRUCTURA (Solo una vez) ---
-        // Definimos los estilos aquí para usarlos en ambas secciones
+    const nameText = document.getElementById('user-name-text');
+    const welcomeMsg = document.getElementById('welcome-message');
+    const balanceContainer = document.getElementById('nav-balance-container');
+    const inputUser = document.getElementById('input-username');
+    const inputBio = document.getElementById('input-bio');
+    const navImg = document.getElementById('user-avatar-img');
+    
+    if (user) {
+        // --- 1. ESTILOS REUTILIZABLES ---
         const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
         const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-        if(balanceContainer && !document.getElementById('nav-balance')) {
+        // --- 2. INICIALIZAR ESTRUCTURA DEL NAV (Solo si no existe) ---
+        if (balanceContainer && !document.getElementById('nav-balance')) {
             balanceContainer.innerHTML = `
                 <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
                     <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
@@ -528,21 +528,25 @@ h1, h2, h3, h4, h5, h6, b, strong {
             `;
         }
 
-        // --- 2. ESCUCHAR SALDO (Sección A) ---
+        // --- 3. ESCUCHAR SALDO EN TIEMPO REAL (Sección A) ---
+        // Este listener está separado para que NADA lo interrumpa
         onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
             const saldo = snapshot.val() || 0;
             const formatted = parseFloat(saldo).toFixed(2);
-            
+
+            // Actualizar en el Nav
             const navBal = document.getElementById('nav-balance');
             if (navBal) navBal.innerText = `S/ ${formatted}`;
 
+            // Actualizar en la sección principal de Billetera
             const mainBal = document.getElementById('main-balance');
             if (mainBal) mainBal.innerText = `S/ ${formatted}`;
         });
 
-        // --- 3. ESCUCHAR PERFIL (Sección B) ---
+        // --- 4. ESCUCHAR PERFIL EN LA NUBE (Sección B) ---
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
             const data = snapshot.val();
+            
             const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
             const initial = firstName.charAt(0).toUpperCase();
             const photo = data?.photo || user.photoURL;
@@ -551,7 +555,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
             if(inputUser) inputUser.value = data?.username || "";
             if(inputBio) inputBio.value = data?.bio || "";
 
-            // UI
+            // Actualizar interfaz visual
             if(nameText) nameText.innerText = initial;
             if(welcomeMsg) {
                 welcomeMsg.innerHTML = `
@@ -560,6 +564,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 `;
             }
 
+            // Actualizar Foto de Perfil
             if (photo && navImg) {
                 navImg.src = photo;
                 navImg.classList.remove('hidden');
@@ -568,6 +573,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
         });
 
     } else {
+        // Si no hay usuario, mandarlo al inicio
         window.location.href = "index.html";
     }
 });
@@ -654,6 +660,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
