@@ -537,9 +537,18 @@ onAuthStateChanged(auth, (user) => {
     if (user) {
         guest?.classList.add('hidden');
         uic?.classList.remove('hidden');
-        bCont?.classList.remove('hidden');
+        
+        // --- MODIFICACIÓN AQUÍ: Hacemos el contenedor interactivo ---
+        if (bCont) {
+            bCont.classList.remove('hidden');
+            bCont.classList.add('cursor-pointer', 'hover:bg-white/10', 'transition-all', 'active:scale-95');
+            // Al hacer clic, enviamos el parámetro ?section=billetera
+            bCont.onclick = () => {
+                window.location.href = 'settings.html?section=billetera';
+            };
+        }
 
-        // Escuchar Saldo
+        // Escuchar Saldo (Se mantiene igual, pero bAmt ahora está dentro de un contenedor clickeable)
         onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
             if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
         });
@@ -593,6 +602,7 @@ window.filterCards('Todos');
 </script>
 </body>
 </html>
+
 
 
 
