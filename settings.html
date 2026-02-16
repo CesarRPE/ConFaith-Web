@@ -481,389 +481,311 @@ h1, h2, h3, h4, h5, h6, b, strong {
         ConFaith &copy; 2026 - Lima, Perú
     </footer>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
-            authDomain: "confaith-web.firebaseapp.com",
-            projectId: "confaith-web",
-            storageBucket: "confaith-web.firebasestorage.app",
-            messagingSenderId: "736470337348",
-            appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        window.handleLogout = async () => {
-            try { await signOut(auth); window.location.href = "index.html"; } 
-            catch (error) { console.error("Error al salir:", error); }
-        };
-
-        onAuthStateChanged(auth, (user) => {
-    const nameText = document.getElementById('user-name-text');
-    const welcomeMsg = document.getElementById('welcome-message');
-    const balanceContainer = document.getElementById('nav-balance-container');
-    
-    if (user) {
-        // PRIORIDAD: 1. Nombre guardado localmente, 2. DisplayName de Google, 3. Email
-        const savedName = localStorage.getItem('custom_username');
-        const firstName = savedName || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-        
-        const initial = firstName.charAt(0).toUpperCase();
-
-        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-        if(nameText) nameText.innerText = initial;
-        
-        if(welcomeMsg) {
-            welcomeMsg.innerHTML = `
-                <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                <span style="${goldFaith} font-size: 11px;">${firstName}</span>
-            `;
-        }
-        
-        if(balanceContainer) {
-            balanceContainer.innerHTML = `
-                <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
-                    <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
-                </div>
-            `;
-        }
-        
-        const saldoGuardado = localStorage.getItem('user_balance') || '0.00';
-        setTimeout(() => window.actualizarSaldo(saldoGuardado), 100);
-    } else {
-        window.location.href = "index.html";
-    }
-});
-    </script>
-
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
-    <script>
-        const baseRequest = { apiVersion: 2, apiVersionMinor: 0 };
-        const allowedCardNetworks = ["VISA", "MASTERCARD"];
-        const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
-        const baseCardPaymentMethod = {
-            type: 'CARD',
-            parameters: {
-                allowedAuthMethods: allowedCardAuthMethods,
-                allowedCardNetworks: allowedCardNetworks
+
+<script type="module">
+    // --- IMPORTACIONES (Agregamos Database que faltaba) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    // --- CONFIGURACIÓN FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
+        authDomain: "confaith-web.firebaseapp.com",
+        projectId: "confaith-web",
+        storageBucket: "confaith-web.firebasestorage.app",
+        messagingSenderId: "736470337348",
+        appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911",
+        databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/" // Asegurado
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app); // Inicializamos la BD
+
+    // --- LÓGICA DE USUARIO Y SALDO EN TIEMPO REAL ---
+    onAuthStateChanged(auth, (user) => {
+        const nameText = document.getElementById('user-name-text');
+        const welcomeMsg = document.getElementById('welcome-message');
+        const balanceContainer = document.getElementById('nav-balance-container');
+        
+        if (user) {
+            // 1. Carga de datos visuales (Nombre/Foto)
+            const savedName = localStorage.getItem('custom_username');
+            const firstName = savedName || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
+            const initial = firstName.charAt(0).toUpperCase();
+
+            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+
+            if(nameText) nameText.innerText = initial;
+            if(welcomeMsg) {
+                welcomeMsg.innerHTML = `
+                    <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
+                    <span style="${goldFaith} font-size: 11px;">${firstName}</span>
+                `;
             }
-        };
-
-        let paymentsClient = null;
-
-        // Función para cargar la configuración de pago
-        function getGooglePaymentDataRequest() {
-            const paymentDataRequest = Object.assign({}, baseRequest);
-            paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
-                tokenizationSpecification: {
-                    type: 'PAYMENT_GATEWAY',
-                    parameters: { 
-                        'gateway': 'example', 
-                        'gatewayMerchantId': 'exampleId' 
-                    }
-                }
-            })];
-            paymentDataRequest.transactionInfo = { 
-                totalPriceStatus: 'FINAL', 
-                totalPrice: '0.00',
-                currencyCode: 'PEN',
-                countryCode: 'PE' 
-            };
-            paymentDataRequest.merchantInfo = {
-                merchantId: 'BCR2DN5TR23MVK2E', // <-- REEMPLAZA ESTE ID con el de tu consola cuando lo aprueben
-                merchantName: 'ConFaith'
-            };
-            return paymentDataRequest;
-        }
-
-        function onGooglePayLoaded() {
-            // Configurado en PRODUCTION
-            paymentsClient = new google.payments.api.PaymentsClient({environment: 'PRODUCTION'});
             
-            const isReadyToPayRequest = Object.assign({}, baseRequest);
-            isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
-            
-            paymentsClient.isReadyToPay(isReadyToPayRequest)
-                .then(res => { 
-                    if(res.result) {
-                        addGooglePayButton(); 
-                    } 
-                })
-                .catch(err => console.error("GPay Error:", err));
-        }
+            // 2. Estructura del Nav Balance
+            if(balanceContainer) {
+                balanceContainer.innerHTML = `
+                    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
+                        <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                        <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
+                    </div>
+                `;
+            }
 
-        function addGooglePayButton() {
-            const container = document.getElementById('gpay-container');
-            if (!container) return;
-
-            const button = paymentsClient.createButton({
-                buttonColor: 'white',
-                buttonType: 'plain',
-                buttonSizeMode: 'fill',
-                onClick: () => {
-                    paymentsClient.loadPaymentData(getGooglePaymentDataRequest())
-                        .then(data => alert("¡Google Wallet vinculado con éxito!"))
-                        .catch(err => {
-                            if (err.statusCode === 'CANCELED') return;
-                            console.error("Error en el pago:", err);
-                            alert("Para usar Google Pay en vivo, tu perfil de negocio debe estar aprobado por Google.");
-                        });
-                }
+            // 3. CONEXIÓN A BASE DE DATOS (Lo que faltaba)
+            // Escucha cambios en el saldo en tiempo real
+            const balanceRef = ref(db, `users/${user.uid}/balance`);
+            onValue(balanceRef, (snapshot) => {
+                const saldoFirebase = snapshot.val() || 0;
+                window.actualizarSaldo(saldoFirebase);
             });
-            
-            // Limpiamos el texto previo y añadimos el botón oficial
-            container.innerHTML = '<p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">Usar Google Wallet</p>';
-            container.appendChild(button);
-        }
 
-        function showSection(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            const targetSection = document.getElementById(id);
-            if(targetSection) targetSection.classList.add('active');
-            const targetBtn = document.getElementById('btn-' + id);
-            if(targetBtn) targetBtn.classList.add('active');
-        }
-        function openManualCardModal() {
-    document.getElementById('card-modal').classList.remove('hidden');
-    document.getElementById('card-modal').classList.add('flex');
-}
-
-function closeManualCardModal() {
-    document.getElementById('card-modal').classList.add('hidden');
-    document.getElementById('card-modal').classList.remove('flex');
-}
-
-document.getElementById('card-num').addEventListener('input', function (e) {
-    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-    e.target.value = formattedValue;
-});
-
-// Manejar el envío del formulario
-document.getElementById('payment-form')?.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('button');
-    btn.innerText = "PROCESANDO...";
-    btn.disabled = true;
-
-    // Simulación de respuesta de pasarela
-    setTimeout(() => {
-        alert("¡Tarjeta vinculada con éxito en ConFaith!");
-        closeManualCardModal();
-        btn.innerText = "VINCULAR TARJETA";
-        btn.disabled = false;
-        // Aquí podrías disparar una función para actualizar el saldo en Firebase
-    }, 2000);
-});
-    </script>
-           <div id="card-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
-    <div class="bg-[#1e293b] w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-2xl">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-black text-white uppercase tracking-tighter">Añadir Tarjeta</h3>
-            <button onclick="closeManualCardModal()" class="text-gray-400 hover:text-white text-xl transition-colors">✕</button>
-        </div>
-        
-        <form id="payment-form" class="space-y-5">
-            <div class="flex flex-col gap-1.5">
-                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Número de Tarjeta</label>
-                <input type="text" id="card-num" maxlength="19" placeholder="0000 0000 0000 0000" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] tracking-widest">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Expira (MM/AA)</label>
-                    <input type="text" maxlength="5" placeholder="12/28" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
-                </div>
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">CVV</label>
-                    <input type="password" maxlength="4" placeholder="***" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b]">
-                </div>
-            </div>
-
-            <div class="flex flex-col gap-1.5">
-                <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Nombre del Titular</label>
-                <input type="text" id="card-name" placeholder="Tal Cual Aparece En La Tarjeta" class="bg-[#0f172a] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#b8860b] uppercase">
-            </div>
-
-            <button type="submit" class="w-full bg-[#b8860b] text-black font-black py-4 rounded-xl mt-4 hover:bg-[#d4a017] transition-all active:scale-95 uppercase text-sm tracking-widest shadow-lg shadow-[#b8860b]/10">
-                Vincular Tarjeta
-            </button>
-        </form>
-    </div>
-</div>
-<script>
-        // Función Global para actualizar el saldo en tiempo real
-        window.actualizarSaldo = function(monto) {
-            const formatted = parseFloat(monto).toFixed(2);
-            
-            // Actualiza el saldo en el Nav
-            const navBal = document.getElementById('nav-balance');
-            if(navBal) navBal.innerText = `S/ ${formatted}`;
-            
-            // Actualiza el saldo en la Billetera (sección central)
-            const mainBal = document.getElementById('main-balance');
-            if(mainBal) mainBal.innerText = `S/ ${formatted}`;
-            
-            // Guarda para que no se borre al refrescar
-            localStorage.setItem('user_balance', formatted);
-        };
-    let tempImageData = null; // Variable para guardar la imagen antes de confirmar
-
-// 1. Solo detecta el archivo y cambia el texto del input
-document.getElementById('avatar-upload-input').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        document.getElementById('file-name-display').innerText = file.name;
-        
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            tempImageData = event.target.result; // Guardamos los datos pero NO los aplicamos aún
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// 2. Función vinculada al botón GUARDAR CAMBIOS
-function guardarPerfil() {
-    // 1. Obtener los elementos
-    const inputUser = document.getElementById('input-username');
-    const inputBio = document.getElementById('input-bio');
-    const welcomeMsg = document.getElementById('welcome-message');
-
-    // 2. Guardar valores en LocalStorage
-    if (inputUser) localStorage.setItem('custom_username', inputUser.value);
-    if (inputBio) localStorage.setItem('custom_bio', inputBio.value);
-
-    // 3. Actualizar el saludo (Qué onda...)
-    if (inputUser && inputUser.value.trim() !== "" && welcomeMsg) {
-        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-        welcomeMsg.innerHTML = `
-            <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-            <span style="${goldFaith} font-size: 11px;">${inputUser.value}</span>
-        `;
-    }
-
-    // 4. Lógica de imagen (Avatar)
-    if (tempImageData) {
-        localStorage.setItem('userAvatarCustom', tempImageData);
-        const navImg = document.getElementById('user-avatar-img');
-        const navText = document.getElementById('user-name-text');
-        if(navImg) {
-            navImg.src = tempImageData;
-            navImg.classList.remove('hidden');
-            if(navText) navText.classList.add('hidden');
-        }
-        tempImageData = null;
-    }
-
-    // 5. Lanzar el Pop-up de éxito
-    mostrarPopupExito();
-}
-
-function mostrarPopupExito() {
-    // 1. Crear el elemento del popup
-    const popup = document.createElement('div');
-    
-    // 2. Aplicamos el diseño refinado:
-    // - font-light o font-normal: Para igualar la elegancia del greeting
-    // - rounded-full: Forma de píldora
-    // - capitalize: Solo la primera letra de cada palabra en mayúscula
-    popup.className = `
-        fixed bottom-10 left-1/2 -translate-x-1/2 
-        bg-black/80 backdrop-blur-xl text-white font-normal 
-        px-10 py-3.5 rounded-full border border-[#b8860b] 
-        shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] 
-        text-[14px] tracking-tight
-        transition-all duration-700 ease-in-out opacity-0 translate-y-4
-    `;
-    
-    // 3. Contenido con formato "Título" y el emoji
-    // Aplicamos inline-block al texto para asegurar el manejo de mayúsculas si fuera necesario
-    popup.innerHTML = '<span style="color: #b8860b; margin-right: 10px;">✨</span> Perfil Guardado Exitosamente';
-    
-    document.body.appendChild(popup);
-
-    // 4. Animación de entrada
-    setTimeout(() => {
-        popup.classList.remove('opacity-0', 'translate-y-4');
-        popup.classList.add('opacity-100', 'translate-y-0');
-    }, 10);
-
-    // 5. Animación de salida
-    setTimeout(() => {
-        popup.classList.remove('opacity-100', 'translate-y-0');
-        popup.classList.add('opacity-0', 'translate-y-2');
-        
-        setTimeout(() => popup.remove(), 700);
-    }, 3000);
-}
-
-// Lógica para mantener la foto al recargar
-window.addEventListener('load', () => {
-    // Cargar Nombre de Usuario
-    const savedName = localStorage.getItem('custom_username');
-    if (savedName) {
-        const inputUser = document.getElementById('input-username');
-        if (inputUser) inputUser.value = savedName;
-    }
-
-    // Cargar Bio
-    const savedBio = localStorage.getItem('custom_bio');
-    if (savedBio) {
-        const inputBio = document.getElementById('input-bio');
-        if (inputBio) inputBio.value = savedBio;
-    }
-
-    // Cargar Foto (Tu lógica existente)
-    const savedPhoto = localStorage.getItem('userAvatarCustom');
-    if (savedPhoto) {
-        const navImg = document.getElementById('user-avatar-img');
-        const navText = document.getElementById('user-name-text');
-        if(navImg) {
-            navImg.src = savedPhoto;
-            navImg.classList.remove('hidden');
-            if(navText) navText.classList.add('hidden');
-        }
-    }
-});
-    function showTab(tabId) {
-    // Oculta todos los contenidos
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.add('hidden');
-    });
-    // Muestra solo el seleccionado
-    document.getElementById(tabId).classList.remove('hidden');
-}
-    window.addEventListener('load', () => {
-    const params = new URLSearchParams(window.location.search);
-    const section = params.get('section');
-
-    if (section) {
-        // Buscamos el botón de la barra lateral que activa esa sección
-        // Asumiendo que tus botones tienen algo como onclick="showSection('soporte')"
-        const tabButton = document.querySelector(`[onclick*="showSection('${section}')"]`);
-        
-        if (tabButton) {
-            tabButton.click(); // Simulamos que el usuario hizo click físicamente
         } else {
-            // Si no hay botón, llamamos a la función directamente
-            if (typeof showSection === 'function') showSection(section);
+            window.location.href = "index.html";
         }
+    });
+
+    // --- FUNCIONES GLOBALES (Logout, ShowSection, etc) ---
+    window.handleLogout = async () => {
+        try { await signOut(auth); window.location.href = "index.html"; } 
+        catch (error) { console.error("Error al salir:", error); }
+    };
+
+    window.showSection = function(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        
+        const targetSection = document.getElementById(id);
+        if(targetSection) targetSection.classList.add('active');
+        
+        // Intenta activar el botón sidebar correspondiente
+        const targetBtn = document.getElementById('btn-' + id);
+        if(targetBtn) targetBtn.classList.add('active');
+        
+        // Si el botón se llama diferente (por onclick), búscalo y actívalo
+        const clickBtn = document.querySelector(`[onclick*="showSection('${id}')"]`);
+        if(clickBtn && !targetBtn) clickBtn.classList.add('active');
+    };
+
+    window.showTab = function(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
+        const t = document.getElementById(tabId);
+        if(t) t.classList.remove('hidden');
+    };
+
+    // --- LÓGICA DE SALDO VISUAL ---
+    window.actualizarSaldo = function(monto) {
+        const formatted = parseFloat(monto).toFixed(2);
+        const navBal = document.getElementById('nav-balance');
+        if(navBal) navBal.innerText = `S/ ${formatted}`;
+        
+        const mainBal = document.getElementById('main-balance');
+        if(mainBal) mainBal.innerText = `S/ ${formatted}`;
+        
+        localStorage.setItem('user_balance', formatted);
+    };
+
+    // --- LÓGICA DE GOOGLE PAY ---
+    const baseRequest = { apiVersion: 2, apiVersionMinor: 0 };
+    const allowedCardNetworks = ["VISA", "MASTERCARD"];
+    const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
+    const baseCardPaymentMethod = {
+        type: 'CARD',
+        parameters: { allowedAuthMethods: allowedCardAuthMethods, allowedCardNetworks: allowedCardNetworks }
+    };
+
+    let paymentsClient = null;
+
+    function getGooglePaymentDataRequest() {
+        const paymentDataRequest = Object.assign({}, baseRequest);
+        paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
+            tokenizationSpecification: {
+                type: 'PAYMENT_GATEWAY',
+                parameters: { 'gateway': 'example', 'gatewayMerchantId': 'exampleId' }
+            }
+        })];
+        paymentDataRequest.transactionInfo = { 
+            totalPriceStatus: 'FINAL', totalPrice: '0.00', currencyCode: 'PEN', countryCode: 'PE' 
+        };
+        paymentDataRequest.merchantInfo = {
+            merchantId: 'BCR2DN5TR23MVK2E', 
+            merchantName: 'ConFaith'
+        };
+        return paymentDataRequest;
     }
-});
-    </script>
+
+    // Hacemos esta función global para que el script externo la encuentre
+    window.onGooglePayLoaded = function() {
+        paymentsClient = new google.payments.api.PaymentsClient({environment: 'PRODUCTION'});
+        const isReadyToPayRequest = Object.assign({}, baseRequest);
+        isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
+        
+        paymentsClient.isReadyToPay(isReadyToPayRequest)
+            .then(res => { if(res.result) addGooglePayButton(); })
+            .catch(err => console.error("GPay Error:", err));
+    };
+
+    function addGooglePayButton() {
+        const container = document.getElementById('gpay-container');
+        if (!container) return;
+        const button = paymentsClient.createButton({
+            buttonColor: 'white', buttonType: 'plain', buttonSizeMode: 'fill',
+            onClick: () => {
+                paymentsClient.loadPaymentData(getGooglePaymentDataRequest())
+                    .then(data => alert("¡Google Wallet vinculado con éxito!"))
+                    .catch(err => {
+                        if (err.statusCode === 'CANCELED') return;
+                        console.error("Error pago:", err);
+                        alert("Para usar Google Pay en vivo, tu perfil de negocio debe estar aprobado.");
+                    });
+            }
+        });
+        container.innerHTML = '<p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">Usar Google Wallet</p>';
+        container.appendChild(button);
+    }
+
+    // --- LÓGICA DE TARJETA MANUAL ---
+    window.openManualCardModal = () => {
+        const m = document.getElementById('card-modal');
+        m.classList.remove('hidden'); m.classList.add('flex');
+    };
+    window.closeManualCardModal = () => {
+        const m = document.getElementById('card-modal');
+        m.classList.add('hidden'); m.classList.remove('flex');
+    };
+
+    // Formateo de tarjeta
+    const cardInput = document.getElementById('card-num');
+    if(cardInput) {
+        cardInput.addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            e.target.value = formattedValue;
+        });
+    }
+
+    // Submit tarjeta manual
+    const payForm = document.getElementById('payment-form');
+    if(payForm) {
+        payForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "PROCESANDO...";
+            btn.disabled = true;
+
+            setTimeout(() => {
+                alert("¡Tarjeta vinculada con éxito en ConFaith!");
+                window.closeManualCardModal();
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }, 2000);
+        });
+    }
+
+    // --- LÓGICA DE PERFIL (Foto y Nombre) ---
+    let tempImageData = null;
+
+    const avatarInput = document.getElementById('avatar-upload-input');
+    if(avatarInput) {
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('file-name-display').innerText = file.name;
+                const reader = new FileReader();
+                reader.onload = function(event) { tempImageData = event.target.result; };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    window.guardarPerfil = function() {
+        const inputUser = document.getElementById('input-username');
+        const inputBio = document.getElementById('input-bio');
+        const welcomeMsg = document.getElementById('welcome-message');
+
+        if (inputUser) localStorage.setItem('custom_username', inputUser.value);
+        if (inputBio) localStorage.setItem('custom_bio', inputBio.value);
+
+        if (inputUser && inputUser.value.trim() !== "" && welcomeMsg) {
+            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+            welcomeMsg.innerHTML = `<span style="${glossyWhite} font-size: 11px;">Qué onda, </span><span style="${goldFaith} font-size: 11px;">${inputUser.value}</span>`;
+        }
+
+        if (tempImageData) {
+            localStorage.setItem('userAvatarCustom', tempImageData);
+            const navImg = document.getElementById('user-avatar-img');
+            const navText = document.getElementById('user-name-text');
+            if(navImg) {
+                navImg.src = tempImageData;
+                navImg.classList.remove('hidden');
+                if(navText) navText.classList.add('hidden');
+            }
+            tempImageData = null;
+        }
+        mostrarPopupExito();
+    };
+
+    function mostrarPopupExito() {
+        const popup = document.createElement('div');
+        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white font-normal px-10 py-3.5 rounded-full border border-[#b8860b] shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] text-[14px] tracking-tight transition-all duration-700 ease-in-out opacity-0 translate-y-4`;
+        popup.innerHTML = '<span style="color: #b8860b; margin-right: 10px;">✨</span> Perfil Guardado Exitosamente';
+        document.body.appendChild(popup);
+
+        setTimeout(() => { popup.classList.remove('opacity-0', 'translate-y-4'); popup.classList.add('opacity-100', 'translate-y-0'); }, 10);
+        setTimeout(() => { 
+            popup.classList.remove('opacity-100', 'translate-y-0'); popup.classList.add('opacity-0', 'translate-y-2'); 
+            setTimeout(() => popup.remove(), 700);
+        }, 3000);
+    }
+
+    // --- CARGAR DATOS AL INICIO + REDIRECCIÓN (El Fix de Soporte) ---
+    window.addEventListener('DOMContentLoaded', () => {
+        // 1. Recuperar Perfil Local
+        const savedName = localStorage.getItem('custom_username');
+        if (savedName) {
+            const i = document.getElementById('input-username');
+            if(i) i.value = savedName;
+        }
+        const savedBio = localStorage.getItem('custom_bio');
+        if (savedBio) {
+            const i = document.getElementById('input-bio');
+            if(i) i.value = savedBio;
+        }
+        const savedPhoto = localStorage.getItem('userAvatarCustom');
+        if (savedPhoto) {
+            const ni = document.getElementById('user-avatar-img');
+            const nt = document.getElementById('user-name-text');
+            if(ni) { ni.src = savedPhoto; ni.classList.remove('hidden'); if(nt) nt.classList.add('hidden'); }
+        }
+
+        // 2. Lógica de Redirección (URL Params)
+        const params = new URLSearchParams(window.location.search);
+        const section = params.get('section');
+
+        if (section) {
+            // Le damos un respiro al navegador para asegurar que 'showSection' esté lista
+            setTimeout(() => {
+                if (typeof window.showSection === 'function') {
+                    window.showSection(section);
+                } else {
+                    // Fallback manual si algo falla
+                    const clickBtn = document.querySelector(`[onclick*="showSection('${section}')"]`);
+                    if (clickBtn) clickBtn.click();
+                }
+            }, 100);
+        }
+    });
+</script>
 </body>
 </html>
+
 
 
 
