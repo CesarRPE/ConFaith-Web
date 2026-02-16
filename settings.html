@@ -140,14 +140,11 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="flex items-center gap-4">
                 <div id="nav-balance-container" onclick="showSection('billetera')" class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
                     <span class="text-[8px] font-black text-white/60 uppercase tracking-tighter">Saldo</span>
-                    <span id="nav-balance" class="text-[11px] font-black text-[#b8860b]" style="text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
-                        S/ 0.00
-                    </span>
+                    <span id="nav-balance" class="text-[11px] font-black text-[#b8860b]" style="text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">S/ 0.00</span>
                 </div>
 
                 <div class="flex items-center gap-3 pl-3 border-l border-white/10">
-                    <div id="welcome-message" class="hidden md:block">
-                        </div>
+                    <div id="welcome-message" class="hidden md:block"></div>
                     <div class="relative group cursor-pointer" onclick="showSection('perfil')">
                         <div class="w-9 h-9 rounded-full border-2 border-[#b8860b] overflow-hidden bg-slate-800 flex items-center justify-center shadow-lg shadow-yellow-900/10">
                             <img id="user-avatar-img" src="" alt="Profile" class="w-full h-full object-cover hidden">
@@ -542,12 +539,12 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const bAmt = document.getElementById('nav-balance');
 
     if (user) {
-        // 1. Cargar Saldo en tiempo real
+        // Actualizar Saldo
         onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
             if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
         });
 
-        // 2. Cargar Perfil (Estilo idéntico a index.html)
+        // Actualizar Perfil con el estilo de "index.html"
         onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
             const data = snapshot.val();
             const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
@@ -558,8 +555,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <div class="flex items-center gap-1.5 mr-1">
                         <span class="text-white font-extrabold text-[11px]">Qué onda,</span>
                         <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
-                    </div>
-                `;
+                    </div>`;
             }
 
             if (photo && avatarImg) {
@@ -573,7 +569,6 @@ h1, h2, h3, h4, h5, h6, b, strong {
             }
         });
     } else {
-        // Si no hay usuario, redirigir a index
         window.location.href = 'index.html';
     }
 });
@@ -674,6 +669,7 @@ window.addEventListener('load', () => {
 </script>
 </body>
 </html>
+
 
 
 
