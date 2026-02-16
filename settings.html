@@ -484,12 +484,12 @@ h1, h2, h3, h4, h5, h6, b, strong {
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
 
 <script type="module">
-    // --- IMPORTACIONES (Agregamos Database que faltaba) ---
+    // --- 1. IMPORTACIONES (Aseguramos Database y Update) ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // --- CONFIGURACIÓN FIREBASE ---
+    // --- 2. CONFIGURACIÓN FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
         authDomain: "confaith-web.firebaseapp.com",
@@ -497,52 +497,69 @@ h1, h2, h3, h4, h5, h6, b, strong {
         storageBucket: "confaith-web.firebasestorage.app",
         messagingSenderId: "736470337348",
         appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911",
-        databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/" // Asegurado
+        databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getDatabase(app); // Inicializamos la BD
+    const db = getDatabase(app);
 
-    // --- LÓGICA DE USUARIO Y SALDO EN TIEMPO REAL ---
+    // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
     onAuthStateChanged(auth, (user) => {
         const nameText = document.getElementById('user-name-text');
         const welcomeMsg = document.getElementById('welcome-message');
         const balanceContainer = document.getElementById('nav-balance-container');
+        const inputUser = document.getElementById('input-username');
+        const inputBio = document.getElementById('input-bio');
+        const navImg = document.getElementById('user-avatar-img');
         
         if (user) {
-            // 1. Carga de datos visuales (Nombre/Foto)
-            const savedName = localStorage.getItem('custom_username');
-            const firstName = savedName || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-            const initial = firstName.charAt(0).toUpperCase();
+            // A. Escuchar Saldo en Tiempo Real
+            onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
+                const saldo = snapshot.val() || 0;
+                window.actualizarSaldo(saldo);
+            });
 
-            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+            // B. Escuchar Perfil en la Nube (Firebase)
+            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+                const data = snapshot.val();
+                
+                // Prioridad: Nube > Google > Email
+                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
+                const initial = firstName.charAt(0).toUpperCase();
+                const photo = data?.photo || user.photoURL;
 
-            if(nameText) nameText.innerText = initial;
-            if(welcomeMsg) {
-                welcomeMsg.innerHTML = `
-                    <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                    <span style="${goldFaith} font-size: 11px;">${firstName}</span>
-                `;
-            }
-            
-            // 2. Estructura del Nav Balance
-            if(balanceContainer) {
-                balanceContainer.innerHTML = `
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
-                        <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                        <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
-                    </div>
-                `;
-            }
+                const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+                const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-            // 3. CONEXIÓN A BASE DE DATOS (Lo que faltaba)
-            // Escucha cambios en el saldo en tiempo real
-            const balanceRef = ref(db, `users/${user.uid}/balance`);
-            onValue(balanceRef, (snapshot) => {
-                const saldoFirebase = snapshot.val() || 0;
-                window.actualizarSaldo(saldoFirebase);
+                // Rellenar Inputs de configuración
+                if(inputUser) inputUser.value = data?.username || "";
+                if(inputBio) inputBio.value = data?.bio || "";
+
+                // Actualizar interfaz
+                if(nameText) nameText.innerText = initial;
+                if(welcomeMsg) {
+                    welcomeMsg.innerHTML = `
+                        <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
+                        <span style="${goldFaith} font-size: 11px;">${firstName}</span>
+                    `;
+                }
+
+                // Actualizar Foto (Si hay en la nube)
+                if (photo && navImg) {
+                    navImg.src = photo;
+                    navImg.classList.remove('hidden');
+                    if(nameText) nameText.classList.add('hidden');
+                }
+
+                if(balanceContainer) {
+                    balanceContainer.innerHTML = `
+                        <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
+                            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ 0.00</span>
+                        </div>
+                    `;
+                }
             });
 
         } else {
@@ -550,7 +567,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
         }
     });
 
-    // --- FUNCIONES GLOBALES (Logout, ShowSection, etc) ---
+    // --- 4. FUNCIONES GLOBALES ---
     window.handleLogout = async () => {
         try { await signOut(auth); window.location.href = "index.html"; } 
         catch (error) { console.error("Error al salir:", error); }
@@ -559,232 +576,80 @@ h1, h2, h3, h4, h5, h6, b, strong {
     window.showSection = function(id) {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        
         const targetSection = document.getElementById(id);
         if(targetSection) targetSection.classList.add('active');
-        
-        // Intenta activar el botón sidebar correspondiente
         const targetBtn = document.getElementById('btn-' + id);
         if(targetBtn) targetBtn.classList.add('active');
-        
-        // Si el botón se llama diferente (por onclick), búscalo y actívalo
-        const clickBtn = document.querySelector(`[onclick*="showSection('${id}')"]`);
-        if(clickBtn && !targetBtn) clickBtn.classList.add('active');
     };
 
-    window.showTab = function(tabId) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.add('hidden'));
-        const t = document.getElementById(tabId);
-        if(t) t.classList.remove('hidden');
-    };
-
-    // --- LÓGICA DE SALDO VISUAL ---
     window.actualizarSaldo = function(monto) {
         const formatted = parseFloat(monto).toFixed(2);
         const navBal = document.getElementById('nav-balance');
         if(navBal) navBal.innerText = `S/ ${formatted}`;
-        
         const mainBal = document.getElementById('main-balance');
         if(mainBal) mainBal.innerText = `S/ ${formatted}`;
-        
-        localStorage.setItem('user_balance', formatted);
     };
 
-    // --- LÓGICA DE GOOGLE PAY ---
-    const baseRequest = { apiVersion: 2, apiVersionMinor: 0 };
-    const allowedCardNetworks = ["VISA", "MASTERCARD"];
-    const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
-    const baseCardPaymentMethod = {
-        type: 'CARD',
-        parameters: { allowedAuthMethods: allowedCardAuthMethods, allowedCardNetworks: allowedCardNetworks }
-    };
-
-    let paymentsClient = null;
-
-    function getGooglePaymentDataRequest() {
-        const paymentDataRequest = Object.assign({}, baseRequest);
-        paymentDataRequest.allowedPaymentMethods = [Object.assign({}, baseCardPaymentMethod, {
-            tokenizationSpecification: {
-                type: 'PAYMENT_GATEWAY',
-                parameters: { 'gateway': 'example', 'gatewayMerchantId': 'exampleId' }
-            }
-        })];
-        paymentDataRequest.transactionInfo = { 
-            totalPriceStatus: 'FINAL', totalPrice: '0.00', currencyCode: 'PEN', countryCode: 'PE' 
-        };
-        paymentDataRequest.merchantInfo = {
-            merchantId: 'BCR2DN5TR23MVK2E', 
-            merchantName: 'ConFaith'
-        };
-        return paymentDataRequest;
-    }
-
-    // Hacemos esta función global para que el script externo la encuentre
-    window.onGooglePayLoaded = function() {
-        paymentsClient = new google.payments.api.PaymentsClient({environment: 'PRODUCTION'});
-        const isReadyToPayRequest = Object.assign({}, baseRequest);
-        isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
-        
-        paymentsClient.isReadyToPay(isReadyToPayRequest)
-            .then(res => { if(res.result) addGooglePayButton(); })
-            .catch(err => console.error("GPay Error:", err));
-    };
-
-    function addGooglePayButton() {
-        const container = document.getElementById('gpay-container');
-        if (!container) return;
-        const button = paymentsClient.createButton({
-            buttonColor: 'white', buttonType: 'plain', buttonSizeMode: 'fill',
-            onClick: () => {
-                paymentsClient.loadPaymentData(getGooglePaymentDataRequest())
-                    .then(data => alert("¡Google Wallet vinculado con éxito!"))
-                    .catch(err => {
-                        if (err.statusCode === 'CANCELED') return;
-                        console.error("Error pago:", err);
-                        alert("Para usar Google Pay en vivo, tu perfil de negocio debe estar aprobado.");
-                    });
-            }
-        });
-        container.innerHTML = '<p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-2">Usar Google Wallet</p>';
-        container.appendChild(button);
-    }
-
-    // --- LÓGICA DE TARJETA MANUAL ---
-    window.openManualCardModal = () => {
-        const m = document.getElementById('card-modal');
-        m.classList.remove('hidden'); m.classList.add('flex');
-    };
-    window.closeManualCardModal = () => {
-        const m = document.getElementById('card-modal');
-        m.classList.add('hidden'); m.classList.remove('flex');
-    };
-
-    // Formateo de tarjeta
-    const cardInput = document.getElementById('card-num');
-    if(cardInput) {
-        cardInput.addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-            e.target.value = formattedValue;
-        });
-    }
-
-    // Submit tarjeta manual
-    const payForm = document.getElementById('payment-form');
-    if(payForm) {
-        payForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = "PROCESANDO...";
-            btn.disabled = true;
-
-            setTimeout(() => {
-                alert("¡Tarjeta vinculada con éxito en ConFaith!");
-                window.closeManualCardModal();
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }, 2000);
-        });
-    }
-
-    // --- LÓGICA DE PERFIL (Foto y Nombre) ---
+    // --- 5. GUARDAR PERFIL EN LA NUBE ---
     let tempImageData = null;
 
-    const avatarInput = document.getElementById('avatar-upload-input');
-    if(avatarInput) {
-        avatarInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                document.getElementById('file-name-display').innerText = file.name;
-                const reader = new FileReader();
-                reader.onload = function(event) { tempImageData = event.target.result; };
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-
-    window.guardarPerfil = function() {
-        const inputUser = document.getElementById('input-username');
-        const inputBio = document.getElementById('input-bio');
-        const welcomeMsg = document.getElementById('welcome-message');
-
-        if (inputUser) localStorage.setItem('custom_username', inputUser.value);
-        if (inputBio) localStorage.setItem('custom_bio', inputBio.value);
-
-        if (inputUser && inputUser.value.trim() !== "" && welcomeMsg) {
-            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-            welcomeMsg.innerHTML = `<span style="${glossyWhite} font-size: 11px;">Qué onda, </span><span style="${goldFaith} font-size: 11px;">${inputUser.value}</span>`;
+    document.getElementById('avatar-upload-input')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('file-name-display').innerText = file.name;
+            const reader = new FileReader();
+            reader.onload = function(event) { tempImageData = event.target.result; };
+            reader.readAsDataURL(file);
         }
+    });
 
-        if (tempImageData) {
-            localStorage.setItem('userAvatarCustom', tempImageData);
-            const navImg = document.getElementById('user-avatar-img');
-            const navText = document.getElementById('user-name-text');
-            if(navImg) {
-                navImg.src = tempImageData;
-                navImg.classList.remove('hidden');
-                if(navText) navText.classList.add('hidden');
-            }
+    window.guardarPerfil = async function() {
+        const user = auth.currentUser;
+        if(!user) return;
+
+        const inputUser = document.getElementById('input-username').value;
+        const inputBio = document.getElementById('input-bio').value;
+
+        const updates = {
+            username: inputUser,
+            bio: inputBio
+        };
+        
+        // Solo actualizar foto si el usuario subió una nueva
+        if (tempImageData) updates.photo = tempImageData;
+
+        try {
+            await update(ref(db, `users/${user.uid}/profile`), updates);
+            mostrarPopupExito();
             tempImageData = null;
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            alert("No se pudo guardar en la nube.");
         }
-        mostrarPopupExito();
     };
 
     function mostrarPopupExito() {
         const popup = document.createElement('div');
-        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white font-normal px-10 py-3.5 rounded-full border border-[#b8860b] shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] text-[14px] tracking-tight transition-all duration-700 ease-in-out opacity-0 translate-y-4`;
+        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-3.5 rounded-full border border-[#b8860b] shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] text-[14px] transition-all duration-700 opacity-0 translate-y-4`;
         popup.innerHTML = '<span style="color: #b8860b; margin-right: 10px;">✨</span> Perfil Guardado Exitosamente';
         document.body.appendChild(popup);
-
-        setTimeout(() => { popup.classList.remove('opacity-0', 'translate-y-4'); popup.classList.add('opacity-100', 'translate-y-0'); }, 10);
-        setTimeout(() => { 
-            popup.classList.remove('opacity-100', 'translate-y-0'); popup.classList.add('opacity-0', 'translate-y-2'); 
-            setTimeout(() => popup.remove(), 700);
-        }, 3000);
+        setTimeout(() => { popup.classList.remove('opacity-0', 'translate-y-4'); }, 10);
+        setTimeout(() => { popup.classList.add('opacity-0'); setTimeout(() => popup.remove(), 700); }, 3000);
     }
 
-    // --- CARGAR DATOS AL INICIO + REDIRECCIÓN (El Fix de Soporte) ---
-    window.addEventListener('DOMContentLoaded', () => {
-        // 1. Recuperar Perfil Local
-        const savedName = localStorage.getItem('custom_username');
-        if (savedName) {
-            const i = document.getElementById('input-username');
-            if(i) i.value = savedName;
-        }
-        const savedBio = localStorage.getItem('custom_bio');
-        if (savedBio) {
-            const i = document.getElementById('input-bio');
-            if(i) i.value = savedBio;
-        }
-        const savedPhoto = localStorage.getItem('userAvatarCustom');
-        if (savedPhoto) {
-            const ni = document.getElementById('user-avatar-img');
-            const nt = document.getElementById('user-name-text');
-            if(ni) { ni.src = savedPhoto; ni.classList.remove('hidden'); if(nt) nt.classList.add('hidden'); }
-        }
+    // --- 6. MODALES Y OTROS ---
+    window.openManualCardModal = () => document.getElementById('card-modal').classList.replace('hidden', 'flex');
+    window.closeManualCardModal = () => document.getElementById('card-modal').classList.replace('flex', 'hidden');
 
-        // 2. Lógica de Redirección (URL Params)
+    window.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams(window.location.search);
         const section = params.get('section');
-
-        if (section) {
-            // Le damos un respiro al navegador para asegurar que 'showSection' esté lista
-            setTimeout(() => {
-                if (typeof window.showSection === 'function') {
-                    window.showSection(section);
-                } else {
-                    // Fallback manual si algo falla
-                    const clickBtn = document.querySelector(`[onclick*="showSection('${section}')"]`);
-                    if (clickBtn) clickBtn.click();
-                }
-            }, 100);
-        }
+        if (section) setTimeout(() => window.showSection(section), 200);
     });
 </script>
 </body>
 </html>
+
 
 
 
