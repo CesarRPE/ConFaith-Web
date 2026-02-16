@@ -705,8 +705,13 @@ let currentBetData = { predictionId: null, side: null, limit: 1000 };
 
 window.openBetModal = (id, side) => {
     const modal = document.getElementById('bet-modal');
-    const prediction = allPredictions.find(p => p.id === id);
-    if (!prediction) return;
+    // Usamos window.allPredictions para evitar el ReferenceError
+    const prediction = window.allPredictions.find(p => p.id === id);
+    
+    if (!prediction) {
+        console.error("No se encontró la predicción con ID:", id);
+        return;
+    }
 
     currentBetData.predictionId = id;
     currentBetData.side = side;
@@ -761,9 +766,19 @@ window.confirmBet = async () => {
         alert("Error al procesar. Intenta de nuevo.");
     }
 };
+window.allPredictions = [
+    { 
+        id: 1, title: 'Dólar Paralelo a S/ 3.85', category: 'FINANZAS', 
+        status: 'open', // 'open', 'closed', 'resolved'
+        winningSide: null, // 'yes' o 'no'
+        // ... el resto de tus datos (icon, color, etc)
+    },
+    // ... repetir para los demás
+];
 </script>
 </body>
 </html>
+
 
 
 
