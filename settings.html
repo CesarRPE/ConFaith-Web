@@ -519,14 +519,16 @@ h1, h2, h3, h4, h5, h6, b, strong {
             const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
             // PRE-DIBUJAR ESTRUCTURA (Solo una vez si no existe)
-            if (balanceContainer && !document.getElementById('nav-balance')) {
-                balanceContainer.innerHTML = `
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner">
-                        <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                        <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
-                    </div>
-                `;
-            }
+            // Dentro de onAuthStateChanged en settings.html
+if (balanceContainer && !document.getElementById('nav-balance')) {
+    balanceContainer.innerHTML = `
+        <div onclick="window.showSection('billetera')" 
+             class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner cursor-pointer hover:bg-white/10 transition-all active:scale-95">
+            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
+        </div>
+    `;
+}
 
             // A. Escuchar Saldo en Tiempo Real (Listener Independiente)
             onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
@@ -645,14 +647,29 @@ h1, h2, h3, h4, h5, h6, b, strong {
     window.openManualCardModal = () => document.getElementById('card-modal').classList.replace('hidden', 'flex');
     window.closeManualCardModal = () => document.getElementById('card-modal').classList.replace('flex', 'hidden');
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const section = params.get('section');
-        if (section) setTimeout(() => window.showSection(section), 200);
-    });
+    // Manejador de parámetros de URL para navegación entre páginas
+window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get('section');
+
+    if (section) {
+        // Le damos un pequeño respiro para que el DOM se asiente
+        setTimeout(() => {
+            if (typeof window.showSection === 'function') {
+                window.showSection(section);
+                console.log("Navegando a sección:", section);
+            } else {
+                // Si la función no carga a tiempo, forzamos el clic en el botón del menú
+                const btn = document.getElementById('btn-' + section);
+                if (btn) btn.click();
+            }
+        }, 300);
+    }
+});
 </script>
 </body>
 </html>
+
 
 
 
