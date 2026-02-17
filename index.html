@@ -593,12 +593,20 @@
         const amount = parseFloat(document.getElementById('bet-amount').value);
         const user = auth.currentUser;
 
-        if (!user) {
-    alert("Inicia sesión para manifestar con faith.");
-    // O un mensaje más genérico y elegante
-} else {
-    // Aquí sí puedes usar el nombre porque ya sabemos quién es
-    console.log("Bienvenido de vuelta, " + userDisplayName);
+        function confirmBet() {
+    // Primero verificamos si hay un usuario logueado
+    const user = firebase.auth().currentUser;
+
+    if (!user) {
+        alert("Por favor, inicia sesión para realizar tu apuesta.");
+        return; // Detenemos la función aquí
+    }
+
+    // Si hay usuario, intentamos obtener el nombre o usar uno genérico
+    const name = user.displayName || "C"; 
+    
+    // Ahora sí, el resto de tu lógica para apostar...
+    console.log("Procesando apuesta para: " + name);
 }
         if (isNaN(amount) || amount <= 0) return alert("Ingresa un monto válido.");
 
@@ -782,6 +790,7 @@ onAuthStateChanged(auth, (user) => {
 </script>
 </body>
 </html>
+
 
 
 
