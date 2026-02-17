@@ -220,51 +220,29 @@
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10000; /* Siempre encima de todo */
+    z-index: 10000;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    pointer-events: none; /* Permite hacer clic a través si no hay notificaciones */
 }
 
-/* El diseño de la notificación */
 .toast-msg {
-    background: rgba(18, 18, 18, 0.95); /* Negro casi opaco */
-    border-left: 4px solid #b8860b;     /* Borde dorado a la izquierda */
+    background: #121212;
+    border-left: 4px solid #b8860b;
     border-radius: 8px;
     padding: 12px 20px;
     display: flex;
     align-items: center;
     gap: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-    min-width: 280px;
-    max-width: 90vw;
-    pointer-events: auto;
-    
-    /* Animación: Entra bajando, espera, sale subiendo */
-    animation: toast-in 0.4s ease, toast-out 0.4s ease 3s forwards; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    animation: toast-in 0.4s ease, toast-out 0.4s ease 3s forwards;
 }
 
-.toast-msg.error { border-left-color: #ef4444; } /* Rojo para errores */
-.toast-msg.success { border-left-color: #22c55e; } /* Verde para éxito */
+.toast-msg.error { border-left-color: #ff4444; }
+.toast-msg.success { border-left-color: #d4af37; }
 
-.toast-content {
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-}
-
-/* Definición de movimientos */
-@keyframes toast-in {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes toast-out {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(-20px); }
-}
+@keyframes toast-in { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes toast-out { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
     </style>
 </head>
 <body>
@@ -586,33 +564,26 @@
     const allCats = ["Todos", "Política", "Deportes", "Chollywood", "Ampays", "Streamers", "Realitys", "TikTok", "Música", "Redes Sociales", "Cine", "Internacional", "Economía", "Criptomonedas", "Gaming", "Conciertos", "Tecnología", "IA", "Juicios VIP", "Viral", "Moda", "Lima"];
 
     // 4. FUNCIONES DEL MODAL PERSONALIZADO (Globales)
-    // --- NUEVO SISTEMA DE NOTIFICACIONES TOAST ---
-window.showToast = (message, type = 'neutral') => {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
+    // --- NUEVO SISTEMA DE NOTIFICACIONES TOAST (Sustituye al modal viejo) ---
+    window.showToast = (message, type = 'neutral') => {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
 
-    // Crear el elemento HTML del toast
-    const toast = document.createElement('div');
-    toast.className = `toast-msg ${type}`;
-    
-    // Icono según el tipo
-    let icon = '🔔'; 
-    if (type === 'success') icon = '✅';
-    if (type === 'error') icon = '⚠️';
+        const toast = document.createElement('div');
+        toast.className = `toast-msg ${type}`;
+        
+        let icon = '🔔'; 
+        if (type === 'success') icon = '✅';
+        if (type === 'error') icon = '⚠️';
 
-    toast.innerHTML = `
-        <span class="text-lg">${icon}</span>
-        <div class="toast-content">${message}</div>
-    `;
+        toast.innerHTML = `
+            <span class="text-lg">${icon}</span>
+            <div class="toast-content">${message}</div>
+        `;
 
-    // Añadir al contenedor
-    container.appendChild(toast);
-
-    // Se eliminará automáticamente después de 3.5 segundos (3s espera + 0.4s animación)
-    setTimeout(() => {
-        toast.remove();
-    }, 3400);
-};
+        container.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3400);
+    };
 
     // 5. FUNCIONES UI BÁSICAS
     window.openReg = () => document.getElementById('reg-modal')?.classList.replace('hidden', 'flex');
@@ -692,67 +663,56 @@ window.showToast = (message, type = 'neutral') => {
 
     // --- LÓGICA CORE DE CONFIRMACIÓN (CORREGIDA) ---
     // --- ACTUALIZACIÓN EN CONFIRMBET ---
-window.confirmBet = async () => {
-    // 1. Validar Usuario
-    const user = auth.currentUser;
-    if (!user) {
-        // Usamos type 'error' para que salga rojo
-        window.showToast("Inicia sesión para manifestar.", "error"); 
-        return;
-    }
-
-    // 2. Validar Monto
-    const amount = parseFloat(document.getElementById('bet-amount').value);
-    if (isNaN(amount) || amount <= 0) {
-        window.showToast("Ingresa un monto válido.", "error");
-        return;
-    }
-
-    try {
-        const userRef = ref(db, `users/${user.uid}`);
-        const userSnap = await get(userRef);
-        const balance = userSnap.val()?.balance || 0;
-
-        if (amount > balance) {
-            window.showToast(`Saldo insuficiente (Tienes S/ ${balance}).`, "error");
+// --- FUNCIÓN DE APUESTA CORREGIDA ---
+    window.confirmBet = async () => {
+        const user = auth.currentUser;
+        if (!user) {
+            window.showToast("Inicia sesión para manifestar.", "error");
             return;
         }
-            // 3. Verificar Saldo en DB
+
+        const amountInput = document.getElementById('bet-amount');
+        const amount = parseFloat(amountInput.value);
+
+        if (isNaN(amount) || amount <= 0) {
+            window.showToast("Ingresa un monto válido.", "error");
+            return;
+        }
+
+        try {
             const userRef = ref(db, `users/${user.uid}`);
             const userSnap = await get(userRef);
             const balance = userSnap.val()?.balance || 0;
 
             if (amount > balance) {
-                window.showModal("Saldo Insuficiente", `Solo tienes S/ ${balance.toFixed(2)} disponibles.`);
+                window.showToast(`Saldo insuficiente (S/ ${balance.toFixed(2)})`, "error");
                 return;
             }
 
-            // 4. Registrar Apuesta
+            // Registrar en la DB
             const newBetRef = push(ref(db, 'bets'));
-        await set(newBetRef, {
-            uid: user.uid,
-            username: user.displayName || "Anónimo", 
-            predictionId: currentBetData.id,
-            predictionTitle: currentBetData.title,
-            side: currentBetData.side,
-            amount: amount,
-            timestamp: serverTimestamp(),
-            status: 'pending'
-        });
+            await set(newBetRef, {
+                uid: user.uid,
+                username: user.displayName || "C",
+                predictionId: currentBetData.id,
+                predictionTitle: currentBetData.title,
+                side: currentBetData.side,
+                amount: amount,
+                timestamp: serverTimestamp(),
+                status: 'pending'
+            });
 
-        await update(userRef, { balance: balance - amount });
-        
-        // Cierra el modal de apuesta
-        window.closeModal(); 
-        
-        // ¡AQUÍ ESTÁ LA MAGIA! Notificación elegante que se va sola
-        window.showToast("¡Apuesta enviada con faith!", "success");
+            // Actualizar Saldo
+            await update(userRef, { balance: balance - amount });
+            
+            window.closeModal(); // Cierra el modal de apuesta
+            window.showToast("¡Manifestación enviada con éxito!", "success");
 
-    } catch (e) {
-        console.error(e);
-        window.showToast("Error de conexión.", "error");
-    }
-};
+        } catch (e) {
+            console.error(e);
+            window.showToast("Error al procesar apuesta.", "error");
+        }
+    };
             
             // Log para debug
             const name = user.displayName || "C";
@@ -898,16 +858,10 @@ window.confirmBet = async () => {
     initLiveFeed();
 
 </script>
-<div id="custom-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-        <h2 id="modal-title">Título</h2>
-        <p id="modal-message">Mensaje aquí...</p>
-        <button onclick="closeCustomModal()" class="modal-btn">Aceptar</button>
-    </div>
-</div>
 <div id="toast-container"></div>
 </body>
 </html>
+
 
 
 
