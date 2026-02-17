@@ -386,7 +386,7 @@
             </h3>
             <span class="text-[9px] text-gray-500 font-bold">Últimas transacciones</span>
         </div>
-        <div id="live-feed-container" class="hidden space-y-2 max-h-32 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #b8860b #333;">
+        <div id="live-feed-container" class="opacity-0 invisible space-y-2 max-h-32 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #b8860b #333;">
     <div class="text-center text-[10px] text-gray-600 italic">Esperando apuestas...</div>
 </div>
     </div>
@@ -870,20 +870,22 @@
 // No uses el import aquí si ya lo inicializaste arriba
 const auth = firebase.auth(); // O la forma en que hayas inicializado auth
 const liveFeed = document.getElementById('live-feed-container');
-
-auth.onAuthStateChanged((user) => {
   if (user) {
-    liveFeed.classList.remove('hidden');
-    console.log("Usuario detectado: Mostrando Live Feed");
+    // Si hay usuario, lo hacemos visible y opaco
+    liveFeed.classList.remove('opacity-0', 'invisible');
+    liveFeed.classList.add('opacity-100');
+    console.log("Sesión activa: Live Feed liberado");
   } else {
-    liveFeed.classList.add('hidden');
-    console.log("No hay sesión: Live Feed oculto");
+    // Si no hay usuario, lo ocultamos
+    liveFeed.classList.add('opacity-0', 'invisible');
+    liveFeed.classList.remove('opacity-100');
   }
 });
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
