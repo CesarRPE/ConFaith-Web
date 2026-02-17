@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-auth-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Lobster&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <title>ConFaith | El Market de Predicciones que la hace</title>
     
@@ -871,25 +873,27 @@
     window.renderCards('Todos');
     initLiveFeed();
 
-// Asegúrate de que este bloque esté al final, después de initLiveFeed();
-const liveFeedBlock = document.getElementById('live-feed-container');
-
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    // Si hay usuario, removemos hidden. 
-    // Usamos un pequeño delay para asegurar que el DOM esté listo
-    setTimeout(() => {
-        liveFeedBlock.classList.remove('hidden');
-        console.log("Sesión detectada para César: Mostrando Live Feed");
-    }, 100); 
-  } else {
-    liveFeedBlock.classList.add('hidden');
-  }
-});
+// Usamos un intervalo pequeño para esperar a que firebase esté listo
+const checkAuth = setInterval(() => {
+    if (typeof firebase !== 'undefined') {
+        clearInterval(checkAuth);
+        
+        firebase.auth().onAuthStateChanged((user) => {
+            const liveFeedBlock = document.getElementById('live-feed-container');
+            if (user && liveFeedBlock) {
+                liveFeedBlock.classList.remove('hidden');
+                console.log("¡Confe activada! Mostrando Live Feed para César");
+            } else if (liveFeedBlock) {
+                liveFeedBlock.classList.add('hidden');
+            }
+        });
+    }
+}, 500);
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
