@@ -593,7 +593,13 @@
         const amount = parseFloat(document.getElementById('bet-amount').value);
         const user = auth.currentUser;
 
-        if (!user) return alert("Inicia sesión para apostar, C.");
+        if (!user) {
+    alert("Inicia sesión para manifestar con faith.");
+    // O un mensaje más genérico y elegante
+} else {
+    // Aquí sí puedes usar el nombre porque ya sabemos quién es
+    console.log("Bienvenido de vuelta, " + userDisplayName);
+}
         if (isNaN(amount) || amount <= 0) return alert("Ingresa un monto válido.");
 
         try {
@@ -776,6 +782,7 @@ onAuthStateChanged(auth, (user) => {
 </script>
 </body>
 </html>
+
 
 
 
