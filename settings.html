@@ -133,16 +133,35 @@ h1, h2, h3, h4, h5, h6, b, strong {
 #nav-balance-container:hover #nav-balance {
     text-shadow: 0 0 15px rgba(184, 134, 11, 0.6);
 }
-    .sidebar-btn.is-active {
+    /* 1. Estado BASE del botón */
+.sidebar-btn {
+    border: 1px solid transparent; /* Reservamos el espacio del borde */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #9ca3af; /* text-gray-400 */
+}
+
+/* 2. Estado HOVER (Cuando pasas el mouse) */
+.sidebar-btn:hover:not(.is-active) { 
+    border: 1px solid rgba(184, 134, 11, 0.3) !important;
+    background: rgba(255, 255, 255, 0.05);
+
+    /* EFECTO GLOSSY BLACK EN TEXTO */
+    background-image: linear-gradient(180deg, #4a4a4a 0%, #000000 50%, #1a1a1a 100%);
+    -webkit-background-clip: text; /* Corta el fondo con la forma de la letra */
+    background-clip: text;
+    color: transparent !important; /* Hace que el color sólido desaparezca para ver el degradado */
+    
+    /* Extra: Un ligero brillo para el efecto "glossy" */
+    text-shadow: 0px 1px 1px rgba(255,255,255,0.2); 
+}
+
+/* 3. Estado ACTIVO (El que pusimos con JS) */
+.sidebar-btn.is-active {
     background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%) !important;
     border: 1px solid var(--gold-faith) !important;
     color: white !important;
     transform: scale(1.02);
     box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
-}
-    .sidebar-btn:hover {
-    /* El dorado #b8860b con 0.3 de opacidad */
-    border: 1px solid transparent rgba(184, 134, 11, 0.3); 
 }
     </style>
 </head>
@@ -728,6 +747,7 @@ window.showSection = (sectionId) => {
 </script>
 </body>
 </html>
+
 
 
 
