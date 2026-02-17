@@ -133,6 +133,11 @@ h1, h2, h3, h4, h5, h6, b, strong {
 #nav-balance-container:hover #nav-balance {
     text-shadow: 0 0 15px rgba(184, 134, 11, 0.6);
 }
+    .sidebar-btn.bg-\[\#b8860b\] {
+    background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
     </style>
 </head>
 <body>
@@ -218,19 +223,19 @@ h1, h2, h3, h4, h5, h6, b, strong {
     MENÚ
 </h3>
                 <nav class="flex flex-col gap-1">
-        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active">
+        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
             <span class="emoji-render">&#x1F464;</span> Perfil
                     </button>
-        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active">
+        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
             <span class="emoji-render">&#x1F514;</span> Alertas
                     </button>
-        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
+        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
             <span class="emoji-render">&#x1F4B3;</span> Billetera
                     </button>
-        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
+        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
             <span class="emoji-render">&#x1F512;</span> Seguridad
                     </button>
-        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
+        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
             <span class="emoji-render transition-transform group-hover:scale-110">🆘</span>
     <span>Soporte</span>
         </button>
@@ -715,14 +720,23 @@ window.showSection = (sectionId) => {
 
     // 4. RESALTADO DEL BOTÓN ACTUAL: Aplicamos el dorado solo al elegido
     const activeBtn = document.getElementById('btn-' + sectionId);
-    if (activeBtn) {
-        activeBtn.classList.add('bg-[#b8860b]', 'text-black', 'font-bold');
-        activeBtn.classList.remove('text-gray-400');
-    }
+    // Dentro de window.showSection...
+if (activeBtn) {
+    // ESTILO PREMIUM: Dorado vibrante, texto negro, bordes definidos y sombra sutil
+    activeBtn.classList.add(
+        'bg-[#b8860b]', 
+        'text-black', 
+        'font-black',      // Texto más grueso
+        'shadow-[0_4_15px_rgba(184,134,11,0.3)]', // Resplandor dorado
+        'scale-[1.02]'     // Un pequeño aumento de tamaño
+    );
+    activeBtn.classList.remove('text-gray-400');
+}
 };
 </script>
 </body>
 </html>
+
 
 
 
