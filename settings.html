@@ -164,7 +164,9 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </div>
 
         <div class="flex items-center gap-4 z-20">
-            <div id="nav-balance-container" class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
+            <div id="nav-balance-container" 
+     onclick="showSection('billetera')" 
+     class="cursor-pointer flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
     <span class="text-[8px] font-black text-white/60 uppercase tracking-tighter">Saldo</span>
     <span id="nav-balance" class="text-[11px] font-black text-[#b8860b]" style="text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
         S/ 0.00
@@ -692,11 +694,34 @@ window.addEventListener('load', () => {
         }, 300);
     }
 });
+window.showSection = (sectionId) => {
+    // 1. Ocultar todas las secciones
+    document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
+    
+    // 2. Mostrar la sección seleccionada
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.classList.remove('hidden');
+    }
+
+    // 3. Actualizar estado visual de los botones del sidebar
+    document.querySelectorAll('.sidebar-btn').forEach(b => {
+        b.classList.remove('bg-[#b8860b]', 'text-black');
+        b.classList.add('text-gray-400');
+    });
+
+    const activeBtn = document.getElementById('btn-' + sectionId);
+    if (activeBtn) {
+        activeBtn.classList.add('bg-[#b8860b]', 'text-black');
+        activeBtn.classList.remove('text-gray-400');
+    }
+};
 // Lo que busca el script:
 document.getElementById('nav-balance').innerText = `S/ ${balance.toFixed(2)}`;
 </script>
 </body>
 </html>
+
 
 
 
