@@ -869,13 +869,10 @@
         if(mirror) mirror.style.transform = val;
     }
     setInterval(window.nextSlide, 5000);
+}
+// --- FINAL DEL SCRIPT CORREGIDO ---
 
-    // --- FINAL DEL SCRIPT CORREGIDO ---
-
-// 1. Cerramos correctamente cualquier función anterior que haya quedado abierta
-} 
-
-// 2. Definimos la función de visibilidad de forma global
+// 1. Definición de la función
 function gestionarVisibilidadFeed() {
     const liveFeedBlock = document.getElementById('live-feed-container');
     
@@ -884,28 +881,28 @@ function gestionarVisibilidadFeed() {
             if (liveFeedBlock) {
                 if (user) {
                     liveFeedBlock.classList.remove('hidden');
-                    console.log("G: Live Feed activado para César");
+                    console.log("G: Live Feed detectado para César.");
                 } else {
                     liveFeedBlock.classList.add('hidden');
                 }
             }
         });
     } else {
-        // Reintento si Firebase aún no despierta
         setTimeout(gestionarVisibilidadFeed, 500);
     }
 }
 
-// 3. Unificamos el arranque
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', gestionarVisibilidadFeed);
-} else {
+// 2. Ejecución segura (Sin llaves huérfanas)
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
     gestionarVisibilidadFeed();
+} else {
+    document.addEventListener('DOMContentLoaded', gestionarVisibilidadFeed);
 }
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
