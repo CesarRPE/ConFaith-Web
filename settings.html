@@ -164,7 +164,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </div>
 
         <div class="flex items-center gap-4 z-20">
-            <div id="nav-balance-container" class="hidden cursor-pointer flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
+            <div id="nav-balance-container" class="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-[#b8860b]/40 hover:bg-white/10 transition-all active:scale-95 group">
     <span class="text-[8px] font-black text-white/60 uppercase tracking-tighter">Saldo</span>
     <span id="nav-balance" class="text-[11px] font-black text-[#b8860b]" style="text-shadow: 0 0 10px rgba(184, 134, 11, 0.3);">
         S/ 0.00
@@ -547,9 +547,18 @@ if (balanceContainer && !document.getElementById('nav-balance')) {
             // Dentro del escuchador de balance en Firebase
 onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
     const balance = snapshot.val() || 0;
-    const navBal = document.getElementById('nav-balance');
-    if (navBal) {
-        navBal.innerText = `S/ ${balance.toFixed(2)}`;
+    
+    // IMPORTANTE: Aquí actualizamos el Navbar
+    const navBalanceElement = document.getElementById('nav-balance');
+    if (navBalanceElement) {
+        navBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
+        console.log("Saldo actualizado en Navbar:", balance); // Debug para César
+    }
+    
+    // También actualizamos el contenedor grande de la sección Billetera si existe
+    const mainBalanceElement = document.getElementById('balance-amount');
+    if (mainBalanceElement) {
+        mainBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
     }
 });
 
@@ -683,9 +692,12 @@ window.addEventListener('load', () => {
         }, 300);
     }
 });
+// Lo que busca el script:
+document.getElementById('nav-balance').innerText = `S/ ${balance.toFixed(2)}`;
 </script>
 </body>
 </html>
+
 
 
 
