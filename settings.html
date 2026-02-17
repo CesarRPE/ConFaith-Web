@@ -234,7 +234,9 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <a href="#" class="dropdown-item">🔥 Tendencias</a>
                     <a href="#" class="dropdown-item">🏆 Leaderboard</a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" onclick="showSection('soporte')" class="dropdown-item text-gray-400">🆘 Soporte</a>
+                    <a href="#" onclick="showSection('soporte')" class="dropdown-item flex items-center gap-2 px-4 py-2 text-gray-400 hover:text-white transition-colors">
+    <span>&#x1F4AC;</span> Soporte
+</a>
                 </div>
             </div>
         </div>
@@ -248,20 +250,20 @@ h1, h2, h3, h4, h5, h6, b, strong {
     MENÚ
 </h3>
                 <nav class="flex flex-col gap-1">
-        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-#121212)">
+        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
             <span class="emoji-render">&#x1F464;</span> Perfil
                     </button>
-        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-#121212)">
+        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
             <span class="emoji-render">&#x1F514;</span> Alertas
                     </button>
-        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-#121212)">
+        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
             <span class="emoji-render">&#x1F4B3;</span> Billetera
                     </button>
-        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-#121212)">
+        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
             <span class="emoji-render">&#x1F512;</span> Seguridad
                     </button>
-        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-#121212)">
-            <span class="emoji-render transition-transform group-hover:scale-110">🆘</span>
+        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
+            <span class="emoji-render">&#x1F4AC</span>
     <span>Soporte</span>
         </button>
                     </nav>
@@ -747,6 +749,7 @@ window.showSection = (sectionId) => {
 </script>
 </body>
 </html>
+
 
 
 
