@@ -84,12 +84,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .nav-btn.active {
-            background-color: rgba(184, 134, 11, 0.15);
-            border-left: 4px solid var(--gold-faith);
-            color: white;
-        }
-
         /* Clase maestra para el efecto Glossy White en textos */
 .text-glossy {
     color: rgba(255, 255, 255, 0.95);
@@ -133,10 +127,13 @@ h1, h2, h3, h4, h5, h6, b, strong {
 #nav-balance-container:hover #nav-balance {
     text-shadow: 0 0 15px rgba(184, 134, 11, 0.6);
 }
-    .sidebar-btn.active {
-    background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%);
-    border: 1px solid var(--gold-faith);
-    color: white;
+    /* Reemplaza el bloque anterior por este en tu <style> */
+.nav-btn.active {
+    background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%) !important;
+    border: 1px solid var(--gold-faith) !important;
+    color: white !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
     </style>
@@ -699,36 +696,33 @@ window.addEventListener('load', () => {
     }
 });
 // Función global para cambiar de sección (necesaria para el clic en el saldo)
-window.showSection = (sectionId) => {
-    // 1. Ocultar todos los paneles de contenido
-    document.querySelectorAll('.settings-section').forEach(s => {
-        s.classList.add('hidden');
+window.showSection = function(id) {
+    // 1. Manejo de Secciones de Contenido
+    document.querySelectorAll('.content-section').forEach(s => {
+        s.classList.remove('active'); // Oculta las secciones
     });
+    const targetSection = document.getElementById(id);
+    if(targetSection) targetSection.classList.add('active');
 
-    // 2. Mostrar el panel solicitado
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-        targetSection.classList.remove('hidden');
-    }
-
-    // 3. LIMPIEZA DEL SIDEBAR
-    document.querySelectorAll('.sidebar-btn').forEach(btn => {
-        // Quitamos cualquier rastro de escalas o colores antiguos
-        btn.classList.remove('scale-[1.02]', 'bg-[#b8860b]', 'text-black');
-        // Importante: Devolvemos el color gris a los botones NO seleccionados
+    // 2. Manejo del Sidebar (EL ARREGLO)
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        // Quitamos la clase active de TODOS los botones
+        btn.classList.remove('active');
+        // Aseguramos que vuelvan a su color gris original
         btn.classList.add('text-gray-400');
     });
 
-    // 4. ACTIVACIÓN
-    const activeBtn = document.getElementById('btn-' + sectionId);
-    if (activeBtn) {
-    activeBtn.classList.add('active', 'scale-[1.02]');
-    activeBtn.classList.remove('text-gray-400');
-}
+    // 3. Activamos el botón seleccionado
+    const targetBtn = document.getElementById('btn-' + id);
+    if(targetBtn) {
+        targetBtn.classList.add('active');
+        targetBtn.classList.remove('text-gray-400');
+    }
 };
 </script>
 </body>
 </html>
+
 
 
 
