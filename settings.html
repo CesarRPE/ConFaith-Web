@@ -733,25 +733,28 @@ window.showSection = (sectionId) => {
     const target = document.getElementById(sectionId);
     if (target) target.classList.remove('hidden');
 
-    // 3. LIMPIEZA TOTAL: Quitamos el estado activo de TODOS
+    // 3. LIMPIEZA TOTAL
     document.querySelectorAll('.sidebar-btn').forEach(btn => {
         btn.classList.remove('is-active');
-        btn.classList.add('text-gray-400', 'font-bold'); // Dejamos font-bold como BASE para todos
+        btn.classList.add('text-gray-400', 'font-bold');
     });
 
-    // 4. ACTIVACIÓN: Aplicamos el estilo al botón clicado
+    // 4. ACTIVACIÓN
     const activeBtn = document.getElementById('btn-' + sectionId);
     if (activeBtn) {
         activeBtn.classList.add('is-active');
         activeBtn.classList.remove('text-gray-400');
     }
-    // Cuando la página termine de cargar, activa Perfil por defecto
-    document.addEventListener('DOMContentLoaded', () => {
-    showSection('perfil');
+}; // <--- Aquí cierra la función
+
+// ESTO VA AFUERA: Se ejecuta solo una vez cuando abres la página
+document.addEventListener('DOMContentLoaded', () => {
+    window.showSection('perfil');
 });
 </script>
 </body>
 </html>
+
 
 
 
