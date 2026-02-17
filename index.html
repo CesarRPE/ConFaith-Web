@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-auth-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Lobster&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
     <title>ConFaith | El Market de Predicciones que la hace</title>
     
@@ -873,26 +873,35 @@
     window.renderCards('Todos');
     initLiveFeed();
 
-// Usamos un intervalo pequeño para esperar a que firebase esté listo
-const checkAuth = setInterval(() => {
-    if (typeof firebase !== 'undefined') {
-        clearInterval(checkAuth);
+// Esperamos a que la ventana cargue totalmente para asegurar que Firebase esté inicializado
+window.addEventListener('load', () => {
+    // Verificamos si la App de Firebase ya fue inicializada arriba en tu código
+    if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
         
         firebase.auth().onAuthStateChanged((user) => {
             const liveFeedBlock = document.getElementById('live-feed-container');
-            if (user && liveFeedBlock) {
-                liveFeedBlock.classList.remove('hidden');
-                console.log("¡Confe activada! Mostrando Live Feed para César");
-            } else if (liveFeedBlock) {
-                liveFeedBlock.classList.add('hidden');
+            
+            if (liveFeedBlock) {
+                if (user) {
+                    // Si el usuario César está logueado, mostramos la caja
+                    liveFeedBlock.classList.remove('hidden');
+                    console.log("Sesión detectada: Live Feed activo.");
+                } else {
+                    // Si no hay sesión, nos aseguramos de que esté oculta
+                    liveFeedBlock.classList.add('hidden');
+                    console.log("Sin sesión: Live Feed oculto.");
+                }
             }
         });
+    } else {
+        console.error("G: Firebase no se ha inicializado correctamente aún.");
     }
-}, 500);
+});
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
