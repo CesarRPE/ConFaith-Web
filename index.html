@@ -871,23 +871,26 @@
     window.renderCards('Todos');
     initLiveFeed();
 
-// No vuelvas a declarar auth, usa firebase.auth() directamente
-const feedElement = document.getElementById('live-feed-container');
+// Asegúrate de que este bloque esté al final, después de initLiveFeed();
+const liveFeedBlock = document.getElementById('live-feed-container');
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    // Si hay usuario, quitamos 'hidden' para mostrar el recuadro y su contenido
-    feedElement.classList.remove('hidden');
-    console.log("Sesión activa: Mostrando Live Feed");
+    // Si hay usuario, removemos hidden. 
+    // Usamos un pequeño delay para asegurar que el DOM esté listo
+    setTimeout(() => {
+        liveFeedBlock.classList.remove('hidden');
+        console.log("Sesión detectada para César: Mostrando Live Feed");
+    }, 100); 
   } else {
-    // Si no hay sesión, 'hidden' oculta todo (incluyendo el fondo oscuro)
-    feedElement.classList.add('hidden');
+    liveFeedBlock.classList.add('hidden');
   }
 });
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
