@@ -873,35 +873,37 @@
     window.renderCards('Todos');
     initLiveFeed();
 
+// Función para controlar el Live Feed
 function gestionarVisibilidadFeed() {
     const liveFeedBlock = document.getElementById('live-feed-container');
     
-    // Si Firebase ya arrancó
+    // Verificamos si Firebase ya cargó y se inicializó
     if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
         firebase.auth().onAuthStateChanged((user) => {
             if (liveFeedBlock) {
                 if (user) {
                     liveFeedBlock.classList.remove('hidden');
-                    console.log("¡Éxito! Live Feed visible para César.");
+                    console.log("Sesión detectada: Mostrando Live Feed.");
                 } else {
                     liveFeedBlock.classList.add('hidden');
+                    console.log("Sin sesión: Live Feed oculto.");
                 }
             }
         });
     } else {
-        // Si aún no arranca, esperamos 500ms y reintentamos
-        console.log("Esperando inicialización de Firebase...");
+        // Si aún no está listo, reintenta en 500ms
         setTimeout(gestionarVisibilidadFeed, 500);
     }
 }
 
-// Arrancamos la comprobación al cargar la página
-window.addEventListener('load', gestionarVisibilidadFeed);
+// Ejecutar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', gestionarVisibilidadFeed);
 });
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
