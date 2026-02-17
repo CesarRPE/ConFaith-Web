@@ -694,33 +694,10 @@ window.addEventListener('load', () => {
         }, 300);
     }
 });
-window.showSection = (sectionId) => {
-    // 1. Ocultar todas las secciones
-    document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
-    
-    // 2. Mostrar la sección seleccionada
-    const target = document.getElementById(sectionId);
-    if (target) {
-        target.classList.remove('hidden');
-    }
-
-    // 3. Actualizar estado visual de los botones del sidebar
-    document.querySelectorAll('.sidebar-btn').forEach(b => {
-        b.classList.remove('bg-[#b8860b]', 'text-black');
-        b.classList.add('text-gray-400');
-    });
-
-    const activeBtn = document.getElementById('btn-' + sectionId);
-    if (activeBtn) {
-        activeBtn.classList.add('bg-[#b8860b]', 'text-black');
-        activeBtn.classList.remove('text-gray-400');
-    }
-};
-// Lo que busca el script:
-document.getElementById('nav-balance').innerText = `S/ ${balance.toFixed(2)}`;
 </script>
 </body>
 </html>
+
 
 
 
