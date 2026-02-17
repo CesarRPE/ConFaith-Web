@@ -135,7 +135,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 }
     .sidebar-btn.bg-\[\#b8860b\] {
     background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%);
-    border: 2px solid var(--gold-faith);
+    border: 1px solid var(--gold-faith);
     color: white;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -224,19 +224,19 @@ h1, h2, h3, h4, h5, h6, b, strong {
     MENÚ
 </h3>
                 <nav class="flex flex-col gap-1">
-        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
+        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-linear-gradient(180deg, #3a3a3a 0%, #000000 100%)">
             <span class="emoji-render">&#x1F464;</span> Perfil
                     </button>
-        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
+        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-linear-gradient(180deg, #3a3a3a 0%, #000000 100%)">
             <span class="emoji-render">&#x1F514;</span> Alertas
                     </button>
-        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
+        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-linear-gradient(180deg, #3a3a3a 0%, #000000 100%)">
             <span class="emoji-render">&#x1F4B3;</span> Billetera
                     </button>
-        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
+        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-linear-gradient(180deg, #3a3a3a 0%, #000000 100%)">
             <span class="emoji-render">&#x1F512;</span> Seguridad
                     </button>
-        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-white">
+        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left bg-transparent border border-transparent hover:bg-white/5 hover:border-[#b8860b]/30 hover:text-linear-gradient(180deg, #3a3a3a 0%, #000000 100%)">
             <span class="emoji-render transition-transform group-hover:scale-110">🆘</span>
     <span>Soporte</span>
         </button>
@@ -700,43 +700,30 @@ window.addEventListener('load', () => {
 });
 // Función global para cambiar de sección (necesaria para el clic en el saldo)
 window.showSection = (sectionId) => {
-    // 1. Ocultar todos los paneles de contenido
-    document.querySelectorAll('.settings-section').forEach(s => {
-        s.classList.add('hidden');
-    });
+    // 1. Ocultar todos los paneles
+    document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
+    
+    // 2. Mostrar el panel actual
+    const target = document.getElementById(sectionId);
+    if (target) target.classList.remove('hidden');
 
-    // 2. Mostrar el panel solicitado
-    const targetSection = document.getElementById(sectionId);
-    if (targetSection) {
-        targetSection.classList.remove('hidden');
-    }
-
-    // 3. LIMPIEZA DEL SIDEBAR: Quitamos el resaltado de TODOS los botones
+    // 3. LIMPIEZA TOTAL: Quitamos el estado activo de TODOS
     document.querySelectorAll('.sidebar-btn').forEach(btn => {
-        // Removemos las clases de estado activo
-        btn.classList.remove('bg-[#b8860b]', 'text-black', 'font-bold');
-        // Devolvemos el estado inactivo (gris)
-        btn.classList.add('text-gray-400');
+        btn.classList.remove('bg-[#b8860b]', 'text-black', 'font-black', 'shadow-[0_4_15px_rgba(184,134,11,0.3)]', 'scale-[1.02]');
+        btn.classList.add('text-gray-400', 'font-bold'); // Dejamos font-bold como BASE para todos
     });
 
-    // 4. RESALTADO DEL BOTÓN ACTUAL: Aplicamos el dorado solo al elegido
+    // 4. ACTIVACIÓN: Aplicamos el estilo al botón clicado
     const activeBtn = document.getElementById('btn-' + sectionId);
-    // Dentro de window.showSection...
-// Dentro de window.showSection...
-if (activeBtn) {
-    activeBtn.classList.add(
-        'bg-[#b8860b]', 
-        'text-black', 
-        // Eliminamos 'font-black' o 'font-bold' de aquí
-        'shadow-[0_4_15px_rgba(184,134,11,0.3)]', 
-        'scale-[1.02]'
-    );
-    activeBtn.classList.remove('text-gray-400');
-}
+    if (activeBtn) {
+        activeBtn.classList.add('bg-[#b8860b]', 'text-black', 'font-black', 'scale-[1.02]');
+        activeBtn.classList.remove('text-gray-400');
+    }
 };
 </script>
 </body>
 </html>
+
 
 
 
