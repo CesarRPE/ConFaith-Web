@@ -378,15 +378,7 @@
     </header>
 
 <div class="max-w-7xl mx-auto px-6 mb-6">
-    <div class="bg-black/40 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
-        <div class="flex items-center justify-between mb-3">
-            <h3 class="text-white font-black text-xs uppercase tracking-widest flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                Live Feed
-            </h3>
-            <span class="text-[9px] text-gray-500 font-bold">Últimas transacciones</span>
-        </div>
-        <div id="live-feed-container" class="hidden bg-[#1e2128] border border-gray-800 rounded-xl p-4 mb-6">
+    <div id="live-feed-container" class="hidden bg-[#1e2128] border border-gray-800 rounded-xl p-4 mb-6">
     
     <div class="flex items-center justify-between mb-4">
         <div class="flex items-center gap-2">
@@ -396,12 +388,11 @@
             </span>
             <h2 class="text-[11px] font-bold uppercase tracking-wider text-white">Live Feed</h2>
         </div>
+        <span class="text-[10px] text-gray-500 uppercase tracking-tight">Últimas transacciones</span>
     </div>
 
     <div class="space-y-2 max-h-32 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #b8860b #333;">
         <div class="text-center text-[10px] text-gray-600 italic">Esperando apuestas...</div>
-    </div>
-</div>
     </div>
 </div>
     
@@ -897,6 +888,7 @@ firebase.auth().onAuthStateChanged((user) => {
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
