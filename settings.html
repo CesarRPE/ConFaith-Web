@@ -696,33 +696,36 @@ window.addEventListener('load', () => {
 });
 // Función global para cambiar de sección (necesaria para el clic en el saldo)
 window.showSection = (sectionId) => {
-    // 1. Selecciona todas las secciones
-    const sections = document.querySelectorAll('.settings-section');
-    sections.forEach(s => s.classList.add('hidden')); // Las oculta todas
-
-    // 2. Muestra la sección que pedimos
-    const target = document.getElementById(sectionId);
-    if (target) {
-        target.classList.remove('hidden');
-    }
-
-    // 3. Actualiza el estilo de los botones del sidebar para que se vea cuál está activo
-    const buttons = document.querySelectorAll('.sidebar-btn');
-    buttons.forEach(btn => {
-        btn.classList.remove('bg-[#b8860b]', 'text-black'); // Quita el dorado de otros
-        btn.classList.add('text-gray-400'); // Los pone grises
+    // 1. Ocultar todos los paneles de contenido
+    document.querySelectorAll('.settings-section').forEach(s => {
+        s.classList.add('hidden');
     });
 
-    // 4. Ilumina el botón correspondiente en el sidebar
+    // 2. Mostrar el panel solicitado
+    const targetSection = document.getElementById(sectionId);
+    if (targetSection) {
+        targetSection.classList.remove('hidden');
+    }
+
+    // 3. LIMPIEZA DEL SIDEBAR: Quitamos el resaltado de TODOS los botones
+    document.querySelectorAll('.sidebar-btn').forEach(btn => {
+        // Removemos las clases de estado activo
+        btn.classList.remove('bg-[#b8860b]', 'text-black', 'font-bold');
+        // Devolvemos el estado inactivo (gris)
+        btn.classList.add('text-gray-400');
+    });
+
+    // 4. RESALTADO DEL BOTÓN ACTUAL: Aplicamos el dorado solo al elegido
     const activeBtn = document.getElementById('btn-' + sectionId);
     if (activeBtn) {
-        activeBtn.classList.add('bg-[#b8860b]', 'text-black');
+        activeBtn.classList.add('bg-[#b8860b]', 'text-black', 'font-bold');
         activeBtn.classList.remove('text-gray-400');
     }
 };
 </script>
 </body>
 </html>
+
 
 
 
