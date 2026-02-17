@@ -519,17 +519,11 @@
 </div>
 
     <script type="module">
-    // 1. IMPORTACIONES FIREBASE
+    // --- CONFIGURACIÓN E IMPORTACIONES ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { 
-        getAuth, onAuthStateChanged, signOut, 
-        GoogleAuthProvider, signInWithPopup 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { 
-        getDatabase, ref, onValue, set, update, get, push, serverTimestamp, query, limitToLast 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getDatabase, ref, onValue, set, update, get, push, serverTimestamp, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 2. CONFIGURACIÓN
     const firebaseConfig = {
         apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
         authDomain: "confaith-web.firebaseapp.com",
@@ -544,126 +538,22 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // 3. VARIABLES DE ESTADO
+    // --- VARIABLES DE ESTADO ---
     let currentBetData = { id: null, title: null, category: null, side: null };
 
-    // --- DEFINICIÓN DE CAJAS ---
-    window.allPredictions = [
-        { id: 1, title: '¿Subirá el precio del pan en Lima antes de junio?', category: 'Economía' },
-        { id: 2, title: '¿Habrá un nuevo convocado sorpresa en la selección?', category: 'Deportes' },
-        { id: 3, title: '¿Saldrá un ampay de un futbolista esta semana?', category: 'Ampays' },
-        { id: 4, title: '¿Se aprobará el retiro de la AFP antes de fin de mes?', category: 'Política' },
-        { id: 5, title: '¿Se agotarán las entradas del festival en menos de 2h?', category: 'Conciertos' },
-        { id: 6, title: '¿Superará el streamer top los 50k views hoy?', category: 'Streamers' },
-        { id: 7, title: '¿Habrá alerta de brillo solar intenso este domingo?', category: 'Tendencias' },
-        { id: 8, title: '¿Será Franco Burneo declarado culpable?', category: 'Juicios VIP' },
-        { id: 9, title: '¿El Bitcoin superará los 70k USD esta semana?', category: 'Criptomonedas' },
-        { id: 10, title: '¿Anunciarán nuevo feriado nacional hoy?', category: 'Política' }
-    ].slice(0, 1000); 
-
-    const allCats = ["Todos", "Política", "Deportes", "Chollywood", "Ampays", "Streamers", "Realitys", "TikTok", "Música", "Redes Sociales", "Cine", "Internacional", "Economía", "Criptomonedas", "Gaming", "Conciertos", "Tecnología", "IA", "Juicios VIP", "Viral", "Moda", "Lima"];
-
-    // 4. FUNCIONES DEL MODAL PERSONALIZADO (Globales)
-    // --- NUEVO SISTEMA DE NOTIFICACIONES TOAST (Sustituye al modal viejo) ---
+    // --- SISTEMA DE TOAST (Auto-eliminable) ---
     window.showToast = (message, type = 'neutral') => {
         const container = document.getElementById('toast-container');
         if (!container) return;
-
         const toast = document.createElement('div');
         toast.className = `toast-msg ${type}`;
-        
-        let icon = '🔔'; 
-        if (type === 'success') icon = '✅';
-        if (type === 'error') icon = '⚠️';
-
-        toast.innerHTML = `
-            <span class="text-lg">${icon}</span>
-            <div class="toast-content">${message}</div>
-        `;
-
+        let icon = type === 'success' ? '✅' : (type === 'error' ? '⚠️' : '🔔');
+        toast.innerHTML = `<span class="text-lg">${icon}</span><div class="toast-content">${message}</div>`;
         container.appendChild(toast);
         setTimeout(() => { toast.remove(); }, 3400);
     };
 
-    // 5. FUNCIONES UI BÁSICAS
-    window.openReg = () => document.getElementById('reg-modal')?.classList.replace('hidden', 'flex');
-    window.closeReg = () => document.getElementById('reg-modal')?.classList.replace('flex', 'hidden');
-    window.openLogin = () => document.getElementById('login-modal')?.classList.replace('hidden', 'flex');
-    window.closeLogin = () => document.getElementById('login-modal')?.classList.replace('flex', 'hidden');
-    window.closeModal = () => document.getElementById('bet-modal')?.classList.replace('flex', 'hidden');
-
-    // --- RENDERIZADO UNIFICADO DE CAJAS ---
-    window.renderCards = (filter = 'Todos', btnElement) => {
-        if(btnElement) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active', 'bg-gold-faith', 'text-black'));
-            btnElement.classList.add('active', 'bg-gold-faith', 'text-black');
-        }
-
-        const grid = document.getElementById('cards-grid');
-        if(!grid) return;
-        
-        grid.innerHTML = "";
-        const filtered = filter === "Todos" ? window.allPredictions : window.allPredictions.filter(p => p.category === filter);
-        
-        filtered.forEach(p => {
-            grid.innerHTML += `
-                <div class="card-blush flex flex-col justify-between" style="background: white; border-radius: 1.5rem; border: 4px solid #b8860b;">
-                    <div class="p-4">
-                        <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase bg-blue-500 text-white">${p.category}</span>
-                        <h3 class="text-lg font-black mt-4 text-slate-800 leading-tight">${p.title}</h3>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 p-4 pt-0">
-                        <button onclick="openBetModal(${p.id}, 'yes')" class="bg-gray-100 hover:bg-green-500/20 border border-gray-200 py-3 rounded-xl transition-all group font-black text-[10px] text-gray-500 uppercase hover:text-green-500">SÍ</button>
-                        <button onclick="openBetModal(${p.id}, 'no')" class="bg-gray-100 hover:bg-red-500/20 border border-gray-200 py-3 rounded-xl transition-all group font-black text-[10px] text-gray-500 uppercase hover:text-red-500">NO</button>
-                    </div>
-                </div>`;
-        });
-    };
-
     // --- LÓGICA DE APUESTAS ---
-    window.openBetModal = (id, side) => {
-        const prediction = window.allPredictions.find(p => p.id === id);
-        if (!prediction) return;
-
-        currentBetData = { id: id, title: prediction.title, category: prediction.category, side: side };
-
-        document.getElementById('modal-cat').innerText = prediction.category;
-        document.getElementById('modal-question').innerText = prediction.title;
-        
-        const sideEl = document.getElementById('modal-choice');
-        sideEl.innerText = side === 'yes' ? 'SÍ' : 'NO';
-        sideEl.className = side === 'yes' 
-            ? 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest text-white bg-green-500'
-            : 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest text-white bg-red-500';
-
-        document.getElementById('bet-amount').value = "";
-        document.getElementById('potential-win').innerText = "0.00";
-        document.getElementById('bet-modal').classList.replace('hidden', 'flex');
-    };
-
-    window.setQuickAmount = (val) => {
-        const input = document.getElementById('bet-amount');
-        if (!input) return;
-        
-        if (val === 'MAX') {
-            const balanceStr = document.getElementById('nav-balance')?.innerText || "0";
-            const balanceValue = parseFloat(balanceStr.replace('S/', '').trim()) || 0;
-            input.value = balanceValue.toFixed(2);
-        } else {
-            let current = parseFloat(input.value) || 0;
-            input.value = (current + val).toFixed(2);
-        }
-        input.dispatchEvent(new Event('input')); 
-    };
-
-    document.getElementById('bet-amount')?.addEventListener('input', (e) => {
-        const val = parseFloat(e.target.value) || 0;
-        document.getElementById('potential-win').innerText = (val * 1.8).toFixed(2);
-    });
-
-    // --- LÓGICA CORE DE CONFIRMACIÓN (CORREGIDA) ---
-    // --- ACTUALIZACIÓN EN CONFIRMBET ---
-// --- FUNCIÓN DE APUESTA CORREGIDA ---
     window.confirmBet = async () => {
         const user = auth.currentUser;
         if (!user) {
@@ -689,7 +579,6 @@
                 return;
             }
 
-            // Registrar en la DB
             const newBetRef = push(ref(db, 'bets'));
             await set(newBetRef, {
                 uid: user.uid,
@@ -702,70 +591,30 @@
                 status: 'pending'
             });
 
-            // Actualizar Saldo
             await update(userRef, { balance: balance - amount });
             
-            window.closeModal(); // Cierra el modal de apuesta
+            document.getElementById('bet-modal').classList.replace('flex', 'hidden');
             window.showToast("¡Manifestación enviada con éxito!", "success");
-
         } catch (e) {
-            console.error(e);
             window.showToast("Error al procesar apuesta.", "error");
         }
     };
-            
-            // Log para debug
-            const name = user.displayName || "C";
-            console.log("Apuesta procesada para: " + name);
 
-        } catch (e) {
-            console.error(e);
-            window.showModal("Error", "Ocurrió un error al procesar la apuesta. Revisa tu conexión.");
-        }
+    // --- UI Y OTROS ---
+    window.openBetModal = (id, side) => {
+        const prediction = window.allPredictions.find(p => p.id === id);
+        if (!prediction) return;
+        currentBetData = { id, title: prediction.title, category: prediction.category, side };
+        document.getElementById('modal-cat').innerText = prediction.category;
+        document.getElementById('modal-question').innerText = prediction.title;
+        const sideEl = document.getElementById('modal-choice');
+        sideEl.innerText = side === 'yes' ? 'SÍ' : 'NO';
+        sideEl.className = `px-4 py-1 rounded-full text-xs font-black uppercase text-white ${side === 'yes' ? 'bg-green-500' : 'bg-red-500'}`;
+        document.getElementById('bet-amount').value = "";
+        document.getElementById('bet-modal').classList.replace('hidden', 'flex');
     };
 
-    // --- LIVE FEED ---
-    const initLiveFeed = () => {
-        const feedContainer = document.getElementById('live-feed-container');
-        if (!feedContainer) return;
-
-        const betsRef = query(ref(db, 'bets'), limitToLast(10));
-        
-        onValue(betsRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                feedContainer.innerHTML = '<div class="text-center text-[10px] text-gray-500">Sin actividad reciente.</div>';
-                return;
-            }
-            
-            feedContainer.innerHTML = "";
-            const data = snapshot.val();
-            const betsArray = Object.values(data).reverse();
-
-            betsArray.forEach(bet => {
-                let statusColor = 'text-gray-400';
-                if (bet.status === 'won') statusColor = 'text-green-500';
-                if (bet.status === 'lost') statusColor = 'text-red-500';
-                if (bet.status === 'pending') statusColor = 'text-[#b8860b]';
-
-                const sideBadge = bet.side === 'yes' 
-                    ? '<span class="text-green-400 font-black">SÍ</span>' 
-                    : '<span class="text-red-400 font-black">NO</span>';
-
-                feedContainer.innerHTML += `
-                    <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0 animate-fadeIn">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-gray-300 font-bold truncate w-40">${bet.predictionTitle}</span>
-                            <span class="text-[8px] text-gray-500">${bet.username}</span>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-[10px] font-bold text-white">S/ ${bet.amount.toFixed(2)} al ${sideBadge}</div>
-                            <span class="text-[8px] uppercase tracking-wider font-black ${statusColor}">${bet.status}</span>
-                        </div>
-                    </div>
-                `;
-            });
-        });
-    };
+    window.closeModal = () => document.getElementById('bet-modal').classList.replace('flex', 'hidden');
 
     // 6. AUTENTICACIÓN
     window.signInWithGoogle = async () => {
@@ -861,6 +710,7 @@
 <div id="toast-container"></div>
 </body>
 </html>
+
 
 
 
