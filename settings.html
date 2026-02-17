@@ -133,11 +133,12 @@ h1, h2, h3, h4, h5, h6, b, strong {
 #nav-balance-container:hover #nav-balance {
     text-shadow: 0 0 15px rgba(184, 134, 11, 0.6);
 }
-    .sidebar-btn.bg-\[\#b8860b\] {
-    background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%);
-    border: 1px solid var(--gold-faith);
-    color: white;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    .sidebar-btn.is-active {
+    background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%) !important;
+    border: 1px solid var(--gold-faith) !important;
+    color: white !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(184, 134, 11, 0.3);
 }
     .sidebar-btn:hover {
     /* El dorado #b8860b con 0.3 de opacidad */
@@ -713,20 +714,21 @@ window.showSection = (sectionId) => {
 
     // 3. LIMPIEZA TOTAL: Quitamos el estado activo de TODOS
     document.querySelectorAll('.sidebar-btn').forEach(btn => {
-        btn.classList.remove('bg-[#b8860b]', 'text-black', 'font-black', 'shadow-[0_4_15px_rgba(184,134,11,0.3)]', 'scale-[1.02]');
+        btn.classList.remove('is-active');
         btn.classList.add('text-gray-400', 'font-bold'); // Dejamos font-bold como BASE para todos
     });
 
     // 4. ACTIVACIÓN: Aplicamos el estilo al botón clicado
     const activeBtn = document.getElementById('btn-' + sectionId);
     if (activeBtn) {
-        activeBtn.classList.add('bg-[#b8860b]', 'text-black', 'font-black', 'scale-[1.02]');
+        activeBtn.classList.add('is-active');
         activeBtn.classList.remove('text-gray-400');
     }
 };
 </script>
 </body>
 </html>
+
 
 
 
