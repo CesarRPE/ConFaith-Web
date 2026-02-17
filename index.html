@@ -873,34 +873,36 @@
     window.renderCards('Todos');
     initLiveFeed();
 
-// Esperamos a que la ventana cargue totalmente para asegurar que Firebase esté inicializado
-window.addEventListener('load', () => {
-    // Verificamos si la App de Firebase ya fue inicializada arriba en tu código
+function gestionarVisibilidadFeed() {
+    const liveFeedBlock = document.getElementById('live-feed-container');
+    
+    // Si Firebase ya arrancó
     if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
-        
         firebase.auth().onAuthStateChanged((user) => {
-            const liveFeedBlock = document.getElementById('live-feed-container');
-            
             if (liveFeedBlock) {
                 if (user) {
-                    // Si el usuario César está logueado, mostramos la caja
                     liveFeedBlock.classList.remove('hidden');
-                    console.log("Sesión detectada: Live Feed activo.");
+                    console.log("¡Éxito! Live Feed visible para César.");
                 } else {
-                    // Si no hay sesión, nos aseguramos de que esté oculta
                     liveFeedBlock.classList.add('hidden');
-                    console.log("Sin sesión: Live Feed oculto.");
                 }
             }
         });
     } else {
-        console.error("G: Firebase no se ha inicializado correctamente aún.");
+        // Si aún no arranca, esperamos 500ms y reintentamos
+        console.log("Esperando inicialización de Firebase...");
+        setTimeout(gestionarVisibilidadFeed, 500);
     }
+}
+
+// Arrancamos la comprobación al cargar la página
+window.addEventListener('load', gestionarVisibilidadFeed);
 });
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
