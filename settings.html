@@ -212,22 +212,22 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     <main class="w-full px-[1.25rem] py-12">
         <div class="flex flex-col md:flex-row gap-8">
-            <aside class="w-64 bg-black/20 backdrop-blur-xl border-r border-white/5 p-6 flex flex-col">
+            <aside class="w-full md:w-64 space-y-2">
                 <h3 class="text-xl font-black mb-6 px-4 tracking-tighter" 
     style="color: #b8860b !important; opacity: 1 !important; filter: none !important; text-shadow: none !important;">
     MENÚ
 </h3>
-                <nav class="space-y-2 flex-1">
-        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-white/5">
+                <nav class="flex flex-col gap-1">
+        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left active">
             👤 Perfil
         </button>
-        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-white/5">
+        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
             💳 Billetera
         </button>
-        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-white/5">
+        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
             🔒 Seguridad
         </button>
-        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-gray-400 hover:bg-white/5">
+        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
             🆘 soporte
         </button>
                     </nav>
@@ -719,6 +719,7 @@ window.showSection = (sectionId) => {
 </script>
 </body>
 </html>
+
 
 
 
