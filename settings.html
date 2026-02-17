@@ -133,7 +133,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 #nav-balance-container:hover #nav-balance {
     text-shadow: 0 0 15px rgba(184, 134, 11, 0.6);
 }
-    .sidebar-btn.bg-\[\#b8860b\] {
+    .sidebar-btn.active {
     background: linear-gradient(180deg, #3a3a3a 0%, #000000 100%);
     border: 1px solid var(--gold-faith);
     color: white;
@@ -722,15 +722,14 @@ window.showSection = (sectionId) => {
     // 4. ACTIVACIÓN
     const activeBtn = document.getElementById('btn-' + sectionId);
     if (activeBtn) {
-        // Aquí NO añadimos bg-[#b8860b] porque tu CSS ya pone el degradado oscuro
-        // Solo quitamos el gris y añadimos el scale para el efecto visual
-        activeBtn.classList.remove('text-gray-400');
-        activeBtn.classList.add('scale-[1.02]'); 
-    }
+    activeBtn.classList.add('active', 'scale-[1.02]');
+    activeBtn.classList.remove('text-gray-400');
+}
 };
 </script>
 </body>
 </html>
+
 
 
 
