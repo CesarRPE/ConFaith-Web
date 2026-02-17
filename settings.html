@@ -745,10 +745,14 @@ window.showSection = (sectionId) => {
         activeBtn.classList.add('is-active');
         activeBtn.classList.remove('text-gray-400');
     }
-};
+    // Cuando la página termine de cargar, activa Perfil por defecto
+    document.addEventListener('DOMContentLoaded', () => {
+    showSection('perfil');
+});
 </script>
 </body>
 </html>
+
 
 
 
