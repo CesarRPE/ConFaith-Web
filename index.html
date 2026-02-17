@@ -500,7 +500,7 @@
         getDatabase, ref, onValue, set, update, get, push, serverTimestamp, query, limitToLast 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 2. CONFIGURACIÓN (Tu proyecto ConFaith)
+    // 2. CONFIGURACIÓN
     const firebaseConfig = {
         apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
         authDomain: "confaith-web.firebaseapp.com",
@@ -518,8 +518,7 @@
     // 3. VARIABLES DE ESTADO
     let currentBetData = { id: null, title: null, category: null, side: null };
 
-    // --- PUNTO 4: DEFINICIÓN DE CAJAS (Límite 1000) ---
-    // Aquí definimos todas las cajas. El slice(0, 1000) asegura que nunca pasemos ese límite.
+    // --- DEFINICIÓN DE CAJAS ---
     window.allPredictions = [
         { id: 1, title: '¿Subirá el precio del pan en Lima antes de junio?', category: 'Economía' },
         { id: 2, title: '¿Habrá un nuevo convocado sorpresa en la selección?', category: 'Deportes' },
@@ -531,19 +530,39 @@
         { id: 8, title: '¿Será Franco Burneo declarado culpable?', category: 'Juicios VIP' },
         { id: 9, title: '¿El Bitcoin superará los 70k USD esta semana?', category: 'Criptomonedas' },
         { id: 10, title: '¿Anunciarán nuevo feriado nacional hoy?', category: 'Política' }
-        // ... Puedes agregar más objetos aquí hasta llegar a 1000
     ].slice(0, 1000); 
 
     const allCats = ["Todos", "Política", "Deportes", "Chollywood", "Ampays", "Streamers", "Realitys", "TikTok", "Música", "Redes Sociales", "Cine", "Internacional", "Economía", "Criptomonedas", "Gaming", "Conciertos", "Tecnología", "IA", "Juicios VIP", "Viral", "Moda", "Lima"];
 
-    // 4. FUNCIONES UI BÁSICAS
+    // 4. FUNCIONES DEL MODAL PERSONALIZADO (Globales)
+    window.showModal = (title, message) => {
+        const titleEl = document.getElementById('modal-title');
+        const msgEl = document.getElementById('modal-message');
+        const modalEl = document.getElementById('custom-modal');
+        
+        if(titleEl && msgEl && modalEl) {
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            modalEl.style.display = 'flex';
+        } else {
+            // Fallback por si el HTML del modal no carga
+            alert(`${title}: ${message}`);
+        }
+    };
+
+    window.closeCustomModal = () => {
+        const modalEl = document.getElementById('custom-modal');
+        if(modalEl) modalEl.style.display = 'none';
+    };
+
+    // 5. FUNCIONES UI BÁSICAS
     window.openReg = () => document.getElementById('reg-modal')?.classList.replace('hidden', 'flex');
     window.closeReg = () => document.getElementById('reg-modal')?.classList.replace('flex', 'hidden');
     window.openLogin = () => document.getElementById('login-modal')?.classList.replace('hidden', 'flex');
     window.closeLogin = () => document.getElementById('login-modal')?.classList.replace('flex', 'hidden');
     window.closeModal = () => document.getElementById('bet-modal')?.classList.replace('flex', 'hidden');
 
-    // --- PUNTO 3: RENDERIZADO UNIFICADO DE CAJAS ---
+    // --- RENDERIZADO UNIFICADO DE CAJAS ---
     window.renderCards = (filter = 'Todos', btnElement) => {
         if(btnElement) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active', 'bg-gold-faith', 'text-black'));
@@ -557,7 +576,6 @@
         const filtered = filter === "Todos" ? window.allPredictions : window.allPredictions.filter(p => p.category === filter);
         
         filtered.forEach(p => {
-            // El diseño se mantiene, pero la lógica onclick ahora usa el ID único
             grid.innerHTML += `
                 <div class="card-blush flex flex-col justify-between" style="background: white; border-radius: 1.5rem; border: 4px solid #b8860b;">
                     <div class="p-4">
@@ -572,17 +590,13 @@
         });
     };
 
-    // --- PUNTO 1 & LÓGICA DE APUESTAS ---
-    
-    // Abrir Modal
+    // --- LÓGICA DE APUESTAS ---
     window.openBetModal = (id, side) => {
         const prediction = window.allPredictions.find(p => p.id === id);
         if (!prediction) return;
 
-        // Guardar estado actual
         currentBetData = { id: id, title: prediction.title, category: prediction.category, side: side };
 
-        // UI Updates
         document.getElementById('modal-cat').innerText = prediction.category;
         document.getElementById('modal-question').innerText = prediction.title;
         
@@ -592,14 +606,11 @@
             ? 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest text-white bg-green-500'
             : 'px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest text-white bg-red-500';
 
-        // Reset Inputs
         document.getElementById('bet-amount').value = "";
         document.getElementById('potential-win').innerText = "0.00";
-
         document.getElementById('bet-modal').classList.replace('hidden', 'flex');
     };
 
-    // Función de Atajos (+1, +5, MAX)
     window.setQuickAmount = (val) => {
         const input = document.getElementById('bet-amount');
         if (!input) return;
@@ -612,91 +623,76 @@
             let current = parseFloat(input.value) || 0;
             input.value = (current + val).toFixed(2);
         }
-        input.dispatchEvent(new Event('input')); // Disparar cálculo de retorno
+        input.dispatchEvent(new Event('input')); 
     };
 
-    // Cálculo automático de ganancia
     document.getElementById('bet-amount')?.addEventListener('input', (e) => {
         const val = parseFloat(e.target.value) || 0;
         document.getElementById('potential-win').innerText = (val * 1.8).toFixed(2);
     });
 
-    // --- PUNTO 2: CONFIRMAR APUESTA (Creación de Live Feed) ---
+    // --- LÓGICA CORE DE CONFIRMACIÓN (CORREGIDA) ---
     window.confirmBet = async () => {
-        const amount = parseFloat(document.getElementById('bet-amount').value);
+        // 1. Validar Usuario Logueado
         const user = auth.currentUser;
+        if (!user) {
+            window.showModal("Acceso Restringido", "Por favor, inicia sesión para manifestar con faith.");
+            return;
+        }
 
-        function showModal(title, message) {
-    document.getElementById('modal-title').innerText = title;
-    document.getElementById('modal-message').innerText = message;
-    document.getElementById('custom-modal').style.display = 'flex';
-}
-
-function closeCustomModal() {
-    document.getElementById('custom-modal').style.display = 'none';
-}
-
-// REEMPLAZO EN TU FUNCIÓN DE APUESTA:
-function confirmBet() {
-    // Primero verificamos si hay un usuario logueado
-    const user = firebase.auth().currentUser;
-
-    if (!user) {
-        showModal("Acceso Restringido", "Por favor, inicia sesión para manifestar con faith.");
-        return;
-    }
-    
-    // Al final del proceso exitoso:
-    showModal("¡Éxito!", "Tu apuesta ha sido enviada al sistema con faith.");
-}
-
-    // Si hay usuario, intentamos obtener el nombre o usar uno genérico
-    const name = user.displayName || "C"; 
-    
-    // Ahora sí, el resto de tu lógica para apostar...
-    console.log("Procesando apuesta para: " + name);
-}
-        if (isNaN(amount) || amount <= 0) return alert("Ingresa un monto válido.");
+        // 2. Validar Monto
+        const amount = parseFloat(document.getElementById('bet-amount').value);
+        if (isNaN(amount) || amount <= 0) {
+            window.showModal("Error", "Ingresa un monto válido mayor a 0.");
+            return;
+        }
 
         try {
-            // Verificar Saldo
+            // 3. Verificar Saldo en DB
             const userRef = ref(db, `users/${user.uid}`);
             const userSnap = await get(userRef);
             const balance = userSnap.val()?.balance || 0;
 
-            if (amount > balance) return alert("Saldo insuficiente.");
+            if (amount > balance) {
+                window.showModal("Saldo Insuficiente", `Solo tienes S/ ${balance.toFixed(2)} disponibles.`);
+                return;
+            }
 
-            // Registrar Apuesta (Status: PENDING - Solo Admin decide resultado)
+            // 4. Registrar Apuesta
             const newBetRef = push(ref(db, 'bets'));
             await set(newBetRef, {
                 uid: user.uid,
-                username: user.displayName || "Anónimo", // Guardamos nombre para el Feed
+                username: user.displayName || "Anónimo", 
                 predictionId: currentBetData.id,
                 predictionTitle: currentBetData.title,
                 side: currentBetData.side,
                 amount: amount,
                 timestamp: serverTimestamp(),
-                status: 'pending' // <--- CLAVE PARA EL ADMIN
+                status: 'pending'
             });
 
-            // Restar Saldo
+            // 5. Restar Saldo (Validado también por Reglas de Seguridad)
             await update(userRef, { balance: balance - amount });
             
-            alert("¡Apuesta enviada al sistema!");
-            window.closeModal();
+            // 6. Éxito
+            window.closeModal(); // Cierra el modal de apuesta
+            window.showModal("¡Éxito!", "Tu apuesta ha sido enviada al sistema con faith.");
+            
+            // Log para debug
+            const name = user.displayName || "C";
+            console.log("Apuesta procesada para: " + name);
 
         } catch (e) {
             console.error(e);
-            alert("Error de conexión.");
+            window.showModal("Error", "Ocurrió un error al procesar la apuesta. Revisa tu conexión.");
         }
     };
 
-    // --- PUNTO 2: LIVE FEED (Escuchar apuestas) ---
+    // --- LIVE FEED ---
     const initLiveFeed = () => {
         const feedContainer = document.getElementById('live-feed-container');
         if (!feedContainer) return;
 
-        // Escuchar las últimas 10 apuestas
         const betsRef = query(ref(db, 'bets'), limitToLast(10));
         
         onValue(betsRef, (snapshot) => {
@@ -707,11 +703,9 @@ function confirmBet() {
             
             feedContainer.innerHTML = "";
             const data = snapshot.val();
-            // Convertir objeto a array y revertir para ver las más nuevas arriba
             const betsArray = Object.values(data).reverse();
 
             betsArray.forEach(bet => {
-                // Color según status (Pending, Won, Lost)
                 let statusColor = 'text-gray-400';
                 if (bet.status === 'won') statusColor = 'text-green-500';
                 if (bet.status === 'lost') statusColor = 'text-red-500';
@@ -737,7 +731,7 @@ function confirmBet() {
         });
     };
 
-    // 5. AUTENTICACIÓN
+    // 6. AUTENTICACIÓN
     window.signInWithGoogle = async () => {
         try { await signInWithPopup(auth, new GoogleAuthProvider()); window.closeLogin(); } 
         catch (e) { console.error(e); }
@@ -746,68 +740,60 @@ function confirmBet() {
     window.handleConnect = () => alert("Función Próximamente");
     window.handleRegister = () => alert("Función Próximamente");
 
-    // Busca: onAuthStateChanged(auth, (user) => { ...
-// Y reemplaza todo ese bloque por esto:
+    onAuthStateChanged(auth, (user) => {
+        const guest = document.getElementById('auth-guest');
+        const uic = document.getElementById('auth-user');
+        const bCont = document.getElementById('nav-balance-container');
+        const bAmt = document.getElementById('nav-balance');
+        const welcome = document.getElementById('welcome-message');
+        const avatarImg = document.getElementById('user-avatar-img');
+        const avatarTxt = document.getElementById('user-name-text');
 
-onAuthStateChanged(auth, (user) => {
-    const guest = document.getElementById('auth-guest');
-    const uic = document.getElementById('auth-user');
-    const bCont = document.getElementById('nav-balance-container');
-    const bAmt = document.getElementById('nav-balance');
-    const welcome = document.getElementById('welcome-message');
-    const avatarImg = document.getElementById('user-avatar-img');
-    const avatarTxt = document.getElementById('user-name-text');
+        if (user) {
+            guest?.classList.add('hidden');
+            uic?.classList.remove('hidden');
+            
+            if (bCont) {
+                bCont.classList.remove('hidden');
+                bCont.onclick = () => window.location.href = 'settings.html?section=billetera';
+            }
 
-    if (user) {
-        guest?.classList.add('hidden');
-        uic?.classList.remove('hidden');
-        
-        if (bCont) {
-            bCont.classList.remove('hidden');
-            bCont.onclick = () => window.location.href = 'settings.html?section=billetera';
+            onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+                if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
+            });
+
+            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+                const data = snapshot.val();
+                const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+                const photo = data?.photo || user.photoURL;
+
+                if (welcome) {
+                    welcome.innerHTML = `
+                        <div class="flex items-center gap-1.5 mr-1">
+                            <span class="text-white font-extrabold text-[11px]">Qué onda,</span>
+                            <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
+                        </div>
+                    `;
+                }
+
+                if (photo && avatarImg) {
+                    avatarImg.src = photo;
+                    avatarImg.classList.remove('hidden');
+                    avatarTxt?.classList.add('hidden');
+                } else if (avatarTxt) {
+                    avatarTxt.innerText = name.charAt(0).toUpperCase();
+                    avatarTxt.classList.remove('hidden');
+                    avatarImg?.classList.add('hidden');
+                }
+            });
+        } else {
+            guest?.classList.remove('hidden');
+            uic?.classList.add('hidden');
+            bCont?.classList.add('hidden');
         }
+    });
 
-        // Escuchar Saldo
-        onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
-            if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
-        });
-
-        // Escuchar Perfil (Foto y Nombre según imagen)
-        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-            const data = snapshot.val();
-            const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
-            const photo = data?.photo || user.photoURL;
-
-            // Welcome Message idéntico a la imagen_a4eaca.png
-            if (welcome) {
-                welcome.innerHTML = `
-                    <div class="flex items-center gap-1.5 mr-1">
-                        <span class="text-white font-extrabold text-[11px]">Qué onda,</span>
-                        <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
-                    </div>
-                `;
-            }
-
-            // Actualización de Foto de Perfil
-            if (photo && avatarImg) {
-                avatarImg.src = photo;
-                avatarImg.classList.remove('hidden');
-                avatarTxt?.classList.add('hidden');
-            } else if (avatarTxt) {
-                avatarTxt.innerText = name.charAt(0).toUpperCase();
-                avatarTxt.classList.remove('hidden');
-                avatarImg?.classList.add('hidden');
-            }
-        });
-    } else {
-        guest?.classList.remove('hidden');
-        uic?.classList.add('hidden');
-        bCont?.classList.add('hidden');
-    }
-});
-
-    // 6. INICIALIZACIÓN
-    // Renderizar categorías
+    // 7. INICIALIZACIÓN
     const catList = document.getElementById('cat-list');
     if(catList) {
         catList.innerHTML = "";
@@ -820,20 +806,20 @@ onAuthStateChanged(auth, (user) => {
         });
     }
 
-    // Carrusel
     let currentSlide = 0;
     window.nextSlide = () => { currentSlide = (currentSlide + 1) % 6; updateSlider(); };
     window.prevSlide = () => { currentSlide = (currentSlide - 1 + 6) % 6; updateSlider(); };
     function updateSlider() {
         const val = `translateX(-${currentSlide * 100}%)`;
         document.getElementById('sliderWrapper').style.transform = val;
-        document.getElementById('mirrorWrapper').style.transform = val;
+        const mirror = document.getElementById('mirrorWrapper');
+        if(mirror) mirror.style.transform = val;
     }
     setInterval(window.nextSlide, 5000);
 
-    // Arrancar todo
+    // Arrancar
     window.renderCards('Todos');
-    initLiveFeed(); // Iniciar el escuchador del Live Feed
+    initLiveFeed();
 
 </script>
 <div id="custom-modal" class="modal-overlay" style="display: none;">
@@ -845,6 +831,7 @@ onAuthStateChanged(auth, (user) => {
 </div>
 </body>
 </html>
+
 
 
 
