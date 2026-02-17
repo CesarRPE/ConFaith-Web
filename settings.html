@@ -227,6 +227,9 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <button onclick="showSection('billetera')" id="btn-billetera" class="nav-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
                         <span class="emoji-render">&#x1F4B3;</span> Billetera
                     </button>
+                    <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn ...">
+    Billetera
+</button>
                     <button onclick="showSection('seguridad')" id="btn-seguridad" class="nav-btn px-4 py-3 text-sm font-bold flex items-center gap-3 transition-colors rounded-lg text-gray-400 text-left">
                         <span class="emoji-render">&#x1F512;</span> Seguridad
                     </button>
@@ -242,7 +245,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <div class="flex-1 max-w-4xl">
     <div id="main-content-area" class="space-y-6">
 
-        <div id="perfil" class="content-section active animate-fade-in">
+        <div id="perfil" class="settings-section hidden active animate-fade-in">
     
     <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/5 shadow-2xl space-y-8">
         
@@ -293,7 +296,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
     </div>
 </div>
 
-                <div id="alertas" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+                <div id="alertas" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
                     <div class="flex justify-between items-start mb-6">
                         <div>
                             <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Notificaciones</p>
@@ -337,7 +340,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     </div>
                 </div>
 
-                <div id="billetera" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+                <div id="billetera" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
                     <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Gestión de Fondos</p>
                     <h2 class="text-2xl font-black text-white mb-8 tracking-tighter flex items-center gap-3">
                         <span class="emoji-render">&#x1F4B3;</span> Mi Billetera Faith
@@ -414,7 +417,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </div>
                 </div>
 
-                <div id="seguridad" class="content-section bg-[#1e293b] rounded-2xl p-12 border border-white/10 text-center">
+                <div id="seguridad" class="settings-section hidden bg-[#1e293b] rounded-2xl p-12 border border-white/10 text-center">
                     <span class="emoji-render text-6xl block mb-4">🔐</span>
                     <h2 class="text-2xl font-black mb-2 tracking-tighter">Seguridad</h2>
                     <p class="text-gray-400">Módulo de contraseñas y 2FA en construcción...</p>
@@ -423,7 +426,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                             <div id="seguridad" class="content-section ...">
         </div>
 
-    <div id="soporte" class="content-section bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+    <div id="soporte" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
     <div class="flex justify-between items-start mb-6">
         <div>
             <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Centro de Ayuda</p>
@@ -694,9 +697,36 @@ window.addEventListener('load', () => {
         }, 300);
     }
 });
+// Función global para cambiar de sección (necesaria para el clic en el saldo)
+window.showSection = (sectionId) => {
+    // 1. Selecciona todas las secciones
+    const sections = document.querySelectorAll('.settings-section');
+    sections.forEach(s => s.classList.add('hidden')); // Las oculta todas
+
+    // 2. Muestra la sección que pedimos
+    const target = document.getElementById(sectionId);
+    if (target) {
+        target.classList.remove('hidden');
+    }
+
+    // 3. Actualiza el estilo de los botones del sidebar para que se vea cuál está activo
+    const buttons = document.querySelectorAll('.sidebar-btn');
+    buttons.forEach(btn => {
+        btn.classList.remove('bg-[#b8860b]', 'text-black'); // Quita el dorado de otros
+        btn.classList.add('text-gray-400'); // Los pone grises
+    });
+
+    // 4. Ilumina el botón correspondiente en el sidebar
+    const activeBtn = document.getElementById('btn-' + sectionId);
+    if (activeBtn) {
+        activeBtn.classList.add('bg-[#b8860b]', 'text-black');
+        activeBtn.classList.remove('text-gray-400');
+    }
+};
 </script>
 </body>
 </html>
+
 
 
 
