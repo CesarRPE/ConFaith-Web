@@ -541,6 +541,59 @@ h1, h2, h3, h4, h5, h6, b, strong {
                         <span class="emoji-render">&#x1F527;</span> Panel de Control
                     </h2>
                 </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                
+                <div class="bg-black/40 border border-white/10 p-5 rounded-2xl hover:border-white/30 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-white/10">
+                            <span class="text-xl emoji-render">&#x1F465;</span>
+                        </div>
+                        <h4 class="text-white font-black text-sm uppercase mb-2">Usuarios y Roles</h4>
+                        <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider leading-relaxed">
+                            Ver registrados, moderar cuentas y administrar rangos (Básico/Admin).
+                        </p>
+                    </div>
+                    <button class="w-full bg-white/10 text-white font-black py-2.5 rounded-xl text-[10px] uppercase hover:bg-white/20 active:scale-95 transition-all">
+                        Moderar Cuentas
+                    </button>
+                </div>
+
+                <div class="bg-black/40 border border-white/10 p-5 rounded-2xl hover:border-[#b8860b]/50 transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-10 h-10 bg-[#b8860b]/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-[#b8860b]/20">
+                            <span class="text-xl emoji-render">&#x1F4B0;</span>
+                        </div>
+                        <h4 class="text-white font-black text-sm uppercase mb-2">Control de Saldos</h4>
+                        <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider leading-relaxed">
+                            Agregar o sustraer fondos manualmente a cualquier usuario.
+                        </p>
+                    </div>
+                    <button class="w-full bg-[#b8860b] text-black font-black py-2.5 rounded-xl text-[10px] uppercase hover:brightness-110 active:scale-95 transition-all shadow-[0_0_15px_rgba(184,134,11,0.2)]">
+                        Ajustar Fondos
+                    </button>
+                </div>
+
+                <div class="bg-black/40 border border-white/10 p-5 rounded-2xl hover:border-white/30 transition-all md:col-span-2 flex flex-col justify-between group">
+                    <div>
+                        <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-white/10">
+                            <span class="text-xl emoji-render">&#x1F3DF;</span>
+                        </div>
+                        <h4 class="text-white font-black text-sm uppercase mb-2">Mercados de Apuestas</h4>
+                        <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider leading-relaxed">
+                            Administrar el grid principal: Crear cajas nuevas, cerrar eventos y ocultar apuestas.
+                        </p>
+                    </div>
+                    <div class="flex gap-3 mt-auto">
+                        <button class="w-full bg-[#b8860b] text-black font-black py-2.5 rounded-xl text-[10px] uppercase hover:brightness-110 active:scale-95 transition-all">
+                            Nueva Apuesta
+                        </button>
+                        <button class="w-full bg-white/10 text-white font-black py-2.5 rounded-xl text-[10px] uppercase hover:bg-white/20 active:scale-95 transition-all">
+                            Ver Activas
+                        </button>
+                    </div>
+                </div>
+
+            </div>
             </div>
             </div>
             </div>
@@ -788,6 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
