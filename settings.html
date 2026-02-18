@@ -261,27 +261,22 @@ h1, h2, h3, h4, h5, h6, b, strong {
     MENÚ
 </h3>
                 <nav class="flex flex-col gap-1">
-        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
-            <span class="emoji-render">&#x1F464;</span> Perfil
-                    </button>
-        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
-            <span class="emoji-render">&#x1F514;</span> Alertas
-                    </button>
-        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
-            <span class="emoji-render">&#x1F4B3;</span> Billetera
-                    </button>
-        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
-            <span class="emoji-render">&#x1F512;</span> Seguridad
-                    </button>
-        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
-            <span class="emoji-render">&#x1F4AC</span>
-    <span>Soporte</span>
-        </button>
-        <button id="btn-admin" onclick="showSection('admin')" 
-    class="sidebar-btn font-bold w-full hidden items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all">
-    <span class="emoji-render">&#x1F527;</span> Admin Panel
-</button>
-                    </nav>
+    <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn is-active font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all">
+        <span class="emoji-render">&#x1F464;</span> Perfil
+    </button>
+    <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
+        <span class="emoji-render">&#x1F4B3;</span> Billetera
+    </button>
+    <button id="btn-historial" onclick="showSection('historial')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
+        <span class="emoji-render">&#x1F4DC;</span> Historial
+    </button>
+    <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
+        <span class="emoji-render">&#x1F4AC;</span> Soporte
+    </button>
+    <button id="btn-admin" onclick="showSection('admin')" class="sidebar-btn hidden font-bold w-full items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
+        <span class="emoji-render">&#x1F527;</span> Admin Panel
+    </button>
+</nav>
             </aside>
 
             <div class="flex-1 max-w-4xl">
@@ -565,6 +560,42 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </div>
             </div>
         </div>
+    <div id="admin" class="settings-section hidden animate-fade-in">
+    <div class="bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+        <div class="flex justify-between items-start mb-8">
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-[#b8860b]">Privilegios de César</p>
+                <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
+                    <span class="emoji-render">&#x1F527;</span> Panel de Control
+                </h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-[#b8860b]/50 transition-all group">
+                <div class="w-10 h-10 bg-[#b8860b]/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="text-xl">&#x1F4DD;</span>
+                </div>
+                <h4 class="text-white font-black text-sm uppercase mb-2">Nueva Predicción</h4>
+                <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider leading-relaxed">Publicar un nuevo mercado de apuestas en el grid principal.</p>
+                <button onclick="alert('Próximamente: Formulario de creación')" class="w-full bg-[#b8860b] text-black font-black py-3 rounded-xl text-[10px] uppercase hover:brightness-110 active:scale-95 transition-all">
+                    Configurar Evento
+                </button>
+            </div>
+
+            <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-blue-500/50 transition-all group">
+                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <span class="text-xl">&#x1F3C6;</span>
+                </div>
+                <h4 class="text-white font-black text-sm uppercase mb-2">Finalizar Eventos</h4>
+                <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider leading-relaxed">Cerrar mercados activos y distribuir ganancias a los ganadores.</p>
+                <button class="w-full bg-white/10 text-white font-black py-3 rounded-xl text-[10px] uppercase hover:bg-white/20 active:scale-95 transition-all">
+                    Ver Pendientes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
     </main>
 
     <footer class="text-center py-10 px-[1.25rem] text-gray-500 text-[11px] font-bold uppercase tracking-widest">
@@ -604,21 +635,53 @@ h1, h2, h3, h4, h5, h6, b, strong {
         const navImg = document.getElementById('user-avatar-img');
         
         if (user) {
-            // Estilos Maestros (Definidos aquí para que ambos listeners los usen)
-            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+        // 1. Estilos Maestros (Accesibles para todo lo que esté dentro de if(user))
+        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-            // PRE-DIBUJAR ESTRUCTURA (Solo una vez si no existe)
-            // Dentro de onAuthStateChanged en settings.html
-if (balanceContainer && !document.getElementById('nav-balance')) {
-    balanceContainer.innerHTML = `
-        <div onclick="window.showSection('billetera')" 
-             class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner cursor-pointer hover:bg-white/10 transition-all active:scale-95">
-            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
-        </div>
-    `;
-}
+        // 2. VALIDACIÓN DE ADMIN
+        const adminRef = ref(db, `users/${user.uid}/isAdmin`);
+        onValue(adminRef, (snapshot) => {
+            const isAdmin = snapshot.val();
+            const adminBtn = document.getElementById('btn-admin');
+            if (adminBtn) {
+                if (isAdmin === true) {
+                    adminBtn.classList.remove('hidden');
+                    adminBtn.classList.add('flex');
+                } else {
+                    adminBtn.classList.add('hidden');
+                    adminBtn.classList.remove('flex');
+                }
+            }
+        });
+
+        // 3. DIBUJAR ESTRUCTURA DE SALDO
+        // Asegúrate de que balanceContainer esté definido antes (ej. const balanceContainer = document.getElementById('tu-id'))
+        const balanceContainer = document.getElementById('balance-nav-container'); 
+        
+        if (balanceContainer && !document.getElementById('nav-balance')) {
+            balanceContainer.innerHTML = `
+                <div onclick="window.showSection('billetera')" 
+                     class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner cursor-pointer hover:bg-white/10 transition-all active:scale-95">
+                    <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
+                </div>
+            `;
+        }
+
+        // 4. Listener del saldo real
+        const userRef = ref(db, `users/${user.uid}/balance`);
+        onValue(userRef, (snapshot) => {
+            const bal = snapshot.val();
+            const navBal = document.getElementById('nav-balance');
+            if (navBal) navBal.innerText = `S/ ${bal || 0}`;
+        });
+
+    } else {
+        // Redirigir o limpiar si no hay usuario
+        window.location.href = 'index.html';
+    }
+});
 
             // Dentro del escuchador de balance en Firebase
 onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
@@ -808,6 +871,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
