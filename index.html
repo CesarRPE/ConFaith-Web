@@ -559,42 +559,48 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    // --- FUNCIÓN GLOBAL DE LIVE FEED ---
-    window.loadLiveFeed = function() {
-        const feedList = document.getElementById('live-feed-list');
-        if (!feedList) return;
+const db = getDatabase(app);
 
-        console.log("G: Cargando apuestas en tiempo real...");
+// --- ESTO ES LO QUE NECESITAMOS (Definición Global) ---
+window.loadLiveFeed = function() {
+    const feedList = document.getElementById('live-feed-list');
+    if (!feedList) return;
 
-        // Referencia a las apuestas (usando 'bets' como ejemplo, ajusta el nombre si es otro)
-        const betsRef = query(ref(db, 'bets'), limitToLast(10));
+    console.log("G: Escuchando apuestas en tiempo real...");
 
-        onValue(betsRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                feedList.innerHTML = '<div class="text-center text-[10px] text-gray-600 italic">No hay apuestas recientes</div>';
-                return;
-            }
+    // Referencia al nodo 'bets' (Asegúrate que en tu Firebase se llame así)
+    const betsRef = query(ref(db, 'bets'), limitToLast(10));
 
-            let html = '';
-            snapshot.forEach((child) => {
-                const bet = child.val();
-                // Estilo alineado a tu diseño actual
-                html = `
-                    <div class="flex items-center justify-between py-1 border-b border-white/5 last:border-0">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] text-white font-bold">${bet.username || 'Usuario'}</span>
-                            <span class="text-[9px] text-gray-500">${bet.marketTitle || 'Apuesta'}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[10px] text-[#b8860b] font-black">S/ ${parseFloat(bet.amount).toFixed(2)}</span>
-                        </div>
-                    </div>
-                ` + html; // Las nuevas arriba
-            });
-            feedList.innerHTML = html;
+    // Usamos onValue para que sea "TIEMPO REAL" total
+    onValue(betsRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            feedList.innerHTML = '<div class="text-center text-[10px] text-gray-500 italic py-4">Esperando jugadas...</div>';
+            return;
+        }
+
+        let html = '';
+        const data = [];
+        snapshot.forEach((child) => {
+            data.push(child.val());
         });
-    };
-    const db = getDatabase(app);
+
+        // Invertimos para que la más nueva esté arriba
+        data.reverse().forEach(bet => {
+            html += `
+                <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0 animate-fade-in">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-white font-bold">${bet.username || 'Anónimo'}</span>
+                        <span class="text-[9px] text-gray-400 truncate w-32">${bet.marketTitle || 'Predicción'}</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] text-[#b8860b] font-black">S/ ${parseFloat(bet.amount || 0).toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+        });
+        feedList.innerHTML = html;
+    });
+};
 
     // 3. VARIABLES DE ESTADO
     let currentBetData = { id: null, title: null, category: null, side: null };
@@ -918,6 +924,7 @@
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
