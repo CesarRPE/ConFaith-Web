@@ -255,6 +255,35 @@
     from { opacity: 1; }
     to { opacity: 0; }
 }
+    /* Botón SÍ: Blanco a Verde */
+.btn-bet-yes {
+    background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+    color: #000000;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+.btn-bet-yes:hover {
+    background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%); /* Tailwind Green 500-600 */
+    color: #ffffff;
+    border-color: #15803d;
+    box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+}
+
+/* Botón NO: Blanco a Rojo */
+.btn-bet-no {
+    background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+    color: #000000;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.8);
+}
+
+.btn-bet-no:hover {
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%); /* Tailwind Red 500-600 */
+    color: #ffffff;
+    border-color: #b91c1c;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+}
     </style>
 </head>
 <body>
@@ -728,25 +757,18 @@ window.loadLiveFeed = function() {
             </h3>
         </div>
 
-        <div class="grid grid-cols-2 gap-3 p-4 pt-0">
-            <button onclick="openBetModal(${p.id}, 'yes')" 
-                class="py-3 rounded-xl transition-all font-black text-[11px] uppercase shadow-lg active:scale-95"
-                style="background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
-                       color: #000000;
-                       border: 1px solid rgba(255,255,255,0.8);
-                       box-shadow: 0 4px 15px rgba(255,255,255,0.1);">
-                SÍ
-            </button>
+        // ... dentro de grid.innerHTML += ` ...
+<div class="grid grid-cols-2 gap-3 p-4 pt-0">
+    <button onclick="openBetModal(${p.id}, 'yes')" 
+        class="btn-bet-yes py-3 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95">
+        SÍ
+    </button>
 
-            <button onclick="openBetModal(${p.id}, 'no')" 
-                class="py-3 rounded-xl transition-all font-black text-[11px] uppercase shadow-lg active:scale-95"
-                style="background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
-                       color: #000000;
-                       border: 1px solid rgba(255,255,255,0.8);
-                       box-shadow: 0 4px 15px rgba(255,255,255,0.1);">
-                NO
-            </button>
-        </div>
+    <button onclick="openBetModal(${p.id}, 'no')" 
+        class="btn-bet-no py-3 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95">
+        NO
+    </button>
+</div>
     </div>`;
         });
     };
@@ -956,6 +978,7 @@ window.renderCards('Todos');
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
