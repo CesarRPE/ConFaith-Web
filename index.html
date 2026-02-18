@@ -865,13 +865,15 @@ window.loadLiveFeed = function() {
         }
     });
 
-    // 7. INICIALIZACIÓN
+    // 7. INICIALIZACIÓN DE CATEGORÍAS
     const catList = document.getElementById('cat-list');
     if(catList) {
         catList.innerHTML = "";
         allCats.forEach(c => {
             const btn = document.createElement('button');
-            btn.className = "cat-btn flex-none bg-white/10 text-gray-300 px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase";
+            // Si es 'Todos', le ponemos el fondo dorado y texto negro de una vez
+            const activeClass = (c === "Todos") ? "bg-[#b8860b] text-black" : "bg-white/10 text-gray-300";
+            btn.className = `cat-btn flex-none ${activeClass} px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase`;
             btn.innerText = c;
             btn.onclick = (e) => window.renderCards(c, e.target);
             catList.appendChild(btn);
@@ -896,6 +898,7 @@ window.loadLiveFeed = function() {
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
