@@ -377,7 +377,7 @@
 </div>
     </header>
 
-<div class="max-w-7xl mx-auto px-6 mb-6">
+<div id="live-feed-wrapper" class="hidden max-w-7xl mx-auto px-6 mb-6">
     <div class="bg-black/40 border border-white/10 rounded-2xl p-4 backdrop-blur-sm">
         <div class="flex items-center justify-between mb-3">
             <h3 class="text-white font-black text-xs uppercase tracking-widest flex items-center gap-2">
@@ -794,10 +794,16 @@
         const welcome = document.getElementById('welcome-message');
         const avatarImg = document.getElementById('user-avatar-img');
         const avatarTxt = document.getElementById('user-name-text');
+        
+        // --- ESTE ES EL ELEMENTO DEL LIVE FEED ---
+        const liveFeedWrapper = document.getElementById('live-feed-wrapper');
 
         if (user) {
             guest?.classList.add('hidden');
             uic?.classList.remove('hidden');
+            
+            // Mostrar Live Feed al conectar
+            liveFeedWrapper?.classList.remove('hidden');
             
             if (bCont) {
                 bCont.classList.remove('hidden');
@@ -836,6 +842,9 @@
             guest?.classList.remove('hidden');
             uic?.classList.add('hidden');
             bCont?.classList.add('hidden');
+            
+            // Ocultar Live Feed al desconectar
+            liveFeedWrapper?.classList.add('hidden');
         }
     });
 
@@ -871,6 +880,7 @@
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
