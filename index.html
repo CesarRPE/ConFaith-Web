@@ -708,7 +708,7 @@ window.loadLiveFeed = function() {
     window.closeLogin = () => document.getElementById('login-modal')?.classList.replace('flex', 'hidden');
     window.closeModal = () => document.getElementById('bet-modal')?.classList.replace('flex', 'hidden');
 
-    // --- RENDERIZADO UNIFICADO DE CAJAS ---
+    // --- RENDERIZADO UNIFICADO DE CAJAS (CORREGIDO) ---
     window.renderCards = (category, clickedElement = null) => {
         
         // 1. Lógica de resaltado de botones
@@ -721,10 +721,10 @@ window.loadLiveFeed = function() {
             clickedElement.classList.add('bg-[#b8860b]', 'text-black');
         }
 
-        const grid = document.getElementById('cards-grid'); // ID correcto según tu HTML
+        const grid = document.getElementById('cards-grid');
         if (!grid) return;
 
-        // 2. Limpiar contenedor antes de renderizar
+        // 2. Limpiar contenedor
         grid.innerHTML = "";
 
         // 3. Filtrar predicciones
@@ -740,36 +740,35 @@ window.loadLiveFeed = function() {
         // 4. Renderizado de las cards
         filtered.forEach(p => {
             grid.innerHTML += `
-    <div class="card-blush flex flex-col justify-between transition-all duration-300" 
-         style="background: linear-gradient(145deg, #1a1a1a, #0a0a0a); 
-                border-radius: 1.5rem; 
-                border: 2px solid rgba(184, 134, 11, 0.6); 
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        
-        <div class="p-4">
-            <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase bg-[#b8860b] text-black">
-                ${p.category}
-            </span>
-            
-            <h3 class="text-lg font-bold mt-4 leading-tight text-white" 
-                style="text-shadow: 0 0 8px rgba(255,255,255,0.2);">
-                ${p.title}
-            </h3>
-        </div>
+            <div class="card-blush flex flex-col justify-between transition-all duration-300" 
+                 style="background: linear-gradient(145deg, #1a1a1a, #0a0a0a); 
+                        border-radius: 1.5rem; 
+                        border: 2px solid rgba(184, 134, 11, 0.6); 
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                
+                <div class="p-4">
+                    <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase bg-[#b8860b] text-black">
+                        ${p.category}
+                    </span>
+                    
+                    <h3 class="text-lg font-bold mt-4 leading-tight text-white" 
+                        style="text-shadow: 0 0 8px rgba(255,255,255,0.2);">
+                        ${p.title}
+                    </h3>
+                </div>
 
-        // ... dentro de grid.innerHTML += ` ...
-<div class="grid grid-cols-2 gap-3 p-4 pt-0">
-    <button onclick="openBetModal(${p.id}, 'yes')" 
-        class="btn-bet-yes py-3 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95">
-        SÍ
-    </button>
+                <div class="grid grid-cols-2 gap-3 p-4 pt-0">
+                    <button onclick="openBetModal(${p.id}, 'yes')" 
+                        class="btn-bet-yes py-3 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95">
+                        SÍ
+                    </button>
 
-    <button onclick="openBetModal(${p.id}, 'no')" 
-        class="btn-bet-no py-3 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95">
-        NO
-    </button>
-</div>
-    </div>`;
+                    <button onclick="openBetModal(${p.id}, 'no')" 
+                        class="btn-bet-no py-3 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95">
+                        NO
+                    </button>
+                </div>
+            </div>`;
         });
     };
 
@@ -978,6 +977,7 @@ window.renderCards('Todos');
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
