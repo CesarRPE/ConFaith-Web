@@ -386,22 +386,9 @@
             </h3>
             <span class="text-[9px] text-gray-500 font-bold">Últimas transacciones</span>
         </div>
-        <div id="live-feed-container" class="hidden bg-[#1e2128] border border-gray-800 rounded-xl p-4 mb-6">
-    
-    <div class="flex items-center justify-between mb-4">
-        <div class="flex items-center gap-2">
-            <span class="relative flex h-2 w-2">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            <h2 class="text-[11px] font-bold uppercase tracking-wider text-white">Live Feed</h2>
+        <div id="live-feed-container" class="space-y-2 max-h-32 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #b8860b #333;">
+            <div class="text-center text-[10px] text-gray-600 italic">Esperando apuestas...</div>
         </div>
-    </div>
-
-    <div class="space-y-2 max-h-32 overflow-y-auto pr-2" style="scrollbar-width: thin; scrollbar-color: #b8860b #333;">
-        <div class="text-center text-[10px] text-gray-600 italic">Esperando apuestas...</div>
-    </div>
-</div>
     </div>
 </div>
     
@@ -880,28 +867,10 @@
     window.renderCards('Todos');
     initLiveFeed();
 
-// No vuelvas a declarar auth, usa firebase.auth() directamente
-const feedElement = document.getElementById('live-feed-container');
-
-firebase.auth().onAuthStateChanged((user) => {
-  if (user) {
-    // Si hay usuario, quitamos 'hidden' para mostrar el recuadro y su contenido
-    feedElement.classList.remove('hidden');
-    console.log("Sesión activa: Mostrando Live Feed");
-  } else {
-    // Si no hay sesión, 'hidden' oculta todo (incluyendo el fondo oscuro)
-    feedElement.classList.add('hidden');
-  }
-});
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
-
-
-
-
-
 
 
 
