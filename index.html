@@ -668,7 +668,7 @@ window.loadLiveFeed = function() {
     // --- RENDERIZADO UNIFICADO DE CAJAS ---
     window.renderCards = (category, clickedElement = null) => {
     
-    // Solo ejecutamos la lógica de colores si realmente hubo un clic
+    // Solo ejecutamos el cambio de color si "clickedElement" existe
     if (clickedElement) {
         document.querySelectorAll('.cat-btn').forEach(btn => {
             btn.classList.remove('bg-[#b8860b]', 'text-black');
@@ -679,7 +679,7 @@ window.loadLiveFeed = function() {
     }
 
     const container = document.getElementById('cards-container');
-        if (!container) return;
+    if (!container) return;
 
         // Limpiar contenedor antes de renderizar
         container.innerHTML = "";
@@ -904,7 +904,7 @@ window.loadLiveFeed = function() {
             const btn = document.createElement('button');
             // 'Todos' empieza activo, los demás no
             const isActive = (c === "Todos");
-            btn.className = `cat-btn flex-none ${isActive ? 'bg-[#b8860b] text-black' : 'bg-white/10 text-gray-300'} px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase transition-all duration-300`;
+btn.className = `cat-btn flex-none ${isActive ? 'bg-[#b8860b] text-black' : 'bg-white/10 text-gray-300'} px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase transition-all duration-300`;
             btn.innerText = c;
             btn.onclick = (e) => window.renderCards(c, e.target);
             catList.appendChild(btn);
@@ -929,6 +929,7 @@ window.renderCards('Todos');
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
