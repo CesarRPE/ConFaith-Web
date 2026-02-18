@@ -711,29 +711,41 @@ window.loadLiveFeed = function() {
         // 4. Renderizado de las cards
         filtered.forEach(p => {
             grid.innerHTML += `
-    <div class="card-blush flex flex-col justify-between transition-all duration-300 hover:scale-[1.02]" 
+    <div class="card-blush flex flex-col justify-between transition-all duration-300" 
          style="background: linear-gradient(145deg, #1a1a1a, #0a0a0a); 
                 border-radius: 1.5rem; 
-                border: 1px solid rgba(184, 134, 11, 0.4); 
-                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8), inset 0 0 10px rgba(255,255,255,0.05);
-                backdrop-filter: blur(4px);">
+                border: 2px solid rgba(184, 134, 11, 0.6); 
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         
         <div class="p-4">
-            <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase bg-[#b8860b] text-black shadow-sm">
+            <span class="text-[9px] font-black px-2 py-1 rounded italic uppercase bg-[#b8860b] text-black">
                 ${p.category}
             </span>
             
-            <h3 class="text-lg font-bold mt-4 leading-tight" 
-                style="color: #ffffff; 
-                       text-shadow: 0 0 10px rgba(255,255,255,0.3);
-                       letter-spacing: -0.02em;">
+            <h3 class="text-lg font-bold mt-4 leading-tight text-white" 
+                style="text-shadow: 0 0 8px rgba(255,255,255,0.2);">
                 ${p.title}
             </h3>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 p-4 pt-0">
-            <button onclick="openBetModal(${p.id}, 'yes')" class="bg-white/5 hover:bg-green-500/20 border border-white/10 py-3 rounded-xl transition-all font-black text-[10px] text-white/80 uppercase">SÍ</button>
-            <button onclick="openBetModal(${p.id}, 'no')" class="bg-white/5 hover:bg-red-500/20 border border-white/10 py-3 rounded-xl transition-all font-black text-[10px] text-white/80 uppercase">NO</button>
+        <div class="grid grid-cols-2 gap-3 p-4 pt-0">
+            <button onclick="openBetModal(${p.id}, 'yes')" 
+                class="py-3 rounded-xl transition-all font-black text-[11px] uppercase shadow-lg active:scale-95"
+                style="background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+                       color: #000000;
+                       border: 1px solid rgba(255,255,255,0.8);
+                       box-shadow: 0 4px 15px rgba(255,255,255,0.1);">
+                SÍ
+            </button>
+
+            <button onclick="openBetModal(${p.id}, 'no')" 
+                class="py-3 rounded-xl transition-all font-black text-[11px] uppercase shadow-lg active:scale-95"
+                style="background: linear-gradient(180deg, #ffffff 0%, #e0e0e0 100%);
+                       color: #000000;
+                       border: 1px solid rgba(255,255,255,0.8);
+                       box-shadow: 0 4px 15px rgba(255,255,255,0.1);">
+                NO
+            </button>
         </div>
     </div>`;
         });
@@ -944,6 +956,7 @@ window.renderCards('Todos');
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
