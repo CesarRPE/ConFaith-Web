@@ -13,10 +13,13 @@
 
     <style>
         @font-face {
-            font-family: 'Gelapitto';
-            src: url('Gelapitto.otf') format('opentype');
-            font-weight: normal; font-style: normal;
-        }
+    font-family: 'Gelapitto';
+    /* Usamos el enlace Raw del permalink para máxima estabilidad */
+    src: url('https://raw.githubusercontent.com/CesarRPE/ConFaith-Web/50b9400640be84b32d5aa3f9f064f924ffade1e4/Gelapitto.otf') format('opentype');
+    font-weight: normal; 
+    font-style: normal;
+    font-display: swap;
+}
 
         :root {
             --bg-main: #374151; 
@@ -915,6 +918,7 @@ window.renderCards('Todos');
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
