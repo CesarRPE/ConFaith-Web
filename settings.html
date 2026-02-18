@@ -277,6 +277,10 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <span class="emoji-render">&#x1F4AC</span>
     <span>Soporte</span>
         </button>
+        <button id="btn-admin" onclick="showSection('admin')" 
+    class="sidebar-btn font-bold w-full hidden items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all">
+    <span class="emoji-render">&#x1F527;</span> Panel de Control
+</button>
                     </nav>
             </aside>
 
@@ -478,6 +482,35 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </div>
     </div>
 
+    <div id="admin" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+    <div class="flex justify-between items-start mb-8">
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Gestión del Sistema</p>
+            <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
+                <span class="emoji-render">&#x1F527;</span> Panel de Control
+            </h2>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-gold-faith/50 transition-all group">
+            <h4 class="text-white font-black text-sm uppercase mb-2">Nueva Predicción</h4>
+            <p class="text-[10px] text-gray-400 mb-4 uppercase tracking-wider">Publicar un nuevo mercado de apuestas</p>
+            <button class="w-full bg-gold-faith text-black font-black py-3 rounded-xl text-[10px] uppercase hover:scale-[1.02] transition-transform">
+                Configurar Evento
+            </button>
+        </div>
+
+        <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-blue-500/50 transition-all group">
+            <h4 class="text-white font-black text-sm uppercase mb-2">Finalizar Eventos</h4>
+            <p class="text-[10px] text-gray-400 mb-4 uppercase tracking-wider">Declarar ganadores y repartir saldo</p>
+            <button class="w-full bg-white/10 text-white font-black py-3 rounded-xl text-[10px] uppercase hover:bg-white/20 transition-all">
+                Ver Pendientes
+            </button>
+        </div>
+    </div>
+</div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         <a href="https://wa.me/51980755310?text=Hola%20ConFaith,%20necesito%20ayuda%20con%20mi%20billetera" target="_blank" 
            class="bg-[#0f172a] border border-white/10 rounded-2xl p-6 flex items-center gap-5 hover:border-[#25D366]/50 transition-all group">
@@ -626,6 +659,16 @@ onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
                     `;
                 }
 
+// Validación de Admin para César
+onValue(ref(db, `users/${user.uid}/isAdmin`), (adminSnapshot) => {
+    const isAdmin = adminSnapshot.val();
+    const adminBtn = document.getElementById('btn-admin');
+    if (isAdmin === true && adminBtn) {
+        adminBtn.classList.remove('hidden');
+        adminBtn.classList.add('flex'); // Cambiamos hidden por flex para que respete el layout
+    }
+});
+                
                 // Actualizar Foto
                 if (photo && navImg) {
                     navImg.src = photo;
@@ -765,6 +808,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
