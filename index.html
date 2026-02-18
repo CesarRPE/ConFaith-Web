@@ -666,11 +666,43 @@ window.loadLiveFeed = function() {
     window.closeModal = () => document.getElementById('bet-modal')?.classList.replace('flex', 'hidden');
 
     // --- RENDERIZADO UNIFICADO DE CAJAS ---
-    window.renderCards = (filter = 'Todos', btnElement) => {
-        if(btnElement) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active', 'bg-gold-faith', 'text-black'));
-            btnElement.classList.add('active', 'bg-gold-faith', 'text-black');
+    window.renderCards = (category, clickedElement) => {
+        // --- NUEVA LÓGICA DE RESALTADO ---
+        if (clickedElement) {
+            // Buscamos todos los botones y les ponemos el estilo "apagado"
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.classList.remove('bg-[#b8860b]', 'text-black');
+                btn.classList.add('bg-white/10', 'text-gray-300');
+            });
+            // Al que clickeamos, lo "encendemos" en dorado
+            clickedElement.classList.remove('bg-white/10', 'text-gray-300');
+            clickedElement.classList.add('bg-[#b8860b]', 'text-black');
         }
+
+        const container = document.getElementById('cards-container');
+        if (!container) return;
+
+        // Limpiar contenedor antes de renderizar
+        container.innerHTML = "";
+
+        // Filtrar predicciones
+        const filtered = category === "Todos" 
+            ? window.allPredictions 
+            : window.allPredictions.filter(p => p.category === category);
+
+        if (filtered.length === 0) {
+            container.innerHTML = '<p class="text-gray-500 text-center py-10">No hay predicciones en esta categoría.</p>';
+            return;
+        }
+
+        // Renderizado de las cards (el resto de tu lógica original...)
+        filtered.forEach(p => {
+            const card = document.createElement('div');
+            card.className = "bg-white/5 border border-white/10 rounded-3xl p-5 backdrop-blur-md flex flex-col justify-between h-full";
+            // ... (aquí sigue todo el contenido de la card que ya tienes)
+            container.appendChild(card);
+        });
+    };
 
         const grid = document.getElementById('cards-grid');
         if(!grid) return;
@@ -871,9 +903,9 @@ window.loadLiveFeed = function() {
         catList.innerHTML = "";
         allCats.forEach(c => {
             const btn = document.createElement('button');
-            // Si es 'Todos', le ponemos el fondo dorado y texto negro de una vez
-            const activeClass = (c === "Todos") ? "bg-[#b8860b] text-black" : "bg-white/10 text-gray-300";
-            btn.className = `cat-btn flex-none ${activeClass} px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase`;
+            // 'Todos' empieza activo, los demás no
+            const isActive = (c === "Todos");
+            btn.className = `cat-btn flex-none ${isActive ? 'bg-[#b8860b] text-black' : 'bg-white/10 text-gray-300'} px-5 py-2 rounded-full text-[10px] font-bold border border-white/5 uppercase transition-all duration-300`;
             btn.innerText = c;
             btn.onclick = (e) => window.renderCards(c, e.target);
             catList.appendChild(btn);
@@ -898,6 +930,7 @@ window.loadLiveFeed = function() {
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
