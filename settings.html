@@ -460,10 +460,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <p class="text-gray-400">Módulo de contraseñas y 2FA en construcción...</p>
                 </div>
 
-                            <div id="seguridad" class="content-section ...">
-        </div>
-
-    <div id="soporte" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+                                <div id="soporte" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
     <div class="flex justify-between items-start mb-6">
         <div>
             <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Centro de Ayuda</p>
@@ -477,17 +474,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </div>
     </div>
 
-    <div id="admin" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
-    <div class="flex justify-between items-start mb-8">
-        <div>
-            <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Gestión del Sistema</p>
-            <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
-                <span class="emoji-render">&#x1F527;</span> Panel de Control
-            </h2>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-gold-faith/50 transition-all group">
             <h4 class="text-white font-black text-sm uppercase mb-2">Nueva Predicción</h4>
             <p class="text-[10px] text-gray-400 mb-4 uppercase tracking-wider">Publicar un nuevo mercado de apuestas</p>
@@ -605,43 +592,38 @@ h1, h2, h3, h4, h5, h6, b, strong {
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
 
 <script type="module">
-    // --- 1. IMPORTACIONES (Aseguramos Database y Update) ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // --- 2. CONFIGURACIÓN FIREBASE ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
-        authDomain: "confaith-web.firebaseapp.com",
-        projectId: "confaith-web",
-        storageBucket: "confaith-web.firebasestorage.app",
-        messagingSenderId: "736470337348",
-        appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911",
-        databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
+    authDomain: "confaith-web.firebaseapp.com",
+    projectId: "confaith-web",
+    storageBucket: "confaith-web.firebasestorage.app",
+    messagingSenderId: "736470337348",
+    appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911",
+    databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/"
+};
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 
-    // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
-    onAuthStateChanged(auth, (user) => {
+// Estilos Maestros
+const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
         const nameText = document.getElementById('user-name-text');
         const welcomeMsg = document.getElementById('welcome-message');
-        const balanceContainer = document.getElementById('nav-balance-container');
         const inputUser = document.getElementById('input-username');
         const inputBio = document.getElementById('input-bio');
         const navImg = document.getElementById('user-avatar-img');
-        
-        if (user) {
-        // 1. Estilos Maestros (Accesibles para todo lo que esté dentro de if(user))
-        const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-        const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-        // 2. VALIDACIÓN DE ADMIN
-        const adminRef = ref(db, `users/${user.uid}/isAdmin`);
-        onValue(adminRef, (snapshot) => {
+        // 1. VALIDACIÓN DE ADMIN
+        onValue(ref(db, `users/${user.uid}/isAdmin`), (snapshot) => {
             const isAdmin = snapshot.val();
             const adminBtn = document.getElementById('btn-admin');
             if (adminBtn) {
@@ -650,227 +632,79 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     adminBtn.classList.add('flex');
                 } else {
                     adminBtn.classList.add('hidden');
-                    adminBtn.classList.remove('flex');
                 }
             }
         });
 
-        // 3. DIBUJAR ESTRUCTURA DE SALDO
-        // Asegúrate de que balanceContainer esté definido antes (ej. const balanceContainer = document.getElementById('tu-id'))
-        const balanceContainer = document.getElementById('balance-nav-container'); 
-        
-        if (balanceContainer && !document.getElementById('nav-balance')) {
-            balanceContainer.innerHTML = `
-                <div onclick="window.showSection('billetera')" 
-                     class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner cursor-pointer hover:bg-white/10 transition-all active:scale-95">
-                    <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
-                    <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
-                </div>
-            `;
-        }
-
-        // 4. Listener del saldo real
-        const userRef = ref(db, `users/${user.uid}/balance`);
-        onValue(userRef, (snapshot) => {
-            const bal = snapshot.val();
+        // 2. ESCUCHAR SALDO (Actualiza Navbar y Billetera)
+        onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
+            const balance = snapshot.val() || 0;
             const navBal = document.getElementById('nav-balance');
-            if (navBal) navBal.innerText = `S/ ${bal || 0}`;
+            const mainBal = document.getElementById('main-balance');
+            if (navBal) navBal.innerText = `S/ ${balance.toFixed(2)}`;
+            if (mainBal) mainBal.innerText = `S/ ${balance.toFixed(2)}`;
         });
 
-    } else {
-        // Redirigir o limpiar si no hay usuario
-        window.location.href = 'index.html';
-    }
-});
+        // 3. ESCUCHAR PERFIL
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            const firstName = data?.username || user.email.split('@')[0];
+            const initial = firstName.charAt(0).toUpperCase();
 
-            // Dentro del escuchador de balance en Firebase
-onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
-    const balance = snapshot.val() || 0;
-    
-    // IMPORTANTE: Aquí actualizamos el Navbar
-    const navBalanceElement = document.getElementById('nav-balance');
-    if (navBalanceElement) {
-        navBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
-        console.log("Saldo actualizado en Navbar:", balance); // Debug para César
-    }
-    
-    // También actualizamos el contenedor grande de la sección Billetera si existe
-    const mainBalanceElement = document.getElementById('balance-amount');
-    if (mainBalanceElement) {
-        mainBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
-    }
-});
-
-            // B. Escuchar Perfil en la Nube
-            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-                const data = snapshot.val();
-                
-                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-                const initial = firstName.charAt(0).toUpperCase();
-                const photo = data?.photo || user.photoURL;
-
-                // Rellenar Inputs
-                if(inputUser) inputUser.value = data?.username || "";
-                if(inputBio) inputBio.value = data?.bio || "";
-
-                // Actualizar interfaz de bienvenida
-                if(nameText) nameText.innerText = initial;
-                if(welcomeMsg) {
-                    welcomeMsg.innerHTML = `
-                        <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
-                        <span style="${goldFaith} font-size: 11px;">${firstName}</span>
-                    `;
-                }
-
-// Validación de Admin para César
-onValue(ref(db, `users/${user.uid}/isAdmin`), (adminSnapshot) => {
-    const isAdmin = adminSnapshot.val();
-    const adminBtn = document.getElementById('btn-admin');
-    if (isAdmin === true && adminBtn) {
-        adminBtn.classList.remove('hidden');
-        adminBtn.classList.add('flex'); // Cambiamos hidden por flex para que respete el layout
-    }
-});
-                
-                // Actualizar Foto
-                if (photo && navImg) {
-                    navImg.src = photo;
-                    navImg.classList.remove('hidden');
-                    if(nameText) nameText.classList.add('hidden');
-                }
-                
-                // IMPORTANTE: Se eliminó el balanceContainer.innerHTML de aquí 
-                // para evitar que pise el saldo real.
-            });
-
-        } else {
-            window.location.href = "index.html";
-        }
-    });
-
-    // --- 4. FUNCIONES GLOBALES ---
-    window.handleLogout = async () => {
-        try { await signOut(auth); window.location.href = "index.html"; } 
-        catch (error) { console.error("Error al salir:", error); }
-    };
-
-    window.showSection = function(id) {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const targetSection = document.getElementById(id);
-        if(targetSection) targetSection.classList.add('active');
-        const targetBtn = document.getElementById('btn-' + id);
-        if(targetBtn) targetBtn.classList.add('active');
-    };
-
-    window.actualizarSaldo = function(monto) {
-        const formatted = parseFloat(monto).toFixed(2);
-        const navBal = document.getElementById('nav-balance');
-        if(navBal) navBal.innerText = `S/ ${formatted}`;
-        const mainBal = document.getElementById('main-balance');
-        if(mainBal) mainBal.innerText = `S/ ${formatted}`;
-    };
-
-    // --- 5. GUARDAR PERFIL EN LA NUBE ---
-    let tempImageData = null;
-
-    document.getElementById('avatar-upload-input')?.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            document.getElementById('file-name-display').innerText = file.name;
-            const reader = new FileReader();
-            reader.onload = function(event) { tempImageData = event.target.result; };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    window.guardarPerfil = async function() {
-        const user = auth.currentUser;
-        if(!user) return;
-
-        const inputUser = document.getElementById('input-username').value;
-        const inputBio = document.getElementById('input-bio').value;
-
-        const updates = {
-            username: inputUser,
-            bio: inputBio
-        };
-        
-        // Solo actualizar foto si el usuario subió una nueva
-        if (tempImageData) updates.photo = tempImageData;
-
-        try {
-            await update(ref(db, `users/${user.uid}/profile`), updates);
-            mostrarPopupExito();
-            tempImageData = null;
-        } catch (error) {
-            console.error("Error al guardar:", error);
-            alert("No se pudo guardar en la nube.");
-        }
-    };
-
-    function mostrarPopupExito() {
-        const popup = document.createElement('div');
-        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-3.5 rounded-full border border-[#b8860b] shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] text-[14px] transition-all duration-700 opacity-0 translate-y-4`;
-        popup.innerHTML = '<span style="color: #b8860b; margin-right: 10px;">✨</span> Perfil Guardado Exitosamente';
-        document.body.appendChild(popup);
-        setTimeout(() => { popup.classList.remove('opacity-0', 'translate-y-4'); }, 10);
-        setTimeout(() => { popup.classList.add('opacity-0'); setTimeout(() => popup.remove(), 700); }, 3000);
-    }
-
-    // --- 6. MODALES Y OTROS ---
-    window.openManualCardModal = () => document.getElementById('card-modal').classList.replace('hidden', 'flex');
-    window.closeManualCardModal = () => document.getElementById('card-modal').classList.replace('flex', 'hidden');
-
-    // Manejador de parámetros de URL para navegación entre páginas
-window.addEventListener('load', () => {
-    const params = new URLSearchParams(window.location.search);
-    const section = params.get('section');
-
-    if (section) {
-        // Le damos un pequeño respiro para que el DOM se asiente
-        setTimeout(() => {
-            if (typeof window.showSection === 'function') {
-                window.showSection(section);
-                console.log("Navegando a sección:", section);
-            } else {
-                // Si la función no carga a tiempo, forzamos el clic en el botón del menú
-                const btn = document.getElementById('btn-' + section);
-                if (btn) btn.click();
+            if (inputUser) inputUser.value = data?.username || "";
+            if (inputBio) inputBio.value = data?.bio || "";
+            if (nameText) nameText.innerText = initial;
+            if (welcomeMsg) {
+                welcomeMsg.innerHTML = `<span style="${glossyWhite} font-size: 11px;">Qué onda, </span><span style="${goldFaith} font-size: 11px;">${firstName}</span>`;
             }
-        }, 300);
+
+            if (data?.photo && navImg) {
+                navImg.src = data.photo;
+                navImg.classList.remove('hidden');
+                nameText.classList.add('hidden');
+            }
+        });
+    } else {
+        window.location.href = "index.html";
     }
 });
-// Función global para cambiar de sección (necesaria para el clic en el saldo)
+
+// FUNCIONES GLOBALES
 window.showSection = (sectionId) => {
-    // 1. Ocultar todos los paneles
     document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
-    
-    // 2. Mostrar el panel actual
     const target = document.getElementById(sectionId);
     if (target) target.classList.remove('hidden');
 
-    // 3. LIMPIEZA TOTAL
     document.querySelectorAll('.sidebar-btn').forEach(btn => {
         btn.classList.remove('is-active');
-        btn.classList.add('text-gray-400', 'font-bold');
+        btn.classList.add('text-gray-400');
     });
 
-    // 4. ACTIVACIÓN
     const activeBtn = document.getElementById('btn-' + sectionId);
     if (activeBtn) {
         activeBtn.classList.add('is-active');
         activeBtn.classList.remove('text-gray-400');
     }
-}; // <--- Aquí cierra la función
+};
 
-// ESTO VA AFUERA: Se ejecuta solo una vez cuando abres la página
-document.addEventListener('DOMContentLoaded', () => {
-    window.showSection('perfil');
-});
+window.handleLogout = async () => { await signOut(auth); window.location.href = "index.html"; };
+
+window.guardarPerfil = async function() {
+    const user = auth.currentUser;
+    if(!user) return;
+    const updates = {
+        username: document.getElementById('input-username').value,
+        bio: document.getElementById('input-bio').value
+    };
+    await update(ref(db, `users/${user.uid}/profile`), updates);
+    alert("¡Perfil Guardado!");
+};
+
+document.addEventListener('DOMContentLoaded', () => { window.showSection('perfil'); });
 </script>
 </body>
 </html>
+
 
 
 
