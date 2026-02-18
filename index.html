@@ -543,9 +543,15 @@
         GoogleAuthProvider, signInWithPopup 
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { 
-        getDatabase, ref, onValue, set, update, get, push, serverTimestamp, query, limitToLast 
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
+    getDatabase, 
+    ref, 
+    onValue, 
+    push, 
+    set, 
+    get, 
+    query,       // <-- Agregar esta
+    limitToLast  // <-- Agregar esta
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
     // 2. CONFIGURACIÓN
     const firebaseConfig = {
         apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
@@ -566,11 +572,12 @@ window.loadLiveFeed = function() {
     const feedList = document.getElementById('live-feed-list');
     if (!feedList) return;
 
-    console.log("G: Iniciando escucha de apuestas...");
+    console.log("G: Conectando con el flujo de apuestas...");
 
-    // Referencia correcta usando query y limitToLast
+    // Usamos query y limitToLast para traer las 10 más recientes
     const recentBetsRef = query(ref(db, 'bets'), limitToLast(10));
 
+    // onValue mantiene la conexión abierta: si alguien apuesta, se actualiza solo
     onValue(recentBetsRef, (snapshot) => {
         if (!snapshot.exists()) {
             feedList.innerHTML = '<div class="text-center text-[10px] text-gray-500 italic py-4">Esperando jugadas...</div>';
@@ -583,10 +590,10 @@ window.loadLiveFeed = function() {
             data.push({ id: child.key, ...child.val() });
         });
 
-        // Ordenar: Las más nuevas primero
+        // Invertimos el array para que la más nueva esté arriba
         data.reverse().forEach(bet => {
             html += `
-                <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+                <div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0 animate-fade-in">
                     <div class="flex flex-col">
                         <span class="text-[10px] text-white font-bold">${bet.username || 'Usuario'}</span>
                         <span class="text-[9px] text-gray-400 truncate w-40">${bet.marketTitle || 'Predicción'}</span>
@@ -923,6 +930,7 @@ window.loadLiveFeed = function() {
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
