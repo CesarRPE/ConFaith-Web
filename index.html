@@ -666,20 +666,19 @@ window.loadLiveFeed = function() {
     window.closeModal = () => document.getElementById('bet-modal')?.classList.replace('flex', 'hidden');
 
     // --- RENDERIZADO UNIFICADO DE CAJAS ---
-    window.renderCards = (category, clickedElement) => {
-        // --- NUEVA LÓGICA DE RESALTADO ---
-        if (clickedElement) {
-            // Buscamos todos los botones y les ponemos el estilo "apagado"
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                btn.classList.remove('bg-[#b8860b]', 'text-black');
-                btn.classList.add('bg-white/10', 'text-gray-300');
-            });
-            // Al que clickeamos, lo "encendemos" en dorado
-            clickedElement.classList.remove('bg-white/10', 'text-gray-300');
-            clickedElement.classList.add('bg-[#b8860b]', 'text-black');
-        }
+    window.renderCards = (category, clickedElement = null) => {
+    
+    // Solo ejecutamos la lógica de colores si realmente hubo un clic
+    if (clickedElement) {
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.classList.remove('bg-[#b8860b]', 'text-black');
+            btn.classList.add('bg-white/10', 'text-gray-300');
+        });
+        clickedElement.classList.remove('bg-white/10', 'text-gray-300');
+        clickedElement.classList.add('bg-[#b8860b]', 'text-black');
+    }
 
-        const container = document.getElementById('cards-container');
+    const container = document.getElementById('cards-container');
         if (!container) return;
 
         // Limpiar contenedor antes de renderizar
@@ -923,13 +922,14 @@ window.loadLiveFeed = function() {
     }
     setInterval(window.nextSlide, 5000);
 
-    // Arrancar
-    window.renderCards('Todos');
+    // Esto ahora funcionará porque clickedElement será null por defecto
+window.renderCards('Todos');
     
 </script>
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
