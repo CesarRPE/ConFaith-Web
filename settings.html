@@ -277,6 +277,9 @@ h1, h2, h3, h4, h5, h6, b, strong {
             <span class="emoji-render">&#x1F4AC</span>
     <span>Soporte</span>
         </button>
+                    <button id="btn-admin" onclick="showSection('admin')" class="sidebar-btn hidden font-bold w-full items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all">
+            <span class="emoji-render">&#x1F527;</span> Admin Panel
+        </button>
                     </nav>
             </aside>
 
@@ -530,6 +533,16 @@ h1, h2, h3, h4, h5, h6, b, strong {
         </div>
     </div>
 </div>
+    <div id="admin" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Gestión del Sistema</p>
+                    <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
+                        <span class="emoji-render">&#x1F527;</span> Panel de Control
+                    </h2>
+                </div>
+            </div>
+            </div>
             </div>
         </div>
     </main>
@@ -604,6 +617,16 @@ onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
         mainBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
     }
 });
+
+            // A.1 Validación de Admin
+            onValue(ref(db, `users/${user.uid}/isAdmin`), (snapshot) => {
+                const isAdmin = snapshot.val();
+                const adminBtn = document.getElementById('btn-admin');
+                if (isAdmin === true && adminBtn) {
+                    adminBtn.classList.remove('hidden');
+                    adminBtn.classList.add('flex'); // Usamos flex para mantener tu estructura
+                }
+            });
 
             // B. Escuchar Perfil en la Nube
             onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
@@ -765,6 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
