@@ -261,22 +261,23 @@ h1, h2, h3, h4, h5, h6, b, strong {
     MENÚ
 </h3>
                 <nav class="flex flex-col gap-1">
-    <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn is-active font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all">
-        <span class="emoji-render">&#x1F464;</span> Perfil
-    </button>
-    <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
-        <span class="emoji-render">&#x1F4B3;</span> Billetera
-    </button>
-    <button id="btn-historial" onclick="showSection('historial')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
-        <span class="emoji-render">&#x1F4DC;</span> Historial
-    </button>
-    <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
-        <span class="emoji-render">&#x1F4AC;</span> Soporte
-    </button>
-    <button id="btn-admin" onclick="showSection('admin')" class="sidebar-btn hidden font-bold w-full items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all text-gray-400">
-        <span class="emoji-render">&#x1F527;</span> Admin Panel
-    </button>
-</nav>
+        <button id="btn-perfil" onclick="showSection('perfil')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
+            <span class="emoji-render">&#x1F464;</span> Perfil
+                    </button>
+        <button id="btn-alertas" onclick="showSection('alertas')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
+            <span class="emoji-render">&#x1F514;</span> Alertas
+                    </button>
+        <button id="btn-billetera" onclick="showSection('billetera')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
+            <span class="emoji-render">&#x1F4B3;</span> Billetera
+                    </button>
+        <button id="btn-seguridad" onclick="showSection('seguridad')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
+            <span class="emoji-render">&#x1F512;</span> Seguridad
+                    </button>
+        <button id="btn-soporte" onclick="showSection('soporte')" class="sidebar-btn font-bold w-full flex items-center gap-3 px-4 py-3 text-sm rounded-lg text-left transition-all)">
+            <span class="emoji-render">&#x1F4AC</span>
+    <span>Soporte</span>
+        </button>
+                    </nav>
             </aside>
 
             <div class="flex-1 max-w-4xl">
@@ -460,44 +461,78 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <p class="text-gray-400">Módulo de contraseñas y 2FA en construcción...</p>
                 </div>
 
-                                <div id="soporte" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
-            <h2 class="text-2xl font-black text-white mb-6 tracking-tighter italic">Soporte y Ayuda</h2>
-            <p class="text-gray-400 text-sm italic mb-4">¿Necesitas ayuda con algo? Estamos aquí para ti.</p>
-            <div class="flex flex-col gap-3">
-                <a href="https://wa.me/tu-numero" class="w-full bg-[#25d366] text-white font-bold py-3 rounded-xl text-center text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all">
-                    Contactar por WhatsApp
-                </a>
-            </div>
+                            <div id="seguridad" class="content-section ...">
         </div>
 
-        <div id="admin" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
-            <div class="flex justify-between items-start mb-8">
-                <div>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-[#b8860b]">Privilegios de César</p>
-                    <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
-                        <span class="emoji-render">🔧</span> Panel de Control
-                    </h2>
-                </div>
-            </div>
+    <div id="soporte" class="settings-section hidden bg-[#1e293b] rounded-2xl p-8 border border-white/10 shadow-2xl">
+    <div class="flex justify-between items-start mb-6">
+        <div>
+            <p class="text-[10px] font-black uppercase tracking-widest" style="color: var(--gold-faith);">Centro de Ayuda</p>
+            <h2 class="text-2xl font-black text-white mt-1 tracking-tighter flex items-center gap-3">
+                <span class="emoji-render">&#x1F4AC;</span> Soporte ConFaith
+            </h2>
+        </div>
+        <div class="text-right">
+            <span class="text-[9px] font-bold text-gray-500 uppercase block">Horario de Atención</span>
+            <span class="text-[11px] font-black text-white">8:00 AM - 5:00 PM</span>
+        </div>
+    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-[#b8860b]/50 transition-all group">
-                    <h4 class="text-white font-black text-sm uppercase mb-2">Nueva Predicción</h4>
-                    <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider">Publicar un nuevo mercado de apuestas.</p>
-                    <button class="w-full bg-[#b8860b] text-black font-black py-3 rounded-xl text-[10px] uppercase active:scale-95 transition-all">
-                        Configurar Evento
-                    </button>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <a href="https://wa.me/51980755310?text=Hola%20ConFaith,%20necesito%20ayuda%20con%20mi%20billetera" target="_blank" 
+           class="bg-[#0f172a] border border-white/10 rounded-2xl p-6 flex items-center gap-5 hover:border-[#25D366]/50 transition-all group">
+            <div class="w-14 h-14 rounded-full bg-[#25D366]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span class="emoji-render text-2xl">🟢</span>
+            </div>
+            <div>
+                <h5 class="text-white font-black text-sm uppercase">WhatsApp Directo</h5>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Chat en vivo ahora</p>
+            </div>
+        </a>
+
+        <a href="mailto:cesarrpe1991@gmail.com" 
+           class="bg-[#0f172a] border border-white/10 rounded-2xl p-6 flex items-center gap-5 hover:border-white/30 transition-all group">
+            <div class="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <span class="emoji-render text-2xl">📧</span>
+            </div>
+            <div>
+                <h5 class="text-white font-black text-sm uppercase">Enviar Correo</h5>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">cesarrpe1991@gmail.com</p>
+            </div>
+        </a>
+    </div>
+
+    <div class="space-y-4">
+        <h5 class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2 mb-4">Preguntas Frecuentes</h5>
+        
+        <div class="bg-[#0f172a]/50 rounded-xl border border-white/5 overflow-hidden">
+            <details class="group">
+                <summary class="list-none cursor-pointer flex justify-between items-center p-4 text-sm font-bold text-gray-200 hover:bg-white/5 transition-colors">
+                    ¿Cómo retiro mis ganancias?
+                    <span class="text-gray-500 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-4 pt-0 text-xs text-gray-400 leading-relaxed border-t border-white/5">
+                    Para retirar tus fondos, ve a la sección Billetera y selecciona "Retirar". Los procesos suelen tardar entre 2 y 24 horas hábiles.
                 </div>
-                <div class="bg-black/40 border border-white/10 p-6 rounded-2xl hover:border-blue-500/50 transition-all group">
-                    <h4 class="text-white font-black text-sm uppercase mb-2">Finalizar Eventos</h4>
-                    <p class="text-[10px] text-gray-400 mb-6 uppercase tracking-wider">Declarar ganadores y repartir saldo.</p>
-                    <button class="w-full bg-white/10 text-white font-black py-3 rounded-xl text-[10px] uppercase active:scale-95 transition-all">
-                        Ver Pendientes
-                    </button>
+            </details>
+        </div>
+
+        <div class="bg-[#0f172a]/50 rounded-xl border border-white/5 overflow-hidden">
+            <details class="group">
+                <summary class="list-none cursor-pointer flex justify-between items-center p-4 text-sm font-bold text-gray-200 hover:bg-white/5 transition-colors">
+                    ¿Qué pasa si un mercado se cancela?
+                    <span class="text-gray-500 transition-transform group-open:rotate-180">▼</span>
+                </summary>
+                <div class="p-4 pt-0 text-xs text-gray-400 leading-relaxed border-t border-white/5">
+                    Si un evento no ocurre o se cancela oficialmente, todos los montos apostados se devuelven íntegramente a tu billetera Faith.
                 </div>
+            </details>
+        </div>
+    </div>
+</div>
             </div>
         </div>
-    </main> </div>
+    </main>
 
     <footer class="text-center py-10 px-[1.25rem] text-gray-500 text-[11px] font-bold uppercase tracking-widest">
         ConFaith &copy; 2026 - Lima, Perú
@@ -506,89 +541,230 @@ h1, h2, h3, h4, h5, h6, b, strong {
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    // --- 1. IMPORTACIONES (Aseguramos Database y Update) ---
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
-    authDomain: "confaith-web.firebaseapp.com",
-    projectId: "confaith-web",
-    storageBucket: "confaith-web.firebasestorage.app",
-    messagingSenderId: "736470337348",
-    appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911",
-    databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/"
-};
+    // --- 2. CONFIGURACIÓN FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
+        authDomain: "confaith-web.firebaseapp.com",
+        projectId: "confaith-web",
+        storageBucket: "confaith-web.firebasestorage.app",
+        messagingSenderId: "736470337348",
+        appId: "1:736470337348:web:78a4bb59b5ffbf75bdf911",
+        databaseURL: "https://confaith-web-default-rtdb.firebaseio.com/"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
 
-const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
+    // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
+    onAuthStateChanged(auth, (user) => {
+        const nameText = document.getElementById('user-name-text');
+        const welcomeMsg = document.getElementById('welcome-message');
+        const balanceContainer = document.getElementById('nav-balance-container');
+        const inputUser = document.getElementById('input-username');
+        const inputBio = document.getElementById('input-bio');
+        const navImg = document.getElementById('user-avatar-img');
+        
+        if (user) {
+            // Estilos Maestros (Definidos aquí para que ambos listeners los usen)
+            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
+            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // 1. ADMIN CHECK
-        onValue(ref(db, `users/${user.uid}/isAdmin`), (snap) => {
-            const btn = document.getElementById('btn-admin');
-            if (btn && snap.val() === true) {
-                btn.classList.remove('hidden');
-                btn.classList.add('flex');
-            }
-        });
+            // PRE-DIBUJAR ESTRUCTURA (Solo una vez si no existe)
+            // Dentro de onAuthStateChanged en settings.html
+if (balanceContainer && !document.getElementById('nav-balance')) {
+    balanceContainer.innerHTML = `
+        <div onclick="window.showSection('billetera')" 
+             class="flex items-center gap-1.5 px-2.5 py-1 bg-white/5 rounded-full border border-white/10 shadow-inner cursor-pointer hover:bg-white/10 transition-all active:scale-95">
+            <span class="text-[7px] uppercase tracking-tighter" style="${glossyWhite}">Saldo</span>
+            <span id="nav-balance" class="text-[10px]" style="${goldFaith}">S/ ...</span>
+        </div>
+    `;
+}
 
-        // 2. SALDO Y PERFIL
-        onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
-            const bal = snap.val() || 0;
-            const nb = document.getElementById('nav-balance');
-            const mb = document.getElementById('main-balance');
-            if (nb) nb.innerText = `S/ ${bal.toFixed(2)}`;
-            if (mb) mb.innerText = `S/ ${bal.toFixed(2)}`;
-        });
-
-        onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
-            const data = snap.val();
-            const welcome = document.getElementById('welcome-message');
-            const userDisp = data?.username || user.email.split('@')[0];
-            if (welcome) {
-                welcome.innerHTML = `<span style="${glossyWhite} font-size: 11px;">Qué onda, </span><span style="${goldFaith} font-size: 11px;">${userDisp}</span>`;
-            }
-        });
-    } else {
-        window.location.href = "index.html";
+            // Dentro del escuchador de balance en Firebase
+onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
+    const balance = snapshot.val() || 0;
+    
+    // IMPORTANTE: Aquí actualizamos el Navbar
+    const navBalanceElement = document.getElementById('nav-balance');
+    if (navBalanceElement) {
+        navBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
+        console.log("Saldo actualizado en Navbar:", balance); // Debug para César
+    }
+    
+    // También actualizamos el contenedor grande de la sección Billetera si existe
+    const mainBalanceElement = document.getElementById('balance-amount');
+    if (mainBalanceElement) {
+        mainBalanceElement.innerText = `S/ ${balance.toFixed(2)}`;
     }
 });
 
-window.showSection = (id) => {
-    document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
-    const target = document.getElementById(id);
-    if (target) target.classList.remove('hidden');
+            // B. Escuchar Perfil en la Nube
+            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+                const data = snapshot.val();
+                
+                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
+                const initial = firstName.charAt(0).toUpperCase();
+                const photo = data?.photo || user.photoURL;
 
-    document.querySelectorAll('.sidebar-btn').forEach(b => {
-        b.classList.remove('is-active');
-        b.classList.add('text-gray-400');
+                // Rellenar Inputs
+                if(inputUser) inputUser.value = data?.username || "";
+                if(inputBio) inputBio.value = data?.bio || "";
+
+                // Actualizar interfaz de bienvenida
+                if(nameText) nameText.innerText = initial;
+                if(welcomeMsg) {
+                    welcomeMsg.innerHTML = `
+                        <span style="${glossyWhite} font-size: 11px;">Qué onda, </span>
+                        <span style="${goldFaith} font-size: 11px;">${firstName}</span>
+                    `;
+                }
+
+                // Actualizar Foto
+                if (photo && navImg) {
+                    navImg.src = photo;
+                    navImg.classList.remove('hidden');
+                    if(nameText) nameText.classList.add('hidden');
+                }
+                
+                // IMPORTANTE: Se eliminó el balanceContainer.innerHTML de aquí 
+                // para evitar que pise el saldo real.
+            });
+
+        } else {
+            window.location.href = "index.html";
+        }
     });
 
-    const activeBtn = document.getElementById('btn-' + id);
+    // --- 4. FUNCIONES GLOBALES ---
+    window.handleLogout = async () => {
+        try { await signOut(auth); window.location.href = "index.html"; } 
+        catch (error) { console.error("Error al salir:", error); }
+    };
+
+    window.showSection = function(id) {
+        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        const targetSection = document.getElementById(id);
+        if(targetSection) targetSection.classList.add('active');
+        const targetBtn = document.getElementById('btn-' + id);
+        if(targetBtn) targetBtn.classList.add('active');
+    };
+
+    window.actualizarSaldo = function(monto) {
+        const formatted = parseFloat(monto).toFixed(2);
+        const navBal = document.getElementById('nav-balance');
+        if(navBal) navBal.innerText = `S/ ${formatted}`;
+        const mainBal = document.getElementById('main-balance');
+        if(mainBal) mainBal.innerText = `S/ ${formatted}`;
+    };
+
+    // --- 5. GUARDAR PERFIL EN LA NUBE ---
+    let tempImageData = null;
+
+    document.getElementById('avatar-upload-input')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById('file-name-display').innerText = file.name;
+            const reader = new FileReader();
+            reader.onload = function(event) { tempImageData = event.target.result; };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    window.guardarPerfil = async function() {
+        const user = auth.currentUser;
+        if(!user) return;
+
+        const inputUser = document.getElementById('input-username').value;
+        const inputBio = document.getElementById('input-bio').value;
+
+        const updates = {
+            username: inputUser,
+            bio: inputBio
+        };
+        
+        // Solo actualizar foto si el usuario subió una nueva
+        if (tempImageData) updates.photo = tempImageData;
+
+        try {
+            await update(ref(db, `users/${user.uid}/profile`), updates);
+            mostrarPopupExito();
+            tempImageData = null;
+        } catch (error) {
+            console.error("Error al guardar:", error);
+            alert("No se pudo guardar en la nube.");
+        }
+    };
+
+    function mostrarPopupExito() {
+        const popup = document.createElement('div');
+        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-3.5 rounded-full border border-[#b8860b] shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] text-[14px] transition-all duration-700 opacity-0 translate-y-4`;
+        popup.innerHTML = '<span style="color: #b8860b; margin-right: 10px;">✨</span> Perfil Guardado Exitosamente';
+        document.body.appendChild(popup);
+        setTimeout(() => { popup.classList.remove('opacity-0', 'translate-y-4'); }, 10);
+        setTimeout(() => { popup.classList.add('opacity-0'); setTimeout(() => popup.remove(), 700); }, 3000);
+    }
+
+    // --- 6. MODALES Y OTROS ---
+    window.openManualCardModal = () => document.getElementById('card-modal').classList.replace('hidden', 'flex');
+    window.closeManualCardModal = () => document.getElementById('card-modal').classList.replace('flex', 'hidden');
+
+    // Manejador de parámetros de URL para navegación entre páginas
+window.addEventListener('load', () => {
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get('section');
+
+    if (section) {
+        // Le damos un pequeño respiro para que el DOM se asiente
+        setTimeout(() => {
+            if (typeof window.showSection === 'function') {
+                window.showSection(section);
+                console.log("Navegando a sección:", section);
+            } else {
+                // Si la función no carga a tiempo, forzamos el clic en el botón del menú
+                const btn = document.getElementById('btn-' + section);
+                if (btn) btn.click();
+            }
+        }, 300);
+    }
+});
+// Función global para cambiar de sección (necesaria para el clic en el saldo)
+window.showSection = (sectionId) => {
+    // 1. Ocultar todos los paneles
+    document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
+    
+    // 2. Mostrar el panel actual
+    const target = document.getElementById(sectionId);
+    if (target) target.classList.remove('hidden');
+
+    // 3. LIMPIEZA TOTAL
+    document.querySelectorAll('.sidebar-btn').forEach(btn => {
+        btn.classList.remove('is-active');
+        btn.classList.add('text-gray-400', 'font-bold');
+    });
+
+    // 4. ACTIVACIÓN
+    const activeBtn = document.getElementById('btn-' + sectionId);
     if (activeBtn) {
         activeBtn.classList.add('is-active');
         activeBtn.classList.remove('text-gray-400');
     }
-};
+}; // <--- Aquí cierra la función
 
-window.handleLogout = async () => { await signOut(auth); window.location.href = "index.html"; };
-
-document.addEventListener('DOMContentLoaded', () => { window.showSection('perfil'); });
+// ESTO VA AFUERA: Se ejecuta solo una vez cuando abres la página
+document.addEventListener('DOMContentLoaded', () => {
+    window.showSection('perfil');
+});
 </script>
 </body>
 </html>
-
-
-
-
-
-
 
 
 
