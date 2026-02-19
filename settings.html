@@ -671,30 +671,39 @@ h1, h2, h3, h4, h5, h6, b, strong {
         }
     };
 
-    // --- 1. CARGA DE CACHE (SIN PÉRDIDAS) ---
-    const loadCache = () => {
-        const cachedName = localStorage.getItem('user_name');
-        const cachedBalance = localStorage.getItem('user_balance');
-        const cachedPhoto = localStorage.getItem('user_photo');
+    // --- CARGA INSTANTÁNEA DE AVATAR (SETTINGS) ---
+const loadCache = () => {
+    const cachedName = localStorage.getItem('user_name');
+    const cachedBalance = localStorage.getItem('user_balance');
+    const cachedPhoto = localStorage.getItem('user_photo');
 
-        if (cachedName) {
-            renderWelcomeMessage(cachedName);
-            const nameText = document.getElementById('user-name-text');
-            if (nameText) nameText.innerText = cachedName.charAt(0).toUpperCase();
+    if (cachedName) {
+        renderStyledWelcome(cachedName); // Tu función con estilo Glossy
+        const initial = document.getElementById('user-name-text');
+        if (initial) initial.innerText = cachedName.charAt(0).toUpperCase();
+    }
+    
+    if (cachedBalance) {
+        const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
+        if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
+        if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
+    }
+    
+    // FIX: Carga inmediata de la foto
+    if (cachedPhoto) {
+        const img = document.getElementById('user-avatar-img');
+        const txt = document.getElementById('user-name-text');
+        if (img) {
+            img.src = cachedPhoto;
+            img.classList.remove('hidden'); // Mostramos la foto del caché
         }
-        if (cachedBalance) {
-            const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-            if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
-            if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
+        if (txt) {
+            txt.classList.add('hidden'); // Ocultamos la inicial
         }
-        if (cachedPhoto) {
-            const img = document.getElementById('user-avatar-img');
-            if (img) { img.src = cachedPhoto; img.classList.remove('hidden'); }
-            const txt = document.getElementById('user-name-text');
-            if (txt) txt.classList.add('hidden');
-        }
-    };
-    loadCache();
+    }
+};
+
+loadCache();
 
     // --- 2. LOGICA DE NUBE ---
     onAuthStateChanged(auth, (user) => {
@@ -709,24 +718,37 @@ h1, h2, h3, h4, h5, h6, b, strong {
             });
 
             // Perfil
-            onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
-                const data = snap.val();
-                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
-                localStorage.setItem('user_name', firstName);
-                renderWelcomeMessage(firstName);
-                
-                if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
-                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
-                
-                const photo = data?.photo || user.photoURL;
-                if (photo) {
-                    localStorage.setItem('user_photo', photo);
-                    const img = document.getElementById('user-avatar-img');
-                    if (img) { img.src = photo; img.classList.remove('hidden'); }
-                    const txt = document.getElementById('user-name-text');
-                    if (txt) txt.classList.add('hidden');
-                }
-            });
+onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
+    const data = snap.val();
+    const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
+    localStorage.setItem('user_name', firstName);
+    renderWelcomeMessage(firstName);
+    
+    if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
+    if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
+    
+    const photo = data?.photo || user.photoURL;
+    const img = document.getElementById('user-avatar-img');
+    const txt = document.getElementById('user-name-text');
+
+    if (photo) {
+        localStorage.setItem('user_photo', photo);
+        if (img) { 
+            img.src = photo; 
+            img.classList.remove('hidden'); 
+        }
+        if (txt) txt.classList.add('hidden');
+    } else {
+        // FIX: Si el usuario borra su foto o no tiene, 
+        // aseguramos que se vea la inicial y se oculte el elemento imagen
+        if (txt) {
+            txt.innerText = firstName.charAt(0).toUpperCase();
+            txt.classList.remove('hidden');
+        }
+        if (img) img.classList.add('hidden');
+        localStorage.removeItem('user_photo'); // Limpiamos cache si no hay foto
+    }
+});
 
             // Admin
             onValue(ref(db, `users/${user.uid}/isAdmin`), (snap) => {
@@ -800,6 +822,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
