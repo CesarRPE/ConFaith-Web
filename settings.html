@@ -218,8 +218,8 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
                     <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
-    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-    <span id="user-name-text" class="text-black font-black text-lg hidden"></span>
+    <img id="user-avatar-img" src="" class="w-full h-full object-cover opacity-0 transition-opacity duration-200">
+    <span id="user-name-text" class="text-black font-black text-lg opacity-0 transition-opacity duration-200"></span>
 </div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -674,30 +674,40 @@ h1, h2, h3, h4, h5, h6, b, strong {
     // --- CARGA INSTANTÁNEA DE CACHE (FIXED) ---
     const loadCache = () => {
     const cachedName = localStorage.getItem('user_name');
-    const cachedBalance = localStorage.getItem('user_balance');
     const cachedPhoto = localStorage.getItem('user_photo');
+    const cachedBalance = localStorage.getItem('user_balance');
 
     const img = document.getElementById('user-avatar-img');
     const txt = document.getElementById('user-name-text');
 
+    // 1. Manejo del Nombre y Mensaje
     if (cachedName) {
         renderWelcomeMessage(cachedName);
         if (txt) {
             txt.innerText = cachedName.charAt(0).toUpperCase();
-            // Solo lo mostramos si NO hay foto en cache
-            if (!cachedPhoto) txt.classList.remove('hidden');
+            // Si NO hay foto, mostramos la inicial de inmediato
+            if (!cachedPhoto) {
+                txt.classList.replace('opacity-0', 'opacity-100');
+            }
         }
     }
-    
+
+    // 2. Manejo de la Foto (Prioridad absoluta)
     if (cachedPhoto && img) {
         img.src = cachedPhoto;
-        img.classList.remove('hidden');
-        if (txt) txt.classList.add('hidden'); // Doble seguridad
-    } else if (cachedName && txt) {
-        // Si no hay foto pero sí nombre, nos aseguramos que se vea la inicial
-        txt.classList.remove('hidden');
+        // Cuando la imagen termine de procesarse en el DOM:
+        img.onload = () => {
+            img.classList.replace('opacity-0', 'opacity-100');
+            if (txt) txt.classList.replace('opacity-100', 'opacity-0');
+        };
+        // Por si ya estaba cargada (caché del navegador)
+        if (img.complete) {
+            img.classList.replace('opacity-0', 'opacity-100');
+            if (txt) txt.classList.replace('opacity-100', 'opacity-0');
+        }
     }
 
+    // 3. Balance
     if (cachedBalance) {
         const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
         if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
@@ -827,6 +837,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
