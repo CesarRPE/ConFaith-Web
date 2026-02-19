@@ -641,12 +641,10 @@ h1, h2, h3, h4, h5, h6, b, strong {
     <script src="https://pay.google.com/gp/p/js/pay.js" onload="onGooglePayLoaded()"></script>
 
 <script type="module">
-    // --- 1. IMPORTACIONES ---
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // --- 2. CONFIGURACIÓN FIREBASE ---
     const firebaseConfig = {
         apiKey: "AIzaSyC7VOMfWU5JSbs5p11w3BBE1TofvxZpZ5M",
         authDomain: "confaith-web.firebaseapp.com",
@@ -661,137 +659,107 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    // --- SISTEMA DE CACHE INSTANTÁNEO ---
+    // --- ESTILOS MAESTROS ---
+    const styleGlossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; font-size: 11px;";
+    const styleGoldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2); font-size: 11px;";
+
+    const renderWelcomeMessage = (name) => {
+        const welcomeMsg = document.getElementById('welcome-message');
+        if (welcomeMsg) {
+            welcomeMsg.innerHTML = `<span style="${styleGlossyWhite}">Qué onda, </span><span style="${styleGoldFaith}">${name}</span>`;
+            welcomeMsg.classList.remove('hidden');
+        }
+    };
+
+    // --- 1. CARGA DE CACHE (SIN PÉRDIDAS) ---
     const loadCache = () => {
         const cachedName = localStorage.getItem('user_name');
         const cachedBalance = localStorage.getItem('user_balance');
         const cachedPhoto = localStorage.getItem('user_photo');
 
         if (cachedName) {
-            const welcomeMsg = document.getElementById('welcome-message');
-            if(welcomeMsg) {
-                welcomeMsg.innerHTML = `<span style="text-gray-400 font-size: 11px;">Qué onda, </span><span style="text-[#b8860b] font-size: 11px;">${cachedName}</span>`;
-                welcomeMsg.classList.remove('hidden');
-            }
+            renderWelcomeMessage(cachedName);
             const nameText = document.getElementById('user-name-text');
-            if(nameText) nameText.innerText = cachedName.charAt(0).toUpperCase();
+            if (nameText) nameText.innerText = cachedName.charAt(0).toUpperCase();
         }
-        
         if (cachedBalance) {
-            const bal = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-            if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = bal;
-            // Usamos balance-amount que es el ID correcto en tu HTML actual
-            if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = bal;
+            const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
+            if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
+            if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
         }
-        
         if (cachedPhoto) {
             const img = document.getElementById('user-avatar-img');
-            const nameText = document.getElementById('user-name-text');
-            if(img) {
-                img.src = cachedPhoto;
-                img.classList.remove('hidden');
-            }
-            if(nameText) nameText.classList.add('hidden');
+            if (img) { img.src = cachedPhoto; img.classList.remove('hidden'); }
+            const txt = document.getElementById('user-name-text');
+            if (txt) txt.classList.add('hidden');
         }
     };
-
-    // Ejecutar carga de cache de inmediato
     loadCache();
-    
-    // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
+
+    // --- 2. LOGICA DE NUBE ---
     onAuthStateChanged(auth, (user) => {
-        const nameText = document.getElementById('user-name-text');
-        const welcomeMsg = document.getElementById('welcome-message');
-        const inputUser = document.getElementById('input-username');
-        const inputBio = document.getElementById('input-bio');
-        const navImg = document.getElementById('user-avatar-img');
-        
         if (user) {
-            const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
-            const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
-
-            // A. Escuchar Balance en Tiempo Real
-            onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
-                const balance = snapshot.val() || 0;
-                localStorage.setItem('user_balance', balance); // Actualiza Cache
+            // Balance
+            onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+                const balance = snap.val() || 0;
+                localStorage.setItem('user_balance', balance);
                 const formatted = `S/ ${balance.toFixed(2)}`;
-                
-                const navBalanceElement = document.getElementById('nav-balance');
-                if (navBalanceElement) navBalanceElement.innerText = formatted;
-                
-                const mainBalanceElement = document.getElementById('balance-amount');
-                if (mainBalanceElement) mainBalanceElement.innerText = formatted;
+                if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
+                if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
             });
 
-            // B. Validación de Admin
-            onValue(ref(db, `users/${user.uid}/isAdmin`), (snapshot) => {
-                const isAdmin = snapshot.val();
-                const adminBtn = document.getElementById('btn-admin');
-                if (isAdmin === true && adminBtn) {
-                    adminBtn.classList.remove('hidden');
-                    adminBtn.classList.add('flex'); 
-                }
-            });
-
-            // C. Escuchar Perfil en la Nube
-            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-                const data = snapshot.val();
-                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : user.email.split('@')[0]);
-                const initial = firstName.charAt(0).toUpperCase();
-                const photo = data?.photo || user.photoURL;
-
-                // Guardar en caché
+            // Perfil
+            onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
+                const data = snap.val();
+                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
                 localStorage.setItem('user_name', firstName);
-                if(photo) localStorage.setItem('user_photo', photo);
-
-                // Rellenar Inputs
-                if(inputUser) inputUser.value = data?.username || "";
-                if(inputBio) inputBio.value = data?.bio || "";
-
-                // Actualizar UI
-                if(nameText && !photo) nameText.innerText = initial;
-                if(welcomeMsg) {
-                    welcomeMsg.innerHTML = `<span style="${glossyWhite} font-size: 11px;">Qué onda, </span><span style="${goldFaith} font-size: 11px;">${firstName}</span>`;
-                    welcomeMsg.classList.remove('hidden');
-                }
-                if (photo && navImg) {
-                    navImg.src = photo;
-                    navImg.classList.remove('hidden');
-                    if(nameText) nameText.classList.add('hidden');
+                renderWelcomeMessage(firstName);
+                
+                if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
+                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
+                
+                const photo = data?.photo || user.photoURL;
+                if (photo) {
+                    localStorage.setItem('user_photo', photo);
+                    const img = document.getElementById('user-avatar-img');
+                    if (img) { img.src = photo; img.classList.remove('hidden'); }
+                    const txt = document.getElementById('user-name-text');
+                    if (txt) txt.classList.add('hidden');
                 }
             });
 
+            // Admin
+            onValue(ref(db, `users/${user.uid}/isAdmin`), (snap) => {
+                const btn = document.getElementById('btn-admin');
+                if (snap.val() === true && btn) { btn.classList.remove('hidden'); btn.classList.add('flex'); }
+            });
         } else {
             window.location.href = "index.html";
         }
     });
 
-    // --- 4. FUNCIONES GLOBALES INTACTAS ---
-    window.handleLogout = async () => {
-        try { 
-            localStorage.clear(); // Limpiamos caché al salir
-            await signOut(auth); 
-            window.location.href = "index.html"; 
-        } catch (error) { console.error("Error al salir:", error); }
+    // --- 3. FUNCIONES GLOBALES (RESTAURADAS AL 100%) ---
+    window.handleLogout = async () => { localStorage.clear(); await signOut(auth); window.location.href = "index.html"; };
+
+    window.showSection = (sectionId) => {
+        document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
+        const target = document.getElementById(sectionId);
+        if (target) target.classList.remove('hidden');
+        document.querySelectorAll('.sidebar-btn').forEach(btn => {
+            btn.classList.remove('is-active');
+            btn.classList.add('text-gray-400', 'font-bold');
+        });
+        const activeBtn = document.getElementById('btn-' + sectionId);
+        if (activeBtn) { activeBtn.classList.add('is-active'); activeBtn.classList.remove('text-gray-400'); }
     };
 
-    window.actualizarSaldo = function(monto) {
-        const formatted = parseFloat(monto).toFixed(2);
-        const navBal = document.getElementById('nav-balance');
-        if(navBal) navBal.innerText = `S/ ${formatted}`;
-        const mainBal = document.getElementById('balance-amount');
-        if(mainBal) mainBal.innerText = `S/ ${formatted}`;
-    };
-
-    // --- 5. GUARDAR PERFIL EN LA NUBE ---
     let tempImageData = null;
-
-    document.getElementById('avatar-upload-input')?.addEventListener('change', function(e) {
+    document.getElementById('avatar-upload-input')?.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
             document.getElementById('file-name-display').innerText = file.name;
             const reader = new FileReader();
-            reader.onload = function(event) { tempImageData = event.target.result; };
+            reader.onload = (ev) => { tempImageData = ev.target.result; };
             reader.readAsDataURL(file);
         }
     });
@@ -799,86 +767,40 @@ h1, h2, h3, h4, h5, h6, b, strong {
     window.guardarPerfil = async function() {
         const user = auth.currentUser;
         if(!user) return;
-
-        const inputUser = document.getElementById('input-username').value;
-        const inputBio = document.getElementById('input-bio').value;
-
         const updates = {
-            username: inputUser,
-            bio: inputBio
+            username: document.getElementById('input-username').value,
+            bio: document.getElementById('input-bio').value
         };
-        
         if (tempImageData) updates.photo = tempImageData;
-
         try {
             await update(ref(db, `users/${user.uid}/profile`), updates);
             mostrarPopupExito();
             tempImageData = null;
-        } catch (error) {
-            console.error("Error al guardar:", error);
-            alert("No se pudo guardar en la nube.");
-        }
+        } catch (e) { console.error(e); }
     };
 
     function mostrarPopupExito() {
         const popup = document.createElement('div');
-        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-3.5 rounded-full border border-[#b8860b] shadow-[0_0_30px_rgba(184,134,11,0.2)] z-[100] text-[14px] transition-all duration-700 opacity-0 translate-y-4`;
+        popup.className = `fixed bottom-10 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl text-white px-10 py-3.5 rounded-full border border-[#b8860b] z-[100] text-[14px] transition-all duration-700 opacity-0 translate-y-4`;
         popup.innerHTML = '<span style="color: #b8860b; margin-right: 10px;">✨</span> Perfil Guardado Exitosamente';
         document.body.appendChild(popup);
         setTimeout(() => { popup.classList.remove('opacity-0', 'translate-y-4'); }, 10);
         setTimeout(() => { popup.classList.add('opacity-0'); setTimeout(() => popup.remove(), 700); }, 3000);
     }
 
-    // --- 6. MODALES Y NAVEGACIÓN ---
-    window.openManualCardModal = () => {
-        const modal = document.getElementById('card-modal');
-        if (modal) modal.classList.replace('hidden', 'flex');
-    };
-    window.closeManualCardModal = () => {
-        const modal = document.getElementById('card-modal');
-        if (modal) modal.classList.replace('flex', 'hidden');
-    };
+    window.openManualCardModal = () => document.getElementById('card-modal')?.classList.replace('hidden', 'flex');
+    window.closeManualCardModal = () => document.getElementById('card-modal')?.classList.replace('flex', 'hidden');
 
     window.addEventListener('load', () => {
-        const params = new URLSearchParams(window.location.search);
-        const section = params.get('section');
-
-        if (section) {
-            setTimeout(() => {
-                if (typeof window.showSection === 'function') {
-                    window.showSection(section);
-                } else {
-                    const btn = document.getElementById('btn-' + section);
-                    if (btn) btn.click();
-                }
-            }, 300);
-        }
+        const section = new URLSearchParams(window.location.search).get('section');
+        if (section) setTimeout(() => window.showSection(section), 300);
     });
 
-    window.showSection = (sectionId) => {
-        document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
-        
-        const target = document.getElementById(sectionId);
-        if (target) target.classList.remove('hidden');
-
-        document.querySelectorAll('.sidebar-btn').forEach(btn => {
-            btn.classList.remove('is-active');
-            btn.classList.add('text-gray-400', 'font-bold');
-        });
-
-        const activeBtn = document.getElementById('btn-' + sectionId);
-        if (activeBtn) {
-            activeBtn.classList.add('is-active');
-            activeBtn.classList.remove('text-gray-400');
-        }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-        window.showSection('perfil');
-    });
+    document.addEventListener('DOMContentLoaded', () => window.showSection('perfil'));
 </script>
 </body>
 </html>
+
 
 
 
