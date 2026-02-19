@@ -219,7 +219,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
                     <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
     <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-    <span id="user-name-text" class="text-black font-black text-lg"></span>
+    <span id="user-name-text" class="text-black font-black text-lg hidden"></span>
 </div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -680,27 +680,28 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const img = document.getElementById('user-avatar-img');
     const txt = document.getElementById('user-name-text');
 
-    // 1. Si hay nombre, lo ponemos en la inicial
-    if (cachedName && txt) {
-        txt.innerText = cachedName.charAt(0).toUpperCase();
-        renderWelcomeMessage(cachedName);
-    }
-
-    // 2. Si hay FOTO, hacemos el cambio de inmediato
-    if (cachedPhoto && img && txt) {
+    // 1. Prioridad: ¿Hay foto en caché?
+    if (cachedPhoto && img) {
         img.src = cachedPhoto;
-        img.classList.remove('hidden'); // Mostramos foto
-        txt.classList.add('hidden');    // Escondemos inicial
-    } else if (txt) {
-        // Si no hay foto, nos aseguramos que la inicial se vea
+        img.classList.remove('hidden');
+        if (txt) txt.classList.add('hidden');
+    } 
+    // 2. Si no hay foto, ¿hay nombre para la inicial?
+    else if (cachedName && txt) {
+        txt.innerText = cachedName.charAt(0).toUpperCase();
         txt.classList.remove('hidden');
+        if (img) img.classList.add('hidden');
     }
 
-    // 3. Balance
+    // 3. Welcome Message y Balance (Igual que antes)
+    if (cachedName) renderWelcomeMessage(cachedName);
+    
     if (cachedBalance) {
         const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-        if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
-        if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
+        const navBal = document.getElementById('nav-balance');
+        const mainBal = document.getElementById('balance-amount');
+        if (navBal) navBal.innerText = formatted;
+        if (mainBal) mainBal.innerText = formatted;
     }
 };
 
@@ -818,6 +819,7 @@ onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
 </script>
 </body>
 </html>
+
 
 
 
