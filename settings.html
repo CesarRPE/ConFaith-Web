@@ -661,6 +661,32 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const auth = getAuth(app);
     const db = getDatabase(app);
 
+// --- SISTEMA DE CACHE INSTANTÁNEO ---
+const loadCache = () => {
+    const cachedName = localStorage.getItem('user_name');
+    const cachedBalance = localStorage.getItem('user_balance');
+    const cachedPhoto = localStorage.getItem('user_photo');
+
+    if (cachedName) {
+        document.getElementById('welcome-message').innerText = `Hola, ${cachedName}`;
+        document.getElementById('user-name-text').innerText = cachedName.charAt(0).toUpperCase();
+    }
+    if (cachedBalance) {
+        const bal = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
+        if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = bal;
+        if(document.getElementById('main-balance')) document.getElementById('main-balance').innerText = bal;
+    }
+    if (cachedPhoto) {
+        const img = document.getElementById('user-avatar-img');
+        img.src = cachedPhoto;
+        img.classList.remove('hidden');
+        document.getElementById('user-name-text').classList.add('hidden');
+    }
+};
+
+// Ejecutar carga de cache de inmediato
+loadCache();
+    
     // --- 3. LÓGICA DE USUARIO Y NUBE (Sincronización Total) ---
     onAuthStateChanged(auth, (user) => {
         const nameText = document.getElementById('user-name-text');
@@ -675,8 +701,16 @@ h1, h2, h3, h4, h5, h6, b, strong {
             const glossyWhite = "background: linear-gradient(180deg, #FFFFFF 0%, #A0A0A0 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800;";
             const goldFaith = "color: #b8860b; font-weight: 900; text-shadow: 0 0 8px rgba(184, 134, 11, 0.2);";
 
-            // PRE-DIBUJAR ESTRUCTURA (Solo una vez si no existe)
-            // Dentro de onAuthStateChanged en settings.html
+// GUARDAR EN CACHE PARA LA PRÓXIMA VEZ
+        localStorage.setItem('user_name', user.displayName || 'Usuario');
+        localStorage.setItem('user_photo', user.photoURL || '');
+        
+        // Actualizar UI Real (esto sobreescribirá el cache si hubo cambios)
+        document.getElementById('welcome-message').innerText = `Hola, ${user.displayName}`;
+        // ... etc
+    }
+});
+    
 if (balanceContainer && !document.getElementById('nav-balance')) {
     balanceContainer.innerHTML = `
         <div onclick="window.showSection('billetera')" 
@@ -687,6 +721,14 @@ if (balanceContainer && !document.getElementById('nav-balance')) {
     `;
 }
 
+function onBalanceUpdate(balance) {
+    localStorage.setItem('user_balance', balance); // Guardamos el número puro
+    
+    const formatted = `S/ ${balance.toFixed(2)}`;
+    document.getElementById('nav-balance').innerText = formatted;
+    document.getElementById('main-balance').innerText = formatted;
+}
+            
             // Dentro del escuchador de balance en Firebase
 onValue(ref(db, `users/${user.uid}/balance`), (snapshot) => {
     const balance = snapshot.val() || 0;
@@ -875,6 +917,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
