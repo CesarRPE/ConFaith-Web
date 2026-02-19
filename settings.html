@@ -218,8 +218,8 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
                     <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
-    <img id="user-avatar-img" src="" class="w-full h-full object-cover opacity-0 transition-opacity duration-200">
-    <span id="user-name-text" class="text-black font-black text-lg opacity-0 transition-opacity duration-200"></span>
+    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
+    <span id="user-name-text" class="text-black font-black text-lg"></span>
 </div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -680,31 +680,20 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const img = document.getElementById('user-avatar-img');
     const txt = document.getElementById('user-name-text');
 
-    // 1. Manejo del Nombre y Mensaje
-    if (cachedName) {
+    // 1. Si hay nombre, lo ponemos en la inicial
+    if (cachedName && txt) {
+        txt.innerText = cachedName.charAt(0).toUpperCase();
         renderWelcomeMessage(cachedName);
-        if (txt) {
-            txt.innerText = cachedName.charAt(0).toUpperCase();
-            // Si NO hay foto, mostramos la inicial de inmediato
-            if (!cachedPhoto) {
-                txt.classList.replace('opacity-0', 'opacity-100');
-            }
-        }
     }
 
-    // 2. Manejo de la Foto (Prioridad absoluta)
-    if (cachedPhoto && img) {
+    // 2. Si hay FOTO, hacemos el cambio de inmediato
+    if (cachedPhoto && img && txt) {
         img.src = cachedPhoto;
-        // Cuando la imagen termine de procesarse en el DOM:
-        img.onload = () => {
-            img.classList.replace('opacity-0', 'opacity-100');
-            if (txt) txt.classList.replace('opacity-100', 'opacity-0');
-        };
-        // Por si ya estaba cargada (caché del navegador)
-        if (img.complete) {
-            img.classList.replace('opacity-0', 'opacity-100');
-            if (txt) txt.classList.replace('opacity-100', 'opacity-0');
-        }
+        img.classList.remove('hidden'); // Mostramos foto
+        txt.classList.add('hidden');    // Escondemos inicial
+    } else if (txt) {
+        // Si no hay foto, nos aseguramos que la inicial se vea
+        txt.classList.remove('hidden');
     }
 
     // 3. Balance
@@ -721,46 +710,38 @@ h1, h2, h3, h4, h5, h6, b, strong {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // Balance
-            onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
-                const balance = snap.val() || 0;
-                localStorage.setItem('user_balance', balance);
-                const formatted = `S/ ${balance.toFixed(2)}`;
-                const navBal = document.getElementById('nav-balance');
-                const mainBal = document.getElementById('balance-amount');
-                if (navBal) navBal.innerText = formatted;
-                if (mainBal) mainBal.innerText = formatted;
-            });
+            // Perfil (Firebase)
+onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
+    const data = snap.val();
+    const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
+    const photo = data?.photo || user.photoURL;
+    
+    localStorage.setItem('user_name', firstName);
+    renderWelcomeMessage(firstName);
+    
+    const img = document.getElementById('user-avatar-img');
+    const txt = document.getElementById('user-name-text');
 
-            // Perfil
-            onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
-                const data = snap.val();
-                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
-                localStorage.setItem('user_name', firstName);
-                renderWelcomeMessage(firstName);
-                
-                if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
-                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
-                
-                const photo = data?.photo || user.photoURL;
-                const img = document.getElementById('user-avatar-img');
-                const txt = document.getElementById('user-name-text');
-
-                if (photo) {
-                    localStorage.setItem('user_photo', photo);
-                    if (img) { 
-                        img.src = photo; 
-                        img.classList.remove('hidden'); 
-                    }
-                    if (txt) txt.classList.add('hidden');
-                } else {
-                    if (txt) {
-                        txt.innerText = firstName.charAt(0).toUpperCase();
-                        txt.classList.remove('hidden');
-                    }
-                    if (img) img.classList.add('hidden');
-                    localStorage.removeItem('user_photo');
-                }
-            });
+    if (photo) {
+        localStorage.setItem('user_photo', photo);
+        if (img) { 
+            img.src = photo; 
+            img.classList.remove('hidden'); 
+        }
+        if (txt) txt.classList.add('hidden');
+    } else {
+        if (txt) {
+            txt.innerText = firstName.charAt(0).toUpperCase();
+            txt.classList.remove('hidden');
+        }
+        if (img) img.classList.add('hidden');
+        localStorage.removeItem('user_photo');
+    }
+    
+    // Rellenar inputs
+    if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
+    if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
+});
 
             // Admin
             onValue(ref(db, `users/${user.uid}/isAdmin`), (snap) => {
@@ -837,6 +818,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
