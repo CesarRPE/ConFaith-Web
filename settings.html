@@ -218,8 +218,8 @@ h1, h2, h3, h4, h5, h6, b, strong {
                 <div id="user-menu-trigger" class="flex items-center gap-2 cursor-pointer py-1 group">
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
                     <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
-    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-    <span id="user-name-text" class="text-black font-black text-lg hidden"></span>
+    <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden opacity-0 transition-opacity duration-200">
+    <span id="user-name-text" class="text-black font-black text-lg"></span>
 </div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -680,28 +680,41 @@ h1, h2, h3, h4, h5, h6, b, strong {
     const img = document.getElementById('user-avatar-img');
     const txt = document.getElementById('user-name-text');
 
-    // 1. Prioridad: ¿Hay foto en caché?
-    if (cachedPhoto && img) {
-        img.src = cachedPhoto;
-        img.classList.remove('hidden');
-        if (txt) txt.classList.add('hidden');
-    } 
-    // 2. Si no hay foto, ¿hay nombre para la inicial?
-    else if (cachedName && txt) {
-        txt.innerText = cachedName.charAt(0).toUpperCase();
-        txt.classList.remove('hidden');
-        if (img) img.classList.add('hidden');
+    // 1. CARGAMOS EL NOMBRE Y EL BALANCE PRIMERO (Lógica de texto)
+    if (cachedName) {
+        renderWelcomeMessage(cachedName);
+        if (txt) {
+            txt.innerText = cachedName.charAt(0).toUpperCase();
+            // Solo mostramos la inicial si NO detectamos foto en el caché
+            if (!cachedPhoto) {
+                txt.classList.remove('hidden');
+            }
+        }
     }
 
-    // 3. Welcome Message y Balance (Igual que antes)
-    if (cachedName) renderWelcomeMessage(cachedName);
-    
     if (cachedBalance) {
         const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-        const navBal = document.getElementById('nav-balance');
-        const mainBal = document.getElementById('balance-amount');
-        if (navBal) navBal.innerText = formatted;
-        if (mainBal) mainBal.innerText = formatted;
+        const nBal = document.getElementById('nav-balance');
+        const aBal = document.getElementById('balance-amount');
+        if (nBal) nBal.innerText = formatted;
+        if (aBal) aBal.innerText = formatted;
+    }
+
+    // 2. LÓGICA DE FOTO (Prioridad visual)
+    if (cachedPhoto && img) {
+        img.src = cachedPhoto;
+        
+        const showImage = () => {
+            img.classList.remove('hidden');
+            img.classList.replace('opacity-0', 'opacity-100');
+            if (txt) txt.classList.add('hidden'); // Oculta inicial solo cuando la foto está lista
+        };
+
+        if (img.complete) {
+            showImage();
+        } else {
+            img.onload = showImage;
+        }
     }
 };
 
@@ -720,24 +733,27 @@ onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
     localStorage.setItem('user_name', firstName);
     renderWelcomeMessage(firstName);
     
-    const img = document.getElementById('user-avatar-img');
-    const txt = document.getElementById('user-name-text');
+    const photo = data?.photo || user.photoURL;
+const img = document.getElementById('user-avatar-img');
+const txt = document.getElementById('user-name-text');
 
-    if (photo) {
-        localStorage.setItem('user_photo', photo);
-        if (img) { 
-            img.src = photo; 
-            img.classList.remove('hidden'); 
-        }
+if (photo && img) {
+    localStorage.setItem('user_photo', photo);
+    img.src = photo;
+    img.onload = () => {
+        img.classList.remove('hidden');
+        img.classList.replace('opacity-0', 'opacity-100');
         if (txt) txt.classList.add('hidden');
-    } else {
-        if (txt) {
-            txt.innerText = firstName.charAt(0).toUpperCase();
-            txt.classList.remove('hidden');
-        }
-        if (img) img.classList.add('hidden');
-        localStorage.removeItem('user_photo');
+    };
+} else {
+    // Si no hay foto, volver a la inicial
+    if (img) img.classList.add('hidden');
+    if (txt) {
+        txt.innerText = firstName.charAt(0).toUpperCase();
+        txt.classList.remove('hidden');
     }
+    localStorage.removeItem('user_photo');
+}
     
     // Rellenar inputs
     if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
@@ -819,6 +835,7 @@ onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
 </script>
 </body>
 </html>
+
 
 
 
