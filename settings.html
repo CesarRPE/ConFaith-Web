@@ -219,7 +219,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
                     <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
                     <div class="w-10 h-10 rounded-full bg-[#b8860b] flex items-center justify-center overflow-hidden border-2 border-white/10 shadow-lg shadow-[#b8860b]/20">
     <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-    <span id="user-name-text" class="text-black font-black text-lg">C</span>
+    <span id="user-name-text" class="text-black font-black text-lg hidden"></span>
 </div>
                     <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -673,34 +673,37 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     // --- CARGA INSTANTÁNEA DE CACHE (FIXED) ---
     const loadCache = () => {
-        const cachedName = localStorage.getItem('user_name');
-        const cachedBalance = localStorage.getItem('user_balance');
-        const cachedPhoto = localStorage.getItem('user_photo');
+    const cachedName = localStorage.getItem('user_name');
+    const cachedBalance = localStorage.getItem('user_balance');
+    const cachedPhoto = localStorage.getItem('user_photo');
 
-        if (cachedName) {
-            renderWelcomeMessage(cachedName); // Corregido el nombre de la función aquí
-            const initial = document.getElementById('user-name-text');
-            if (initial) initial.innerText = cachedName.charAt(0).toUpperCase();
+    const img = document.getElementById('user-avatar-img');
+    const txt = document.getElementById('user-name-text');
+
+    if (cachedName) {
+        renderWelcomeMessage(cachedName);
+        if (txt) {
+            txt.innerText = cachedName.charAt(0).toUpperCase();
+            // Solo lo mostramos si NO hay foto en cache
+            if (!cachedPhoto) txt.classList.remove('hidden');
         }
-        
-        if (cachedBalance) {
-            const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-            const navBal = document.getElementById('nav-balance');
-            const mainBal = document.getElementById('balance-amount');
-            if (navBal) navBal.innerText = formatted;
-            if (mainBal) mainBal.innerText = formatted;
-        }
-        
-        if (cachedPhoto) {
-            const img = document.getElementById('user-avatar-img');
-            const txt = document.getElementById('user-name-text');
-            if (img) {
-                img.src = cachedPhoto;
-                img.classList.remove('hidden');
-            }
-            if (txt) txt.classList.add('hidden');
-        }
-    };
+    }
+    
+    if (cachedPhoto && img) {
+        img.src = cachedPhoto;
+        img.classList.remove('hidden');
+        if (txt) txt.classList.add('hidden'); // Doble seguridad
+    } else if (cachedName && txt) {
+        // Si no hay foto pero sí nombre, nos aseguramos que se vea la inicial
+        txt.classList.remove('hidden');
+    }
+
+    if (cachedBalance) {
+        const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
+        if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
+        if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
+    }
+};
 
     loadCache(); // Ejecución inmediata
 
@@ -824,6 +827,7 @@ h1, h2, h3, h4, h5, h6, b, strong {
 </script>
 </body>
 </html>
+
 
 
 
