@@ -334,11 +334,11 @@
         <div id="welcome-message" class="hidden xl:block text-[11px] text-gray-400 font-medium"></div>
         
         <div class="w-10 h-10 rounded-full bg-gradient-to-b from-[#b8860b] to-[#8a6508] p-[1.5px] shadow-lg shadow-[#b8860b]/20 flex items-center justify-center self-center">
-            <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
-                <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
-                <span id="user-name-text" class="text-white font-black text-lg leading-none"></span>
-            </div>
-        </div>
+    <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center overflow-hidden">
+        <img id="user-avatar-img" src="" class="w-full h-full object-cover hidden">
+        <span id="user-name-text" class="text-white font-black text-lg leading-none"></span>
+    </div>
+</div>
 
         <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors self-center" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -559,6 +559,32 @@
 </div>
 
     <script type="module">
+    // --- CARGA INSTANTÁNEA DE AVATAR EN INDEX ---
+const loadIndexAvatarCache = () => {
+    const cachedName = localStorage.getItem('user_name');
+    const cachedPhoto = localStorage.getItem('user_photo');
+
+    // 1. Cargar inicial inmediatamente
+    if (cachedName) {
+        const nameText = document.getElementById('user-name-text');
+        if (nameText) {
+            nameText.innerText = cachedName.charAt(0).toUpperCase();
+        }
+    }
+    
+    // 2. Cargar foto si existe en caché
+    if (cachedPhoto) {
+        const img = document.getElementById('user-avatar-img');
+        const txt = document.getElementById('user-name-text');
+        if (img) {
+            img.src = cachedPhoto;
+            img.classList.remove('hidden');
+        }
+        if (txt) txt.classList.add('hidden'); // Oculta la inicial si hay foto
+    }
+};
+
+loadIndexAvatarCache();
     window.showSettingsAlert = (message) => {
     const popup = document.createElement('div');
     
@@ -892,57 +918,63 @@ window.loadLiveFeed = function() {
         const liveFeedWrapper = document.getElementById('live-feed-wrapper');
 
         if (user) {
-            guest?.classList.add('hidden');
-            uic?.classList.remove('hidden');
-            
-            // Mostrar Live Feed al conectar
-            liveFeedWrapper?.classList.remove('hidden');
-            // 2. ¡NUEVA LÍNEA! Disparar la carga de apuestas de inmediato
+        guest?.classList.add('hidden');
+        uic?.classList.remove('hidden');
+        
+        // Mostrar Live Feed al conectar
+        liveFeedWrapper?.classList.remove('hidden');
+        // 2. ¡NUEVA LÍNEA! Disparar la carga de apuestas de inmediato
         if (typeof window.loadLiveFeed === 'function') {
             window.loadLiveFeed();
         }
-            if (bCont) {
-                bCont.classList.remove('hidden');
-                bCont.onclick = () => window.location.href = 'settings.html?section=billetera';
+        if (bCont) {
+            bCont.classList.remove('hidden');
+            bCont.onclick = () => window.location.href = 'settings.html?section=billetera';
+        }
+
+        onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+            const balance = snap.val() || 0;
+            localStorage.setItem('user_balance', balance); // Guardar en caché
+            if (bAmt) bAmt.innerText = `S/ ${balance.toFixed(2)}`;
+        });
+
+        onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
+            const data = snapshot.val();
+            const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
+            const photo = data?.photo || user.photoURL;
+
+            // Guardar en caché para la próxima vez
+            localStorage.setItem('user_name', name);
+            if (photo) localStorage.setItem('user_photo', photo);
+
+            if (welcome) {
+                welcome.innerHTML = `
+                    <div class="flex items-center gap-1.5 mr-1">
+                        <span class="text-[#9ca3af] font-black text-[11px]">Qué onda, </span>
+                        <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
+                    </div>
+                `;
             }
 
-            onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
-                if (bAmt) bAmt.innerText = `S/ ${(snap.val() || 0).toFixed(2)}`;
-            });
-
-            onValue(ref(db, `users/${user.uid}/profile`), (snapshot) => {
-                const data = snapshot.val();
-                const name = data?.username || user.displayName?.split(' ')[0] || "Usuario";
-                const photo = data?.photo || user.photoURL;
-
-                if (welcome) {
-                    welcome.innerHTML = `
-                        <div class="flex items-center gap-1.5 mr-1">
-                            <span class="text-[#9ca3af] font-black text-[11px]">Qué onda, </span>
-                            <span class="text-[#b8860b] font-black text-[11px]">${name}</span>
-                        </div>
-                    `;
-                }
-
-                if (photo && avatarImg) {
-                    avatarImg.src = photo;
-                    avatarImg.classList.remove('hidden');
-                    avatarTxt?.classList.add('hidden');
-                } else if (avatarTxt) {
-                    avatarTxt.innerText = name.charAt(0).toUpperCase();
-                    avatarTxt.classList.remove('hidden');
-                    avatarImg?.classList.add('hidden');
-                }
-            });
-        } else {
-            guest?.classList.remove('hidden');
-            uic?.classList.add('hidden');
-            bCont?.classList.add('hidden');
-            
-            // Ocultar Live Feed al desconectar
-            liveFeedWrapper?.classList.add('hidden');
-        }
-    });
+            if (photo && avatarImg) {
+                avatarImg.src = photo;
+                avatarImg.classList.remove('hidden');
+                avatarTxt?.classList.add('hidden');
+            } else if (avatarTxt) {
+                avatarTxt.innerText = name.charAt(0).toUpperCase();
+                avatarTxt.classList.remove('hidden');
+                avatarImg?.classList.add('hidden');
+            }
+        });
+    } else {
+        guest?.classList.remove('hidden');
+        uic?.classList.add('hidden');
+        bCont?.classList.add('hidden');
+        
+        // Ocultar Live Feed al desconectar
+        liveFeedWrapper?.classList.add('hidden');
+    }
+});
 
     // 7. INICIALIZACIÓN DE CATEGORÍAS
     const catList = document.getElementById('cat-list');
@@ -977,6 +1009,7 @@ window.renderCards('Todos');
 <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] flex flex-col gap-3"></div>
 </body>
 </html>
+
 
 
 
