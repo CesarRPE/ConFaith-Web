@@ -671,94 +671,104 @@ h1, h2, h3, h4, h5, h6, b, strong {
         }
     };
 
-    // --- CARGA INSTANTÁNEA DE CACHE (FIXED) ---
+    // --- CARGA INSTANTÁNEA DE CACHE ---
     const loadCache = () => {
-    const cachedName = localStorage.getItem('user_name');
-    const cachedPhoto = localStorage.getItem('user_photo');
-    const cachedBalance = localStorage.getItem('user_balance');
+        const cachedName = localStorage.getItem('user_name');
+        const cachedPhoto = localStorage.getItem('user_photo');
+        const cachedBalance = localStorage.getItem('user_balance');
 
-    const img = document.getElementById('user-avatar-img');
-    const txt = document.getElementById('user-name-text');
+        const img = document.getElementById('user-avatar-img');
+        const txt = document.getElementById('user-name-text');
 
-    // 1. CARGAMOS EL NOMBRE Y EL BALANCE PRIMERO (Lógica de texto)
-    if (cachedName) {
-        renderWelcomeMessage(cachedName);
-        if (txt) {
-            txt.innerText = cachedName.charAt(0).toUpperCase();
-            // Solo mostramos la inicial si NO detectamos foto en el caché
-            if (!cachedPhoto) {
-                txt.classList.remove('hidden');
+        // 1. CARGAMOS EL NOMBRE Y EL BALANCE PRIMERO (Lógica de texto)
+        if (cachedName) {
+            renderWelcomeMessage(cachedName);
+            if (txt) {
+                txt.innerText = cachedName.charAt(0).toUpperCase();
+                // Solo mostramos la inicial si NO detectamos foto en el caché
+                if (!cachedPhoto) {
+                    txt.classList.remove('hidden');
+                }
             }
         }
-    }
 
-    if (cachedBalance) {
-        const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-        const nBal = document.getElementById('nav-balance');
-        const aBal = document.getElementById('balance-amount');
-        if (nBal) nBal.innerText = formatted;
-        if (aBal) aBal.innerText = formatted;
-    }
-
-    // 2. LÓGICA DE FOTO (Prioridad visual)
-    if (cachedPhoto && img) {
-        img.src = cachedPhoto;
-        
-        const showImage = () => {
-            img.classList.remove('hidden');
-            img.classList.replace('opacity-0', 'opacity-100');
-            if (txt) txt.classList.add('hidden'); // Oculta inicial solo cuando la foto está lista
-        };
-
-        if (img.complete) {
-            showImage();
-        } else {
-            img.onload = showImage;
+        if (cachedBalance) {
+            const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
+            const nBal = document.getElementById('nav-balance');
+            const aBal = document.getElementById('balance-amount');
+            if (nBal) nBal.innerText = formatted;
+            if (aBal) aBal.innerText = formatted;
         }
-    }
-};
+
+        // 2. LÓGICA DE FOTO (Prioridad visual)
+        if (cachedPhoto && img) {
+            img.src = cachedPhoto;
+            
+            const showImage = () => {
+                img.classList.remove('hidden');
+                img.classList.replace('opacity-0', 'opacity-100');
+                if (txt) txt.classList.add('hidden'); // Oculta inicial solo cuando la foto está lista
+            };
+
+            if (img.complete) {
+                showImage();
+            } else {
+                img.onload = showImage;
+            }
+        }
+    };
 
     loadCache(); // Ejecución inmediata
 
     // --- LÓGICA DE NUBE ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Balance
-            // Perfil (Firebase)
-onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
-    const data = snap.val();
-    const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
-    const photo = data?.photo || user.photoURL;
-    
-    localStorage.setItem('user_name', firstName);
-    renderWelcomeMessage(firstName);
-    
-    const photo = data?.photo || user.photoURL;
-const img = document.getElementById('user-avatar-img');
-const txt = document.getElementById('user-name-text');
+            // Balance (¡Restaurado!)
+            onValue(ref(db, `users/${user.uid}/balance`), (snap) => {
+                const balance = snap.val() || 0;
+                localStorage.setItem('user_balance', balance);
+                const formatted = `S/ ${balance.toFixed(2)}`;
+                const navBal = document.getElementById('nav-balance');
+                const mainBal = document.getElementById('balance-amount');
+                if (navBal) navBal.innerText = formatted;
+                if (mainBal) mainBal.innerText = formatted;
+            });
 
-if (photo && img) {
-    localStorage.setItem('user_photo', photo);
-    img.src = photo;
-    img.onload = () => {
-        img.classList.remove('hidden');
-        img.classList.replace('opacity-0', 'opacity-100');
-        if (txt) txt.classList.add('hidden');
-    };
-} else {
-    // Si no hay foto, volver a la inicial
-    if (img) img.classList.add('hidden');
-    if (txt) {
-        txt.innerText = firstName.charAt(0).toUpperCase();
-        txt.classList.remove('hidden');
-    }
-    localStorage.removeItem('user_photo');
-}
-    
-    // Rellenar inputs
-    if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
-    if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
-});
+            // Perfil (Firebase)
+            onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
+                const data = snap.val();
+                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
+                
+                localStorage.setItem('user_name', firstName);
+                renderWelcomeMessage(firstName);
+                
+                // (Error corregido: solo declaramos 'photo' una vez aquí)
+                const photo = data?.photo || user.photoURL;
+                const img = document.getElementById('user-avatar-img');
+                const txt = document.getElementById('user-name-text');
+
+                if (photo && img) {
+                    localStorage.setItem('user_photo', photo);
+                    img.src = photo;
+                    img.onload = () => {
+                        img.classList.remove('hidden');
+                        img.classList.replace('opacity-0', 'opacity-100');
+                        if (txt) txt.classList.add('hidden');
+                    };
+                } else {
+                    // Si no hay foto, volver a la inicial
+                    if (img) img.classList.add('hidden');
+                    if (txt) {
+                        txt.innerText = firstName.charAt(0).toUpperCase();
+                        txt.classList.remove('hidden');
+                    }
+                    localStorage.removeItem('user_photo');
+                }
+                
+                // Rellenar inputs
+                if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
+                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
+            });
 
             // Admin
             onValue(ref(db, `users/${user.uid}/isAdmin`), (snap) => {
@@ -835,6 +845,7 @@ if (photo && img) {
 </script>
 </body>
 </html>
+
 
 
 
