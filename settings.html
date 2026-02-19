@@ -550,25 +550,26 @@ h1, h2, h3, h4, h5, h6, b, strong {
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
     
-    <div class="bg-[#0f172a] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-white/30 transition-all md:col-span-2 flex flex-col justify-between group">
-            <div>
-            <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform overflow-hidden shadow-[0_0_15px_rgba(255,255,255,0.1)] mb-4">
-                <img src="https://www.pngmart.com/files/23/User-PNG-Photo.png" 
-                     alt="User Icon" 
-                     class="w-8 h-8 object-contain">
-            </div>
-
-            <h4 class="text-white font-black text-sm uppercase mb-3 tracking-widest">Cuentas</h4>
-            
-            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                Ver y editar usuarios registrados.
-            </p>
+    <div class="bg-[#0f172a] border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-white/30 transition-all md:col-span-2 group min-h-[260px]">
+    <div class="flex flex-col items-center md:items-start text-center md:text-left">
+        <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center group-hover:scale-110 transition-transform overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.15)] mb-4">
+            <img src="https://www.pngmart.com/files/23/User-PNG-Photo.png" 
+                 alt="User Icon" 
+                 class="w-7 h-7 object-contain">
         </div>
 
-        <button class="w-full bg-[#b8860b] text-black font-black py-3 rounded-xl text-[10px] uppercase hover:bg-[#d4a017]/20 active:scale-95 transition-all border border-[#d4a017]/5">
+        <h4 class="text-white font-black text-xs uppercase mb-1 tracking-[0.2em]">Cuentas</h4>
+        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest leading-relaxed max-w-[200px]">
+            Ver y editar usuarios registrados.
+        </p>
+    </div>
+
+    <div class="mt-6">
+        <button class="w-full md:w-auto md:px-8 bg-[#b8860b] text-black font-black py-2.5 rounded-lg text-[10px] uppercase hover:bg-[#d4a017] active:scale-95 transition-all shadow-lg shadow-[#b8860b]/20">
             Administrar Cuentas
         </button>
     </div>
+</div>
 
     </div>
 
@@ -851,6 +852,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
 
 
