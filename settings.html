@@ -671,41 +671,40 @@ h1, h2, h3, h4, h5, h6, b, strong {
         }
     };
 
-    // --- CARGA INSTANTÁNEA DE AVATAR (SETTINGS) ---
-const loadCache = () => {
-    const cachedName = localStorage.getItem('user_name');
-    const cachedBalance = localStorage.getItem('user_balance');
-    const cachedPhoto = localStorage.getItem('user_photo');
+    // --- CARGA INSTANTÁNEA DE CACHE (FIXED) ---
+    const loadCache = () => {
+        const cachedName = localStorage.getItem('user_name');
+        const cachedBalance = localStorage.getItem('user_balance');
+        const cachedPhoto = localStorage.getItem('user_photo');
 
-    if (cachedName) {
-        renderStyledWelcome(cachedName); // Tu función con estilo Glossy
-        const initial = document.getElementById('user-name-text');
-        if (initial) initial.innerText = cachedName.charAt(0).toUpperCase();
-    }
-    
-    if (cachedBalance) {
-        const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
-        if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
-        if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
-    }
-    
-    // FIX: Carga inmediata de la foto
-    if (cachedPhoto) {
-        const img = document.getElementById('user-avatar-img');
-        const txt = document.getElementById('user-name-text');
-        if (img) {
-            img.src = cachedPhoto;
-            img.classList.remove('hidden'); // Mostramos la foto del caché
+        if (cachedName) {
+            renderWelcomeMessage(cachedName); // Corregido el nombre de la función aquí
+            const initial = document.getElementById('user-name-text');
+            if (initial) initial.innerText = cachedName.charAt(0).toUpperCase();
         }
-        if (txt) {
-            txt.classList.add('hidden'); // Ocultamos la inicial
+        
+        if (cachedBalance) {
+            const formatted = `S/ ${parseFloat(cachedBalance).toFixed(2)}`;
+            const navBal = document.getElementById('nav-balance');
+            const mainBal = document.getElementById('balance-amount');
+            if (navBal) navBal.innerText = formatted;
+            if (mainBal) mainBal.innerText = formatted;
         }
-    }
-};
+        
+        if (cachedPhoto) {
+            const img = document.getElementById('user-avatar-img');
+            const txt = document.getElementById('user-name-text');
+            if (img) {
+                img.src = cachedPhoto;
+                img.classList.remove('hidden');
+            }
+            if (txt) txt.classList.add('hidden');
+        }
+    };
 
-loadCache();
+    loadCache(); // Ejecución inmediata
 
-    // --- 2. LOGICA DE NUBE ---
+    // --- LÓGICA DE NUBE ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
             // Balance
@@ -713,42 +712,42 @@ loadCache();
                 const balance = snap.val() || 0;
                 localStorage.setItem('user_balance', balance);
                 const formatted = `S/ ${balance.toFixed(2)}`;
-                if(document.getElementById('nav-balance')) document.getElementById('nav-balance').innerText = formatted;
-                if(document.getElementById('balance-amount')) document.getElementById('balance-amount').innerText = formatted;
+                const navBal = document.getElementById('nav-balance');
+                const mainBal = document.getElementById('balance-amount');
+                if (navBal) navBal.innerText = formatted;
+                if (mainBal) mainBal.innerText = formatted;
             });
 
             // Perfil
-onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
-    const data = snap.val();
-    const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
-    localStorage.setItem('user_name', firstName);
-    renderWelcomeMessage(firstName);
-    
-    if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
-    if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
-    
-    const photo = data?.photo || user.photoURL;
-    const img = document.getElementById('user-avatar-img');
-    const txt = document.getElementById('user-name-text');
+            onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
+                const data = snap.val();
+                const firstName = data?.username || (user.displayName ? user.displayName.split(' ')[0] : "Usuario");
+                localStorage.setItem('user_name', firstName);
+                renderWelcomeMessage(firstName);
+                
+                if(document.getElementById('input-username')) document.getElementById('input-username').value = data?.username || "";
+                if(document.getElementById('input-bio')) document.getElementById('input-bio').value = data?.bio || "";
+                
+                const photo = data?.photo || user.photoURL;
+                const img = document.getElementById('user-avatar-img');
+                const txt = document.getElementById('user-name-text');
 
-    if (photo) {
-        localStorage.setItem('user_photo', photo);
-        if (img) { 
-            img.src = photo; 
-            img.classList.remove('hidden'); 
-        }
-        if (txt) txt.classList.add('hidden');
-    } else {
-        // FIX: Si el usuario borra su foto o no tiene, 
-        // aseguramos que se vea la inicial y se oculte el elemento imagen
-        if (txt) {
-            txt.innerText = firstName.charAt(0).toUpperCase();
-            txt.classList.remove('hidden');
-        }
-        if (img) img.classList.add('hidden');
-        localStorage.removeItem('user_photo'); // Limpiamos cache si no hay foto
-    }
-});
+                if (photo) {
+                    localStorage.setItem('user_photo', photo);
+                    if (img) { 
+                        img.src = photo; 
+                        img.classList.remove('hidden'); 
+                    }
+                    if (txt) txt.classList.add('hidden');
+                } else {
+                    if (txt) {
+                        txt.innerText = firstName.charAt(0).toUpperCase();
+                        txt.classList.remove('hidden');
+                    }
+                    if (img) img.classList.add('hidden');
+                    localStorage.removeItem('user_photo');
+                }
+            });
 
             // Admin
             onValue(ref(db, `users/${user.uid}/isAdmin`), (snap) => {
@@ -760,13 +759,16 @@ onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
         }
     });
 
-    // --- 3. FUNCIONES GLOBALES (RESTAURADAS AL 100%) ---
+    // --- FUNCIONES GLOBALES ---
     window.handleLogout = async () => { localStorage.clear(); await signOut(auth); window.location.href = "index.html"; };
 
     window.showSection = (sectionId) => {
         document.querySelectorAll('.settings-section').forEach(s => s.classList.add('hidden'));
         const target = document.getElementById(sectionId);
-        if (target) target.classList.remove('hidden');
+        if (target) {
+            target.classList.remove('hidden');
+            target.classList.add('active');
+        }
         document.querySelectorAll('.sidebar-btn').forEach(btn => {
             btn.classList.remove('is-active');
             btn.classList.add('text-gray-400', 'font-bold');
@@ -822,6 +824,7 @@ onValue(ref(db, `users/${user.uid}/profile`), (snap) => {
 </script>
 </body>
 </html>
+
 
 
 
